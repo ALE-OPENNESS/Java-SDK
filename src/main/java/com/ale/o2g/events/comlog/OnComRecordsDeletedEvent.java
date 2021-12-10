@@ -50,4 +50,7 @@ public class OnComRecordsDeletedEvent extends O2GEvent {
         return recordIds;
     }
 
+    protected OnComRecordsDeletedEvent() {
+    }
+
 }

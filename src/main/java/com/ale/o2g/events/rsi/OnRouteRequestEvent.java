@@ -46,4 +46,6 @@ public class OnRouteRequestEvent extends O2GEvent {
         return request;
     }
 
+    protected OnRouteRequestEvent() {
+    }
 }

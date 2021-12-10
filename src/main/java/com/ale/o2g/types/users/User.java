@@ -95,7 +95,16 @@ public final class User {
      * 
      * @return the the OmniPCX Enterprise node number.
      */
-    public String getNodeId() {
-        return nodeId;
+    public int getNodeId() {
+        try {
+            return Integer.parseInt(nodeId);
+        }
+        catch (NumberFormatException e) {
+            return -1;
+        }
     }
+
+    protected User() {
+    }
+    
 }

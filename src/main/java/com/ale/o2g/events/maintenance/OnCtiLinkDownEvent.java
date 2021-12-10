@@ -39,4 +39,7 @@ public class OnCtiLinkDownEvent extends O2GEvent {
     public final int getNodeId() {
         return nodeId;
     }
+
+    protected OnCtiLinkDownEvent() {
+    }
 }

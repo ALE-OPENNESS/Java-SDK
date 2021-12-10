@@ -48,4 +48,7 @@ public class Preferences {
         return oxeLanguage;
     }
 
+    protected Preferences() {
+        
+    }
 }

@@ -121,6 +121,9 @@ public class Leg {
             return switchDevice;
         }
 
+        protected Capabilities() {
+        }
+
     }
 
     private String deviceId;
@@ -162,6 +165,9 @@ public class Leg {
      */
     public final Capabilities getCapabilities() {
         return capabilities;
+    }
+
+    protected Leg() {
     }
 
 }

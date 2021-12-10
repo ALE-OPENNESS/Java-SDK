@@ -83,6 +83,10 @@ public class PartyInfo {
             return subType;
         }
 
+        protected Type() {
+        }
+
+        
     }
 
     /**
@@ -108,6 +112,11 @@ public class PartyInfo {
         public final String getPhoneNumber() {
             return phoneNumber;
         }
+
+        protected Identifier() {
+        }
+        
+        
     }
 
     private Identifier id;
@@ -158,6 +167,7 @@ public class PartyInfo {
     public final Type getType() {
         return type;
     }
-    
-    
+
+    protected PartyInfo() {
+    }
 }

@@ -18,13 +18,13 @@
 */
 package com.ale.o2g.events.rsi;
 
-import com.ale.o2g.O2G;
+import com.ale.o2g.events.O2GEvent;
 import com.ale.o2g.types.rsi.RoutingReason;
 
 /**
  * This event is sent from a Routing point to close a route session (routing crid is no longer valid).
  */
-public class OnRouteEndEvent extends O2G {
+public class OnRouteEndEvent extends O2GEvent {
 
     private String rsiPoint;
     private String routeCrid;
@@ -50,15 +50,22 @@ public class OnRouteEndEvent extends O2G {
     }
     
     /**
-     * @return the routedCallRef
+     * Returns the routed call reference.
+     * @return the routed call reference.
      */
     public final String getRoutedCallRef() {
         return routedCallRef;
     }
+    
     /**
-     * @return the reason
+     * Returns the routing reason.
+     * @return the reason.
      */
     public final RoutingReason getReason() {
         return reason;
+    }
+
+
+    protected OnRouteEndEvent() {
     }
 }

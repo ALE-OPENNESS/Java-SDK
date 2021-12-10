@@ -29,11 +29,14 @@ public class OnUserCreatedEvent extends O2GEvent {
     private User user;
 
     /**
-     * Return the created user.
+     * Returns the created user.
      * 
      * @return the created user.
      */
     public User getUser() {
         return user;
+    }
+
+    protected OnUserCreatedEvent() {
     }
 }

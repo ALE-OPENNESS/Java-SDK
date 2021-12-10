@@ -26,13 +26,13 @@ import com.ale.o2g.internal.types.management.ValueConverter;
  * {@code PbxAttribute} class represents an attribute in a
  * {@linkplain com.ale.o2g.types.management.PbxObject PbxObject}. A PbxAttribute
  * can be of the following type:
- * <h3>Integer</h3> An Integer value is equivalent to an {@code int} value.
- * <h3>Boolean</h3> An Boolean value is equivalent to an {@code boolean} value.
- * <h3>Enumerated</h3> An enumerated value can have a limited set of possible
+ * <p><b><u>Integer</u></b>: An Integer value is equivalent to an {@code int} value.
+ * <p><b><u>Boolean</u></b>: An Boolean value is equivalent to an {@code boolean} value.
+ * <p><b><u>Enumerated</u></b>: An enumerated value can have a limited set of possible
  * values. {@code PbxAttribute} treats enumerated value as {@code String} value.
- * <h3>OctetString, ByteString</h3> An OctetString or a ByteString are
+ * <p><b><u>OctetString, ByteString</u></b>: An OctetString or a ByteString are
  * equivalent to a {@code String} value.
- * <h3>Sequence</h3> A Sequence is a structured data whose attribute member have
+ * <p><b><u>Sequence</u></b>: A Sequence is a structured data whose attribute member have
  * a specific name and type: For exemple
  * 
  * <pre>
@@ -43,7 +43,7 @@ import com.ale.o2g.internal.types.management.ValueConverter;
  *     }
  * </pre>
  * 
- * <h3>Set</h3> A Set value is a list of attributes of the same type. It can be
+ * <p><b><u>Set</u></b>: A Set value is a list of attributes of the same type. It can be
  * a list of simple value like:
  * 
  * <pre>

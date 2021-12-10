@@ -24,7 +24,7 @@ import com.ale.o2g.types.management.PbxObjectDefinition;
 /**
  *
  */
-public class OnPbxObjectInstanceEvent extends O2GEvent {
+class OnPbxObjectInstanceEvent extends O2GEvent {
 
     private int nodeId;
     private PbxObjectDefinition object;

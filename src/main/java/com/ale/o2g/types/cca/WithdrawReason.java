@@ -44,4 +44,8 @@ public class WithdrawReason {
     public final String getLabel() {
         return label;
     }
+
+    protected WithdrawReason() {
+    }
+
 }

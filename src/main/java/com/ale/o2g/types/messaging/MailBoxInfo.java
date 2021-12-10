@@ -58,4 +58,7 @@ public class MailBoxInfo {
         return storageUsage;
     }
 
+    protected MailBoxInfo() {
+    }
+
 }

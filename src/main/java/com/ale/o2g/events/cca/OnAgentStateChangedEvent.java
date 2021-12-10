@@ -47,4 +47,7 @@ public class OnAgentStateChangedEvent extends O2GEvent {
         return state;
     }
 
+    protected OnAgentStateChangedEvent() {
+    }
+
 }

@@ -82,4 +82,6 @@ public class OnCallRemovedEvent extends O2GEvent {
         return deviceCapabilities;
     }
 
+    protected OnCallRemovedEvent() {
+    }
 }

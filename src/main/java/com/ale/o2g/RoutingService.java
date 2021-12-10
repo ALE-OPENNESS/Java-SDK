@@ -38,6 +38,7 @@ import com.ale.o2g.types.routing.RoutingState;
  * forwardOnVoiceMail} to activate a forward. <br>
  * A {@link Forward.Condition Condition} can be associated to the forward:
  * <table>
+ * <caption>Forward conditions</caption>
  * <tr>
  * <td>IMMEDIATE
  * <td>
@@ -68,6 +69,7 @@ import com.ale.o2g.types.routing.RoutingState;
  * overflow} to activate an overflow. <br>
  * A {@link com.ale.o2g.types.routing.Overflow.Condition Condition} can be associated to the overflow:
  * <table>
+ * <caption>Overflow conditions</caption>
  * <tr>
  * <td>BUSY
  * <td>

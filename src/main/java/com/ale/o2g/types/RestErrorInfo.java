@@ -23,6 +23,7 @@ package com.ale.o2g.types;
  * a service invocation. Most of the O2G services return the following code in
  * case of error:
  * <table>
+ * <caption>REST Service error code</caption>
  * <tr>
  * <th>Code</th>
  * <th>Description</th>

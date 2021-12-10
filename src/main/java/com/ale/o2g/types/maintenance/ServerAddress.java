@@ -26,6 +26,9 @@ public class ServerAddress {
 	private String fqdn;
 	private String ip;
 	
+    protected ServerAddress() {
+    }
+
     /**
      * Returns this address FQDN.
      * @return the fqdn.

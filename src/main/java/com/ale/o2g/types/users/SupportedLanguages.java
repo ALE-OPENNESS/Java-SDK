@@ -28,6 +28,9 @@ import java.util.Collection;
 public class SupportedLanguages {
     private Collection<String> supportedLanguages;
     private Collection<String> supportedGuiLanguages;
+    
+    protected SupportedLanguages() {
+    }
 
     /**
      * Return the supported languages.

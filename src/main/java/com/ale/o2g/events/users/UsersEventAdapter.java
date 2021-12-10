@@ -19,7 +19,9 @@
 package com.ale.o2g.events.users;
 
 /**
- *
+ * An empty implementation of the UsersEventListener interface, provided as a
+ * convenience to simplify the task of creating listeners, by extending and
+ * implementing only the methods of interest.
  */
 public class UsersEventAdapter implements UsersEventListener {
 
@@ -33,6 +35,9 @@ public class UsersEventAdapter implements UsersEventListener {
 
     @Override
     public void onUserInfoChanged(OnUserInfoChangedEvent e) {
+    }
+
+    protected UsersEventAdapter() {
     }
 
 }

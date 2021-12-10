@@ -26,8 +26,9 @@ import java.util.Arrays;
  * A simple criteria is a tuple of the form: {@code [Attribute, Operation, Value]}. For example : {@code [LAST_NAME, BEGINS_WITH, "fr"]}.
  * <br>A {@code Criteria} can also be the logical OR or AND combination of the set of other {@code Criteria's}.
  * <p>
- * The acceptable values for the Attribute are:<br>
+ * The acceptable values for the Attributes are:<br>
  * <table>
+ * <caption>Attributes values</caption>
  * <thead>
  * <tr><th>Value</th><th>Description</th></tr>
  * </thead>
@@ -39,6 +40,7 @@ import java.util.Arrays;
  * <p>
  * The acceptable values for the Operands are<br>
  * <table>
+ * <caption>Operands values</caption>
  * <thead>
  * <tr><th>Value</th><th>Description</th></tr>
  * </thead>
@@ -47,7 +49,7 @@ import java.util.Arrays;
  * <tr><td>CONTAINS</td><td>The attribute must contain with the given value.</td></tr>
  * <tr><td>EQUAL_IGNORE_CASE</td><td>The attribute is equal to the given value (case insensitive comparison).</td></tr>
  * </table>
- * <h1>exemples</h1>
+ * <p><b><u>exemples</u></b>:
  * <pre>{@code
  *     // Search users whom last name begins with "b"
  *     Criteria criteria = Criteria.create(

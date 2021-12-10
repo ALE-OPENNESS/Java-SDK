@@ -72,4 +72,7 @@ public class Participant {
     public final MediaState getState() {
         return state;
     }
+
+    protected Participant() {
+    }
 }

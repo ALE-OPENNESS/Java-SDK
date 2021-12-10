@@ -59,6 +59,6 @@ public class RoutingCapabilities {
         return dnd;
     }
     
-    
+    protected RoutingCapabilities() {}
     
 }

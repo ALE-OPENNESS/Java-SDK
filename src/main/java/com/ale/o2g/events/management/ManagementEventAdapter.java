@@ -19,7 +19,9 @@
 package com.ale.o2g.events.management;
 
 /**
- *
+ * An empty implementation of the ManagementEventListener interface, provided as a
+ * convenience to simplify the task of creating listeners, by extending and
+ * implementing only the methods of interest.
  */
 public class ManagementEventAdapter implements ManagementEventListener {
 
@@ -33,6 +35,9 @@ public class ManagementEventAdapter implements ManagementEventListener {
 
     @Override
     public void pbxObjectInstanceDeleted(OnPbxObjectInstanceDeletedEvent e) {
+    }
+
+    protected ManagementEventAdapter() {
     }
 
 }

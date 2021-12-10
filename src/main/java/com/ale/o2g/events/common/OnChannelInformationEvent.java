@@ -35,4 +35,7 @@ public class OnChannelInformationEvent extends O2GEvent {
         return text;
     }
 
+    protected OnChannelInformationEvent() {
+    }
+
 }

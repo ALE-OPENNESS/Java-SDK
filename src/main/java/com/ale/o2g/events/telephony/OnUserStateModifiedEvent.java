@@ -45,4 +45,7 @@ public class OnUserStateModifiedEvent extends O2GEvent {
     public final UserState getState() {
         return state;
     }
+
+    protected OnUserStateModifiedEvent() {
+    }
 }

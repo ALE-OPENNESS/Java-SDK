@@ -21,7 +21,7 @@ package com.ale.o2g.types.telephony.call.acd;
 /**
  * {@code AcdData} represents the acd extension for an acd call.
  */
-public class AcdData {
+public final class AcdData {
     private Info callInfo;
     private QueueData queueData;
     private String pilotNumber;
@@ -82,6 +82,9 @@ public class AcdData {
      */
     public final PilotTransferInfo getPilotTransferInfo() {
         return pilotTransferInfo;
+    }
+
+    protected AcdData() {
     }
 
 }

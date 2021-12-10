@@ -28,6 +28,10 @@ public class Tag {
     private String value;
     private Collection<String> visibilities;
 
+    
+    protected Tag() {
+    }
+
     /**
      * Returns this tag name.
      * 

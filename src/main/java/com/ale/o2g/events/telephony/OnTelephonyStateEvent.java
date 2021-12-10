@@ -47,4 +47,7 @@ public class OnTelephonyStateEvent extends O2GEvent {
         return state;
     }
 
+    protected OnTelephonyStateEvent() {
+    }
+
 }

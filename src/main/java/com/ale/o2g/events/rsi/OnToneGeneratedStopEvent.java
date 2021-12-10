@@ -44,5 +44,8 @@ public class OnToneGeneratedStopEvent extends O2GEvent {
      */
     public final String getCallRef() {
         return callRef;
-    }    
+    }
+
+    protected OnToneGeneratedStopEvent() {
+    }
 }

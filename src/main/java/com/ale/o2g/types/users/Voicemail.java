@@ -57,11 +57,16 @@ public class Voicemail {
     }
 
     /**
-     * Return this voice mail type.
+     * Returns this voice mail type.
      * 
      * @return the voice mail type.
      */
     public Type getType() {
         return type;
     }
+
+    protected Voicemail() {
+    }
+    
+    
 }

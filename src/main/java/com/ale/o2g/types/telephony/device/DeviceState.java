@@ -43,4 +43,7 @@ public class DeviceState {
         return state;
     }
 
+    protected DeviceState() {
+    }
+
 }

@@ -75,4 +75,7 @@ public class Capabilities {
         return unParkCall;
     }
 
+    protected Capabilities() {
+    }
+
 }

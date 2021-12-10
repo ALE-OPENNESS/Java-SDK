@@ -58,5 +58,8 @@ public class License {
     public final String getExpiration() {
         return expiration;
     }
+
+    protected License() {
+    }
 	
 }

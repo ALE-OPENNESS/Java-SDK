@@ -50,4 +50,7 @@ public class OnSupervisorHelpRequestedEvent extends O2GEvent {
         return agentNumber;
     }
 
+    protected OnSupervisorHelpRequestedEvent() {
+    }
+
 }

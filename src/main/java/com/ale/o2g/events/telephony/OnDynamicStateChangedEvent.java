@@ -45,4 +45,8 @@ public class OnDynamicStateChangedEvent extends O2GEvent {
     public final String getLoginName() {
         return loginName;
     }
+
+    protected OnDynamicStateChangedEvent() {
+    }
+
 }

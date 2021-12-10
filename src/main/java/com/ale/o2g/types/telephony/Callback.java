@@ -43,6 +43,8 @@ public class Callback {
     public final PartyInfo getPartyInfo() {
         return partyInfo;
     }
-    
+
+    protected Callback() {
+    }
     
 }

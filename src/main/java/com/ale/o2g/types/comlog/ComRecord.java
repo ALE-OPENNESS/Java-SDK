@@ -96,4 +96,7 @@ public class ComRecord {
         return end;
     }
 
+    protected ComRecord() {
+    }
+
 }

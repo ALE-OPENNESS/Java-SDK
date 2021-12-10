@@ -36,4 +36,7 @@ public class OnUserDeletedEvent extends O2GEvent {
     public String getLoginName() {
         return loginName;
     }
+
+    protected OnUserDeletedEvent() {
+    }
 }

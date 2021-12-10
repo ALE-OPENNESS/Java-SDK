@@ -48,5 +48,6 @@ public class OnEventSummaryUpdatedEvent extends O2GEvent {
         return eventSummary;
     }
 
-    
+    protected OnEventSummaryUpdatedEvent() {
+    }
 }

@@ -23,11 +23,12 @@ import com.ale.o2g.types.common.PartyInfo;
 /**
  * {@code ComRecordParticipant} represents a participant referenced in a com
  * record.
- * <h3>Record content</h3> For a <b>simple call</b> (user A calls user B), the
+ * <p><b><u>Record content</u></b>: For a <b>simple call</b> (user A calls user B), the
  * call record on each party will contain <u>both the participant A and the
  * participant B</u>: (no guaranty on the order of the participants on 2
  * successive responses).
  * <table>
+ * <caption>Simple call</caption>
  * <tr>
  * <th>Side</th>
  * <th>Com record content</th>
@@ -60,6 +61,7 @@ import com.ale.o2g.types.common.PartyInfo;
  * contain as participant the user B itself because he was not the last
  * destination of the call:
  * <table>
+ * <caption>Re-routed call</caption>
  * <tr>
  * <th>Side</th>
  * <th>Com record content</th>
@@ -103,7 +105,7 @@ import com.ale.o2g.types.common.PartyInfo;
  * contain the answered status of the added participant: this information is
  * provided to distinguish the added participants which have really answered and
  * the other which decline the call.
- * <h3>Identification of the participant</h3> In the comlog notification events,
+ * <p><b><u>Identification of the participant</u></b>: In the comlog notification events,
  * the participant owner is identified only by its loginName (in order to reduce
  * the event call flow), the other participants are identified with their full
  * identity (loginName, phoneNumber).
@@ -182,6 +184,9 @@ public class ComRecordParticipant {
      */
     public final Reason getReason() {
         return reason;
+    }
+
+    protected ComRecordParticipant() {
     }
 
 }

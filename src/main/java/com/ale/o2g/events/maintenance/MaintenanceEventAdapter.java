@@ -19,22 +19,9 @@
 package com.ale.o2g.events.maintenance;
 
 /**
- * An abstract adapter class for receiving maintenance events. The methods in
- * this class are empty. This class exists as convenience for creating listener
- * objects.
- * <p>
- * Extend this class to create a {@code MaintenanceEvent} listener and override
- * the methods for the events of interest. (If you implement the
- * MaintenanceEventListener interface, you have to define all of the methods in
- * it. This abstract class defines null methods for them all, so you can only
- * have to define methods for events you care about.)
- * 
- * <p>
- * Create a listener object using the extended class and then register it with
- * the session, using the {@code listenEvents} method. When a maintenance event
- * occurs by a change in the connection state with the PBX or a change on the
- * license status, the relevant method in the listener object is invoked.
- * @see MaintenanceEventListener
+ * An empty implementation of the MaintenanceEventListener interface, provided as a
+ * convenience to simplify the task of creating listeners, by extending and
+ * implementing only the methods of interest.
  */
 public abstract class MaintenanceEventAdapter implements MaintenanceEventListener {
 
@@ -49,5 +36,8 @@ public abstract class MaintenanceEventAdapter implements MaintenanceEventListene
 	@Override
 	public void onPbxLoaded(OnPbxLoadedEvent ev) {
 	}
+
+    protected MaintenanceEventAdapter() {
+    }
 
 }

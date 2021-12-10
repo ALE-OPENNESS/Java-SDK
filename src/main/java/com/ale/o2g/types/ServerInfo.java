@@ -19,40 +19,65 @@
 package com.ale.o2g.types;
 
 /**
- *
+ * {@code ServerInfo} provide information on the O2G Server.
  */
 public final class ServerInfo {
-	
-	public static class ProductVersion {
 
-		private String major;
-		private String minor;
-		
-		public String toString() {
-			return String.format("%s.%s", major, minor);
-		}
-	}
-	
+    /**
+     * {@code ProductVersion} represents the O2G product version.
+     */
+    public static class ProductVersion {
+
+        private String major;
+        private String minor;
+
+        protected ProductVersion() {
+        }
+
+        public String toString() {
+            return String.format("%s.%s", major, minor);
+        }
+    }
+    
+    protected ServerInfo() {
+    }
+
     private String productName;
     private String productType;
     private ProductVersion productVersion;
     private boolean haMode;
-    
-	public final String getProductName() {
-		return productName;
-	}
-	public final String getProductType() {
-		return productType;
-	}
-	public final String getProductVersion() {
-		return productVersion.toString();
-	}
-	
-	/**
-	 * Return wheather the O2G server is in HA mode.
-	 * @return {@code true} is the O2G server is in HA mode; {@code false} otherwise.
-	 */
-	public final boolean isHaMode() {
-		return haMode;
-	}
+
+    /**
+     * Returns the product name.
+     * @return the product name
+     */
+    public final String getProductName() {
+        return productName;
+    }
+
+    /**
+     * Returns the product type.
+     * @return the product type. 
+     */
+    public final String getProductType() {
+        return productType;
+    }
+
+    /**
+     * Returns the O2G server version.
+     * @return the version.
+     */
+    public final String getProductVersion() {
+        return productVersion.toString();
+    }
+
+    /**
+     * Returns wheather the O2G server is in HA mode.
+     * 
+     * @return {@code true} is the O2G server is in HA mode; {@code false}
+     *         otherwise.
+     */
+    public final boolean isHaMode() {
+        return haMode;
+    }
 }

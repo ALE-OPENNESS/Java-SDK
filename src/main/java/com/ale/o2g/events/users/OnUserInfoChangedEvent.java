@@ -48,4 +48,6 @@ public class OnUserInfoChangedEvent extends O2GEvent {
         return loginName;
     }
 
+    protected OnUserInfoChangedEvent() {
+    }
 }

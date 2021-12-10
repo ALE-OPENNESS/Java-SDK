@@ -170,4 +170,6 @@ public class OnCallModifiedEvent extends O2GEvent {
         return deviceCapabilities;
     }
 
+    protected OnCallModifiedEvent() {
+    }
 }

@@ -49,4 +49,7 @@ public class OnComRecordCreatedEvent extends O2GEvent {
         return record;
     }
 
+    protected OnComRecordCreatedEvent() {
+    }
+
 }

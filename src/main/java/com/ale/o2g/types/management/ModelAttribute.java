@@ -21,7 +21,7 @@ package com.ale.o2g.types.management;
 import java.util.Collection;
 
 /**
- *
+ * {@code ModelAttribute} represents an attribute in an object model.
  */
 public class ModelAttribute {
 

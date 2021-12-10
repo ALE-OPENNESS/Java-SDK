@@ -70,4 +70,7 @@ public class RouteSession {
         return routedCallRef;
     }
 
+    protected RouteSession() {
+        
+    }
 }

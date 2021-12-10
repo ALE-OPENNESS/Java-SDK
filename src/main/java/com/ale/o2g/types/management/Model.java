@@ -70,9 +70,9 @@ public class Model {
         return children.get(name);
     }
 
-    
     /**
-     * Return whether this object is hidden in the OmniPCX Enterprise object model.
+     * Returns whether this object is hidden in the OmniPCX Enterprise object model.
+     * 
      * @return {@code true} if the object is hidden; {@code false} otherwise.
      */
     public final boolean isHidden() {
@@ -80,7 +80,8 @@ public class Model {
     }
 
     /**
-     * Return whether this object can be created.
+     * Returns whether this object can be created.
+     * 
      * @return {@code true} if the object can be created; {@code false} otherwise.
      */
     public final boolean canCreate() {
@@ -88,7 +89,8 @@ public class Model {
     }
 
     /**
-     * Return whether this object can be deleted.
+     * Returns whether this object can be deleted.
+     * 
      * @return {@code true} if the object can be deleted; {@code false} otherwise.
      */
     public final boolean canDelete() {
@@ -96,7 +98,8 @@ public class Model {
     }
 
     /**
-     * Return whether this object can be set.
+     * Returns whether this object can be set.
+     * 
      * @return {@code true} if the object can be set; {@code false} otherwise.
      */
     public final boolean canSet() {
@@ -104,7 +107,8 @@ public class Model {
     }
 
     /**
-     * Return whether this object can be gotten.
+     * Returns whether this object can be gotten.
+     * 
      * @return {@code true} if the object can be gotten; {@code false} otherwise.
      */
     public final boolean canGet() {
@@ -112,7 +116,9 @@ public class Model {
     }
 
     /**
-     * @return the otherActions
+     * Returns the collection of other possible actions.
+     * 
+     * @return the other actions.
      */
     public final Collection<String> getOtherActions() {
         return otherActions;

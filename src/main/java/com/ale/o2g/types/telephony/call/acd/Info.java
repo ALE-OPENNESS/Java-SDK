@@ -59,6 +59,9 @@ public class Info {
     public final boolean isLocal() {
         return local;
     }
+
+    protected Info() {
+    }
     
     
 }

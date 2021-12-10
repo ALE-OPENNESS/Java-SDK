@@ -66,4 +66,6 @@ public class RsiPoint {
         return registered;
     }
 
+    protected RsiPoint() {
+    }
 }

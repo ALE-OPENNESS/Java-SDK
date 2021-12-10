@@ -82,6 +82,9 @@ public class VoiceMessage {
     public final boolean isHighPriority() {
         return highPriority;
     }
+
+    protected VoiceMessage() {
+    }
 	
 	
 }

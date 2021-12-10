@@ -55,6 +55,12 @@ public abstract class Subscription {
         private List<Selector> selectors = new ArrayList<Selector>();
 
         /**
+         * Constructs a new Filter.
+         */
+        public Filter() {
+        }
+
+        /**
          * Add the specified event names to the filter.
          * @param ids the identifiers the events must contains.
          * @param names the event names the application want to subscribe on
@@ -164,6 +170,9 @@ public abstract class Subscription {
         }
     }
 
+  
+    protected Subscription() {}
+    
     /**
      * Return this subscription event version.
      * 

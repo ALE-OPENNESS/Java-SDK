@@ -48,4 +48,7 @@ public class OnDeviceStateModifiedEvent extends O2GEvent {
         return deviceStates;
     }
 
+    protected OnDeviceStateModifiedEvent() {
+    }
+
 }

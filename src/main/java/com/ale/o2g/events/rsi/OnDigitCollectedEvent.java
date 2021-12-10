@@ -54,6 +54,7 @@ public class OnDigitCollectedEvent extends O2GEvent {
     public final DataCollected getDataCollected() {
         return dataCollected;
     }
-    
-    
+
+    protected OnDigitCollectedEvent() {
+    }
 }

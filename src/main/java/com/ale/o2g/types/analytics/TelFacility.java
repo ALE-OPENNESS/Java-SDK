@@ -19,46 +19,202 @@
 package com.ale.o2g.types.analytics;
 
 /**
- *
+ * {@code TelFacility} represents the telephonic facilities.
  */
 public enum TelFacility {
+    
+    /**
+     * Calling line Identification presentation.
+     */
     CallingLineIdentificationPresentation,
+    
+    /**
+     * Connected line identification presentation.
+     */
     ConnectedLineIdentificationPresentation,
+    
+    /**
+     * Calling line identification restriction. 
+     */
     CallingLineIdentificationRestriction,
+    
+    /**
+     * Connected line identification restriction.
+     */
     ConnectedLineIdentificationRestriction,
+    
+    /**
+     * Malicious call identification. 
+     */
     MaliciousCallIdentification,
+    
+    /**
+     * Unconditional call forwarding.
+     */
     CallForwardingUnconditional,
+    
+    /**
+     * Call forwarding on busy.
+     */
     CallForwardingOnBusy,
+    
+    /**
+     * Call forwarding on no reply.
+     */
     CallForwardingOnNoReply,
+    
+    /**
+     * Transfer. 
+     */
     Transfer,
+    
+    /**
+     * Advice of charge at setup. 
+     */
     AdviceOfChargeAtSetup,
+    
+    /**
+     * Advice of charge during call. 
+     */
     AdviceOfChargeDuringCall,
+    
+    /**
+     * Advice of charge at the end. 
+     */
     AdviceOfChargeAtEnd,
+    
+    /**
+     * Closed user group.
+     */
     ClosedUserGroup,
+    
+    /**
+     * Call waiting.
+     */
     CallWaiting,
+    
+    /**
+     * User to user signalling.
+     */
     UserToUserSignalling,
+    
+    /**
+     * User to user facility. 
+     */
     UserToUserFacility,
+    
+    /**
+     * Terminal portability.
+     */
     TerminalPortability,
+    
+    /**
+     * Interception.
+     */
     Interception,
+    
+    /**
+     * Booking.
+     */
     Booking,
+    
+    /**
+     * Camp on.
+     */
     CampOn,
+    
+    /**
+     * Conference. 
+     */
     Conference,
+    
+    /**
+     * Mini messaging.
+     */
     MiniMessaging,
+    
+    /**
+     * Sub addessing. 
+     */
     Subaddressing,
+    
+    /**
+     * Basic call.
+     */
     BasicCall,
+    
+    /**
+     * Operator facility.
+     */
     OperatorFacility,
+    
+    /**
+     * Substitution.
+     */
     Substitution,
+    
+    /**
+     * Priority incoming call.
+     */
     PriorityIncomingCall,
+    
+    /**
+     * Transit.
+     */
     Transit,
+    
+    /**
+     * Overflow private to public. 
+     */
     PrivateOverflowToPublic,
+    
+    /**
+     * Rerouting private to public.
+     */
     ReroutingPublicToPrivate,
+    
+    /**
+     * Fax server.
+     */
     FaxServer,
+    
+    /**
+     * Voice mail.
+     */
     VoiceMail,
+    
+    /**
+     * Central abbreviated numbering.
+     */
     CentralAbbreviatedNumbering,
+    
+    /**
+     * Individual abbreviated numbering.
+     */
     IndividualAbbreviatedNumbering,
+    
+    /**
+     * Integrated VPN service. 
+     */
     IntegratedServiceVirtualPrivateNetwork,
+    
+    /**
+     *  Dedicated OmniPCX Enterprise overflow on VPN service.
+     */
     OverflowVirtualPrivateNetwork,
+    
+    /**
+     * Dedicated OmniPCX Enterprise ARS service.
+     */
     ARSService,
+    
+    /**
+     * Dedicated OmniPCX Enterprise DISA service.
+     */
     DISA,
+    
+    /**
+     * None.
+     */
     None
 }

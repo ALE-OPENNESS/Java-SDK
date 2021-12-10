@@ -253,6 +253,9 @@ public final class Call {
         public final boolean canHoldParticipant() {
             return holdParticipant;
         }
+
+        protected Capabilities() {
+        }
 		
 		
 	}
@@ -295,6 +298,8 @@ public final class Call {
     public final Collection<Participant> getParticipants() {
         return participants;
     }
-	
+
+    protected Call() {
+    }
 	
 }

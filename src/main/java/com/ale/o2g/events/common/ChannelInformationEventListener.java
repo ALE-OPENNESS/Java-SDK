@@ -21,7 +21,11 @@ package com.ale.o2g.events.common;
 import java.util.EventListener;
 
 /**
- *
+ * The listener interface for receiving information events. The class that is
+ * interested in processing an event summary event implements this interface,
+ * and the object created with that class is registered with the session, using
+ * the {@code listenEvents} method. When an information event occurs, that
+ * object's {@code OnChannelInformation} method is invoked.
  */
 public interface ChannelInformationEventListener extends EventListener {
 

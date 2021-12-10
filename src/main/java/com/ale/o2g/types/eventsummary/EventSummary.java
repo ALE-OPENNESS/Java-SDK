@@ -126,4 +126,8 @@ public class EventSummary {
     public final boolean isEventWaiting() {
         return eventWaiting;
     }
+
+    protected EventSummary() {
+    }
+
 }

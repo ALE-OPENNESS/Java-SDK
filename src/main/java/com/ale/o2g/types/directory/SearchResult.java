@@ -74,13 +74,16 @@ public class SearchResult {
         public final Collection<PartyInfo> getContacts() {
             return contacts;
         }
+
+        protected Results() {
+        }        
     }
 
     private Code resultCode;
     private Collection<Results> resultElements;
 
     /**
-     * Get the result code of this search result.
+     * Gets the result code of this search result.
      * 
      * @return the {@link Code} of the search result.
      */
@@ -89,9 +92,13 @@ public class SearchResult {
     }
 
     /**
+     * Returns the results.
      * @return the resultElements
      */
     public final Collection<Results> getResultElements() {
         return Collections.unmodifiableCollection(resultElements);
+    }
+
+    protected SearchResult() {
     }
 }

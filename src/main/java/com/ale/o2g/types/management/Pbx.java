@@ -43,4 +43,8 @@ public class Pbx {
     public final String getFqdn() {
         return fqdn;
     }
+    
+    protected Pbx() {
+        
+    }
 }

@@ -115,4 +115,6 @@ public class OnCallCreatedEvent extends O2GEvent {
         return deviceCapabilities;
     }
 
+    protected OnCallCreatedEvent() {
+    }
 }

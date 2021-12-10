@@ -19,10 +19,14 @@
 package com.ale.o2g.events.telephony;
 
 /**
- *
+ * An empty implementation of the TelephonyEventListener interface, provided as a
+ * convenience to simplify the task of creating listeners, by extending and
+ * implementing only the methods of interest.
  */
 public class TelephonyEventAdapter implements TelephonyEventListener {
 
+    protected TelephonyEventAdapter() {}
+    
     @Override
     public void onCallRemoved(OnCallRemovedEvent e) {
     }

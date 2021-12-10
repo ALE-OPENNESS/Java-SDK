@@ -144,8 +144,9 @@ public class MailBox {
         public final boolean canSendEvents() {
             return events;
         }
-        
-        
+
+        protected Capabilities() {
+        }
 	}
 	
 	private String id;
@@ -177,6 +178,8 @@ public class MailBox {
     public final Capabilities getCapabilities() {
         return capabilities;
     }
-	
-	
+
+
+    protected MailBox() {
+    }
 }

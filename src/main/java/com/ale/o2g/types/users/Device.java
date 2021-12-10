@@ -80,4 +80,7 @@ public class Device {
         return subType;
     }
 
+    protected Device() {
+    }
+
 }

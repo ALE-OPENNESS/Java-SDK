@@ -44,4 +44,7 @@ public class PilotTransferInfo {
         return pilotStatus;
     }
 
+    protected PilotTransferInfo() {
+        
+    }
 }

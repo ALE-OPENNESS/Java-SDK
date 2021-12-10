@@ -19,7 +19,8 @@
 package com.ale.o2g.types.maintenance;
 
 /**
- *
+ * {@code PbxStatus} provides general information on an OmniPCX Enterprise node.
+ * Its connection state, version, addresses...
  */
 public class PbxStatus {
 
@@ -144,10 +145,14 @@ public class PbxStatus {
 
     /**
      * Returns the number of monitored users on this OmniPCX Enterprise node.
+     * 
      * @return the the number of monitored users.
      */
     public final int getMonitoredUserNumber() {
         return monitoredUserNumber;
     }
 
+    protected PbxStatus() {
+        
+    }
 }

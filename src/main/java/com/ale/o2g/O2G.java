@@ -27,7 +27,7 @@ import com.ale.o2g.types.ServerInfo;
  * {@code O2G} is the basic class to bootstarp the SDK and create a
  * {@linkplain ServiceEndPoint} object.
  */
-public class O2G {
+public final class O2G {
 
     /**
      * The O2G Api version
@@ -47,5 +47,8 @@ public class O2G {
         ServerInfo serverInfo = serviceFactory.bootstrap(host);
 
         return new ServiceEndPointImpl(serviceFactory, serverInfo);
+    }
+
+    protected O2G() {
     }
 }

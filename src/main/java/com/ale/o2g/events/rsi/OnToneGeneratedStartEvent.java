@@ -56,6 +56,7 @@ public class OnToneGeneratedStartEvent extends O2GEvent {
     public final Tones getTonesTypes() {
         return tonesTypes;
     }
-    
-    
+
+    protected OnToneGeneratedStartEvent() {
+    } 
 }

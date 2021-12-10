@@ -47,4 +47,7 @@ public class HuntingGroups {
         return currentHg;
     }
 
+    protected HuntingGroups() {
+    }
+
 }

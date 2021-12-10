@@ -22,7 +22,7 @@ package com.ale.o2g.types.cca;
  * {@code AgentSkill} class represents a CCD operator skill. Skills are use by
  * the "Advanced Call Routing" call distribution strategy.
  */
-public class AgentSkill {
+public final class AgentSkill {
 
     private int number;
     private int level;
@@ -51,4 +51,8 @@ public class AgentSkill {
     public final boolean isActive() {
         return active;
     }
+
+    protected AgentSkill() {
+    }
+    
 }

@@ -177,4 +177,7 @@ public class OperatorState {
     public final boolean isWithdraw() {
         return withdraw;
     }
+
+    protected OperatorState() {
+    }
 }

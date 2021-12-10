@@ -46,18 +46,6 @@ public class ServiceEndPointImpl implements ServiceEndPoint {
 		this.serverInfo = serverInfo;
 	}
 
-	/**
-	 * Open a session on this O2GServer for the specified credential and the
-	 * specified applicationName.
-	 * 
-	 * @param credential      The credential associated to the user or administrator
-	 *                        the session is open for.
-	 * @param applicationName The applicationName is an identifier for logging and
-	 *                        statistic purpose.
-	 * @return The create session.
-	 * @throws O2GAuthenticationException
-	 * @throws ServiceInvocationException
-	 */
 	@Override
 	public Session openSession(Credential credential, String applicationName)
 			throws O2GAuthenticationException {

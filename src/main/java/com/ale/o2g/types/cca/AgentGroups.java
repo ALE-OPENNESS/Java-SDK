@@ -26,7 +26,7 @@ import com.google.gson.annotations.SerializedName;
  * {@code AgentGroups} represents the group configuration of a CCD operator. The
  * list of groups the operator is attaching in and the preferred group.
  */
-public class AgentGroups {
+public final class AgentGroups {
 
     private String preferred;
 
@@ -51,4 +51,7 @@ public class AgentGroups {
         return groups;
     }
 
+    protected AgentGroups() {
+    }
+    
 }

@@ -56,4 +56,7 @@ public class MiniMessage {
         return message;
     }
 
+    protected MiniMessage() {
+    }
+
 }

@@ -32,4 +32,8 @@ public class HuntingGroupStatus {
 	public final boolean isLoggedOn() {
 		return logon;
 	}
+
+    protected HuntingGroupStatus() {
+    }
+	
 }

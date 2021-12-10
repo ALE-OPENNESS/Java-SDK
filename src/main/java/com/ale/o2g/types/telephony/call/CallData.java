@@ -139,4 +139,7 @@ public class CallData {
         return acdCallData;
     }
 
+    protected CallData() {
+    }
+
 }

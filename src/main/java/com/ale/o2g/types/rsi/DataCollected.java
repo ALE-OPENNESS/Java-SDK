@@ -82,4 +82,7 @@ public class DataCollected {
         return cause;
     }
 
+    protected DataCollected() {
+    }
+
 }

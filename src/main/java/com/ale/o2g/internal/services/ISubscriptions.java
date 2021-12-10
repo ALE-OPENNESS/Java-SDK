@@ -27,18 +27,6 @@ import com.ale.o2g.internal.types.SubscriptionResult;
  */
 public interface ISubscriptions extends IService {
 
-	/**
-	 * Create a subscription
-	 * @param subscription 
-	 * @return
-	 */
-	SubscriptionResult create(Subscription subscription);
-	
-	/**
-	 * Delete the subscription 
-	 * @param subscriptionId
-	 * @return
-	 * @throws ServiceInvocationException
-	 */
+	SubscriptionResult create(Subscription subscription);	
 	boolean delete(String subscriptionId);
 }

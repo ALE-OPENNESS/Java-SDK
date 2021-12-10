@@ -19,7 +19,9 @@
 package com.ale.o2g.events.cca;
 
 /**
- *
+ * An empty implementation of the CallCenterAgentEventListener interface, provided as a
+ * convenience to simplify the task of creating listeners, by extending and
+ * implementing only the methods of interest.
  */
 public class CallCenterAgentEventAdapter implements CallCenterAgentEventListener {
 
@@ -35,4 +37,7 @@ public class CallCenterAgentEventAdapter implements CallCenterAgentEventListener
     public void onSupervisorHelpRequested(OnSupervisorHelpRequestedEvent e) {
     }
 
+    protected CallCenterAgentEventAdapter() {
+    }
+    
 }

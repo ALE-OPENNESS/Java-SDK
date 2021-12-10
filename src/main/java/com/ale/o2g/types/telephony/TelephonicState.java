@@ -26,7 +26,7 @@ import com.ale.o2g.types.telephony.user.UserState;
 /**
  * Represent the telephonic state of a user.
  */
-public final class TelephonicState {
+public class TelephonicState {
     private Collection<Call> calls;
     private Collection<Capabilities> deviceCapabilities;
     private UserState userState;
@@ -58,4 +58,6 @@ public final class TelephonicState {
         return (userState == null) ? UserState.UNKNOWN : userState;
     }
 
+    protected TelephonicState() {
+    }
 }

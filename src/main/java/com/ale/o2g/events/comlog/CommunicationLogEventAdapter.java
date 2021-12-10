@@ -16,44 +16,35 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package com.ale.o2g.events.cca;
-
-import com.ale.o2g.events.O2GEvent;
+package com.ale.o2g.events.comlog;
 
 /**
- * This event is raised when agent has requested the assistance of his
- * supervisor and when the request is canceled by the agent or when the request
- * is rejected by the supervisor. This event is received by both the agent and
- * the supervisor.
+ * An empty implementation of the CommunicationLogEventListener interface, provided as a
+ * convenience to simplify the task of creating listeners, by extending and
+ * implementing only the methods of interest.
  */
-public class OnSupervisorHelpCancelledEvent extends O2GEvent {
+public class CommunicationLogEventAdapter implements CommunicationLogEventListener {
 
-    private String loginName;
-    private String agentNumber;
-
-    /**
-     * Returns the operator login name
-     * 
-     * @return the loginName
-     */
-    public final String getLoginName() {
-        return loginName;
+    @Override
+    public void onComRecordCreated(OnComRecordCreatedEvent e) {
     }
 
-    /**
-     * Returns the agent or supervisor number.
-     * <p>
-     * If the event is received by the supervisor, returns the agent number. If this
-     * event is received by the agent, returns the supervisor number.
-     * 
-     * @return the agentNumber
-     */
-    public final String getOtherNumber() {
-        return agentNumber;
+    @Override
+    public void onComRecordModified(OnComRecordModifiedEvent e) {
     }
 
-    protected OnSupervisorHelpCancelledEvent() {
+    @Override
+    public void onComRecordsDeleted(OnComRecordsDeletedEvent e) {
     }
-    
-    
+
+    @Override
+    public void onComRecordsAck(OnComRecordsAckEvent e) {
+    }
+
+    @Override
+    public void onComRecordsUnAck(OnComRecordsUnAckEvent e) {
+    }
+
+    protected CommunicationLogEventAdapter() {
+    }
 }

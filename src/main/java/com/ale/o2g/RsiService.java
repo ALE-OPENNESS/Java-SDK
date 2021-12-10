@@ -149,7 +149,7 @@ public interface RsiService extends IService {
     boolean routeEnd(String rsiNumber, String routeCrid);
 
     /**
-     * 
+     * Selects a route for the specified route session. 
      * @param rsiNumber        the rsi point extension number
      * @param routeCrid        the routing session unique identifier
      * @param selectedRoute    the selected route number

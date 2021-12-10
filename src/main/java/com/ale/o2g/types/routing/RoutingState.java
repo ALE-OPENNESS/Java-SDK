@@ -22,6 +22,7 @@ package com.ale.o2g.types.routing;
  * {@code RoutingState} represente a user routing state. A routing state is
  * composed of four elements:
  * <table>
+ * <caption>Routing state elements</caption>
  * <tr>
  * <td>Remote extension activation</td>
  * <td>When the user is configured with a remote extension, he has the

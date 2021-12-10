@@ -103,5 +103,7 @@ public class RouteRequest {
         return reason;
     }
     
-    
+    protected RouteRequest() {
+        
+    }
 }

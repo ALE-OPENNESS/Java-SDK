@@ -21,7 +21,7 @@ package com.ale.o2g.types.telephony.call.acd;
 /**
  * {@code QueueData} represent a CCD waiting queue.
  */
-public class QueueData {
+public final class QueueData {
     private int waitingTime;
     private boolean saturated;
 
@@ -43,4 +43,6 @@ public class QueueData {
         return saturated;
     }
 
+    protected QueueData() {
+    }
 }

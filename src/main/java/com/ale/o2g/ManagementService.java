@@ -38,11 +38,11 @@ import com.ale.o2g.types.management.PbxObject;
  * <p>
  * The service uses two kinds of resource: the object model resource and the
  * object instance resource.
- * <h3>The object model</h3> The object model can be retrieved for the whole Pbx
+ * <p><b><u>The object model</u></b>: The object model can be retrieved for the whole Pbx
  * or for a particular object. It provides the detail of object attributes:
  * whether the attribute is mandatory/optional in the object creation, what
  * range of value is authorized, what are the possible enumeration value.
- * <h3>The object instance</h3> It is used to create, modify, retrieve or remove
+ * <p><b><u>The object instance</u></b>: It is used to create, modify, retrieve or remove
  * any instances of any object, giving the reference of this object. For the
  * creation or the modification of an object, the body must be compliant with
  * the object model.

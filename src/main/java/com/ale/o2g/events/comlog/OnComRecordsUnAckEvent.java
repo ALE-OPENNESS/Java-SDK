@@ -49,4 +49,8 @@ public class OnComRecordsUnAckEvent extends O2GEvent {
     public final Collection<Long> getRecordIds() {
         return recordIds;
     }
+
+    protected OnComRecordsUnAckEvent() {
+    }
+    
 }
