@@ -48,7 +48,7 @@ public class O2GIncident {
 
         Date timestamp;
         try {
-            timestamp = formatter.parse(String.format("%s-%s", date, hour));
+            timestamp = formatter.parse(String.format("%s-%s", date.trim(), hour.trim()));
         }
         catch (ParseException e) {
             timestamp = null;
