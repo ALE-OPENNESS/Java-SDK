@@ -35,3 +35,13 @@ catch (O2GException e) {
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
+
+# Requirements
+The O2G java SDK uses jdk16 version.
+
+# Building o2g java SDK
+To build the O2G java SDK with Git, clone the repository by running `git clone https://github.com/ALE-OPENNESS/CSharp-SDK.git` from a command prompt. You can then navigate to the directory and open the project file with eclipse or any other java ide. Build is available on using maven or gradle.
+
+# Contributions
+We welcome your input on issues and suggestions. We encourage you to [file a new issue](https://github.com/ALE-OPENNESS/java-SDK/issues/new) for any feedback or questions!
+
