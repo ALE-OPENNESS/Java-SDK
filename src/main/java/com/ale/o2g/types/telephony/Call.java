@@ -45,6 +45,7 @@ public final class Call {
 		private boolean addDevice;
 		private boolean addParticipant;
 		private boolean intruded;
+        private boolean intrusion;
 		private boolean transfer;
 		private boolean blindTransfer;
 		private boolean merge;
@@ -92,6 +93,14 @@ public final class Call {
          */
         public final boolean canIntruded() {
             return intruded;
+        }
+
+        /**
+         * Return whether it is possible to make intrusion on the user called through this call.
+         * @return {@code true} if the intrusion is possible; {@code false} otherwise.
+         */
+        public final boolean canMakeIntrusion() {
+            return intrusion;
         }
 
         /**

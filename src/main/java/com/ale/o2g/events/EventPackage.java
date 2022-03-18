@@ -74,6 +74,11 @@ public class EventPackage {
     public final static EventPackage AGENT = new EventPackage("agent");
     
     /**
+     * The rsi event package.
+     */
+    public final static EventPackage RSI = new EventPackage("rsi");
+    
+    /**
      * The maintenance event package.
      */
     public final static EventPackage MAINTENANCE = new EventPackage("system");

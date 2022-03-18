@@ -760,6 +760,18 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
 		return this.pickUp(deviceId, otherCallRef, otherPhoneNumber, false);
 	}
 
+
+    @Override
+    public boolean intrusion(String deviceId) {
+
+        URI uriPost = URIBuilder.appendPath(uri, "devices", AssertUtil.requireNotEmpty(deviceId, "deviceId"), "intrusion");
+
+        HttpRequest request = HttpUtil.POST(uriPost);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+	
+	
 	@Override
 	public boolean unPark(String heldCallRef, String deviceId) {
 

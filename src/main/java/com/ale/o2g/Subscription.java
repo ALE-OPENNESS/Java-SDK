@@ -24,11 +24,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ale.o2g.events.EventPackage;
+import com.ale.o2g.events.cca.CallCenterAgentEventListener;
 import com.ale.o2g.events.comlog.CommunicationLogEventListener;
 import com.ale.o2g.events.eventsummary.EventSummaryEventListener;
 import com.ale.o2g.events.maintenance.MaintenanceEventListener;
 import com.ale.o2g.events.management.ManagementEventListener;
 import com.ale.o2g.events.routing.RoutingEventListener;
+import com.ale.o2g.events.rsi.RsiEventListener;
 import com.ale.o2g.events.telephony.TelephonyEventListener;
 import com.ale.o2g.events.users.UsersEventListener;
 import com.ale.o2g.internal.events.SubscriptionBuilderImpl;
@@ -145,6 +147,17 @@ public abstract class Subscription {
         }
 
         /**
+         * Add the specified event packages to this filter.
+         * @param ids the identifiers the events must contains.
+         * @param eventPackage the event package the application want to subscribe on
+         */
+        public void addPackages(String[] ids, EventPackage eventPackage) {
+            this.add(ids, new String[] {
+                    eventPackage.toString()
+            });
+        }
+
+        /**
          * Add the specified events packages to this filter.
          * @param ids A list of identifiers the events must contains.
          * @param eventPackages a list of event packages the application want to subscribe on
@@ -228,6 +241,7 @@ public abstract class Subscription {
          */
         Builder addUsersEventListener(UsersEventListener listener);
 
+
         /**
          * Adds event summary events to the subscription.
          * 
@@ -235,6 +249,15 @@ public abstract class Subscription {
          * @return this builder
          */
         Builder addEventSummaryEventListener(EventSummaryEventListener listener);
+
+        /**
+         * Adds event summary events to the subscription.
+         * 
+         * @param listener the event listener to receive the event summary events.
+         * @param ids the ids to filter events on.
+         * @return this builder
+         */
+        Builder addEventSummaryEventListener(EventSummaryEventListener listener, String[] ids);
 
         /**
          * Adds telephony events to the subscription.
@@ -245,6 +268,15 @@ public abstract class Subscription {
         Builder addTelephonyEventListener(TelephonyEventListener listener);
 
         /**
+         * Adds telephony events to the subscription.
+         * 
+         * @param listener the event listener to receive the telephony events.
+         * @param ids the ids to filter events on.
+         * @return this builder
+         */
+        Builder addTelephonyEventListener(TelephonyEventListener listener, String[] ids);
+
+        /**
          * Adds routing events to the subscription.
          * 
          * @param listener the event listener to receive the routing events.
@@ -253,12 +285,64 @@ public abstract class Subscription {
         Builder addRoutingEventListener(RoutingEventListener listener);
 
         /**
+         * Adds routing events to the subscription.
+         * 
+         * @param listener the event listener to receive the routing events.
+         * @param ids the ids to filter events on.
+         * @return this builder
+         */
+        Builder addRoutingEventListener(RoutingEventListener listener, String[] ids);
+
+        /**
+         * Adds RSI events to the subscription.
+         * 
+         * @param listener the event listener to receive the RSI events.
+         * @return this builder
+         */
+        Builder addRsiEventListener(RsiEventListener listener);
+
+        /**
+         * Adds RSI events to the subscription.
+         * 
+         * @param listener the event listener to receive the RSI events.
+         * @param ids the ids to filter events on.
+         * @return this builder
+         */
+        Builder addRsiEventListener(RsiEventListener listener, String[] ids);
+
+        /**
+         * Adds Call center agent events to the subscription.
+         * 
+         * @param listener the event listener to receive the Call center agent events.
+         * @return this builder
+         */
+        Builder addCallCenterAgentEventListener(CallCenterAgentEventListener listener);
+
+        /**
+         * Adds Call center agent events to the subscription.
+         * 
+         * @param listener the event listener to receive the Call center agent events.
+         * @param ids the ids to filter events on.
+         * @return this builder
+         */
+        Builder addCallCenterAgentEventListener(CallCenterAgentEventListener listener, String[] ids);
+
+        /**
          * Adds communication log events to the subscription.
          * 
          * @param listener the event listener to receive the communication log events.
          * @return this builder
          */
         Builder addCommunicationLogEventListener(CommunicationLogEventListener listener);
+
+        /**
+         * Adds communication log events to the subscription.
+         * 
+         * @param listener the event listener to receive the communication log events.
+         * @param ids the ids to filter events on.
+         * @return this builder
+         */
+        Builder addCommunicationLogEventListener(CommunicationLogEventListener listener, String[] ids);
 
         /**
          * Adds management events to the subscription.

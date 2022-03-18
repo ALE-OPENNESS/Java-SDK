@@ -50,7 +50,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'io.github.ale-openness.o2g'
             artifactId = 'o2g-sdk'
-            version = '1.0.1'
+            version = '1.1.0'
 
             from components.java
 

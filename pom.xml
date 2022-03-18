@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.ale-openness.o2g</groupId>
 	<artifactId>o2g-sdk</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<properties>
 		<maven.compiler.source>16</maven.compiler.source>
 		<maven.compiler.target>16</maven.compiler.target>
