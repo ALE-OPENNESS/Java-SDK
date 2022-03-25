@@ -265,7 +265,7 @@ public class ServiceFactory {
     }
 
     public CallCenterAgentService getCallCenterAgentService() {
-        return getOrCreate(Service.Analytics, CallCenterAgentRest.class);
+        return getOrCreate(Service.CallCenterAgent, CallCenterAgentRest.class);
     }
 
     public ManagementService getManagementService() {

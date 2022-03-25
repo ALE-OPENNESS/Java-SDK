@@ -50,6 +50,7 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     private static record PermanentListeningRequest(String agentNumber) {}
     private static record IntrusionRequest(String agentNumber, IntrusionMode mode) {}
     private static record ChangeIntrusionModeRequest(IntrusionMode mode) {}
+    private static record AgentSkillActivation(List<Integer> skills) {}
     
     static class WithdrawReasons {
         private List<WithdrawReason> reasons;
@@ -57,7 +58,6 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
         public final List<WithdrawReason> getReasons() {
             return reasons;
         }
-        
     }
 
     
@@ -418,5 +418,45 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     @Override
     public List<WithdrawReason> getWithdrawReasons(String pgNumber) {
         return this.getWithdrawReasons(pgNumber, null);
+    }
+
+    @Override
+    public boolean activateSkills(List<Integer> skills, String loginName) {
+        
+        URI uriPost = URIBuilder.appendPath(uri, "config/skills/activate");
+        if (loginName != null) {
+            uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
+        }
+        
+        String json = gson.toJson(new AgentSkillActivation(skills));
+
+        HttpRequest request = HttpUtil.POST(uriPost, json);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
+    @Override
+    public boolean activateSkills(List<Integer> skills) {
+        return this.activateSkills(skills, null);
+    }
+
+    @Override
+    public boolean deactivateSkills(List<Integer> skills, String loginName) {
+        
+        URI uriPost = URIBuilder.appendPath(uri, "config/skills/deactivate");
+        if (loginName != null) {
+            uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
+        }
+        
+        String json = gson.toJson(new AgentSkillActivation(skills));
+
+        HttpRequest request = HttpUtil.POST(uriPost, json);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
+    @Override
+    public boolean deactivateSkills(List<Integer> skills) {
+        return this.deactivateSkills(skills, null);
     }
 }
