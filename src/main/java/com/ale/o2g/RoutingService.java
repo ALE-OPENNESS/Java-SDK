@@ -455,7 +455,7 @@ public interface RoutingService extends IService {
      */
     boolean overflowOnVoiceMail(Overflow.Condition condition);
 
-    /**
+    /*
      * Activation an overflow on associate with the specified condition, for the
      * specified user.
      * <p>
@@ -467,9 +467,9 @@ public interface RoutingService extends IService {
      * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
-    boolean overflowOnAssociate(Overflow.Condition condition, String loginName);
+//    boolean overflowOnAssociate(Overflow.Condition condition, String loginName);
 
-    /**
+    /*
      * Activation an overflow on associate with the specified conditionfor the user
      * who has opened the session.
      * <p>
@@ -481,7 +481,7 @@ public interface RoutingService extends IService {
      * @see #overflowOnAssociate(com.ale.o2g.types.routing.Overflow.Condition,
      *      String)
      */
-    boolean overflowOnAssociate(Overflow.Condition condition);
+//    boolean overflowOnAssociate(Overflow.Condition condition);
 
     /**
      * Get the routing state of the specified user.

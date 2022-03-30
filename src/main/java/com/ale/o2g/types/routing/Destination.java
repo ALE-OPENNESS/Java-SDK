@@ -25,10 +25,10 @@ package com.ale.o2g.types.routing;
  */
 public enum Destination {
 	
-    /**
+    /*
      * The destination is the user associate. This destination can be used only to configure an overflow.
      */
-    ASSOCIATE, 
+//    ASSOCIATE, 
     
     /**
      * The destination is the user voice mail.

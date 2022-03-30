@@ -312,6 +312,7 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 		return this.overflowOnVoiceMail(condition, null);
 	}
 
+	/*
 	@Override
 	public boolean overflowOnAssociate(Overflow.Condition condition, String loginName) {
 
@@ -332,6 +333,7 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 	public boolean overflowOnAssociate(Overflow.Condition condition) {
 		return this.overflowOnAssociate(condition, null);
 	}
+*/
 
 	@Override
 	public RoutingState getRoutingState(String loginName) {
