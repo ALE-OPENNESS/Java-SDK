@@ -61,13 +61,12 @@ import com.ale.o2g.types.routing.RoutingState;
  * <td>One of the two last conditions</td>
  * <tr>
  * </table>
- * <h2>Overflow:</h2>An overflow can be activated on the voice mail or on the
- * associated user (if any). Use one of the methods:
- * {@link #overflowOnAssociate(com.ale.o2g.types.routing.Overflow.Condition, String)
- * overflowOnAssociate} or
+ * <h2>Overflow:</h2>An overflow can be activated on the voice mail (if any).
+ * Use method:
  * {@link #overflowOnVoiceMail(com.ale.o2g.types.routing.Overflow.Condition, String)
  * overflow} to activate an overflow. <br>
- * A {@link com.ale.o2g.types.routing.Overflow.Condition Condition} can be associated to the overflow:
+ * A {@link com.ale.o2g.types.routing.Overflow.Condition Condition} can be
+ * associated to the overflow:
  * <table>
  * <caption>Overflow conditions</caption>
  * <tr>
@@ -193,7 +192,8 @@ public interface RoutingService extends IService {
     /**
      * Activate the Do Not Disturb for the specified user.
      * <p>
-     * This method does nothing and return {@code true} if the Do Not Disturb is already activated.
+     * This method does nothing and return {@code true} if the Do Not Disturb is
+     * already activated.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
@@ -207,7 +207,8 @@ public interface RoutingService extends IService {
     /**
      * Activated the Do Not Disturb for the user who has opened the session.
      * <p>
-     * This method does nothing and return {@code true} if the Do Not Disturb is already activated.
+     * This method does nothing and return {@code true} if the Do Not Disturb is
+     * already activated.
      * <p>
      * This method will fail and return {@code false} if it is invoked from a
      * session opened by an administrator.
@@ -457,29 +458,29 @@ public interface RoutingService extends IService {
 
     /*
      * Activation an overflow on associate with the specified condition, for the
-     * specified user.
-     * <p>
-     * If the session has been opened for a user, the {@code loginName} parameter is
-     * ignored, but it is mandatory if the session has been opened by an
-     * administrator.
+     * specified user. <p> If the session has been opened for a user, the {@code
+     * loginName} parameter is ignored, but it is mandatory if the session has been
+     * opened by an administrator.
      * 
      * @param condition the overflow condition
+     * 
      * @param loginName the user login name
+     * 
      * @return {@code true} in case of success; {@code false} otherwise.
      */
 //    boolean overflowOnAssociate(Overflow.Condition condition, String loginName);
 
     /*
      * Activation an overflow on associate with the specified conditionfor the user
-     * who has opened the session.
-     * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
+     * who has opened the session. <p> This method will fail and return {@code
+     * false} if it is invoked from a session opened by an administrator.
      * 
      * @param condition the overflow condition
+     * 
      * @return {@code true} in case of success; {@code false} otherwise.
+     * 
      * @see #overflowOnAssociate(com.ale.o2g.types.routing.Overflow.Condition,
-     *      String)
+     * String)
      */
 //    boolean overflowOnAssociate(Overflow.Condition condition);
 

@@ -529,7 +529,6 @@ public interface CallCenterAgentService extends IService {
      * {@code true}.
      * 
      * @param skills    the list of skills to activate.
-     * @param loginName the agent login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean activateSkills(List<Integer> skills);
@@ -563,7 +562,6 @@ public interface CallCenterAgentService extends IService {
      * {@code true}.
      * 
      * @param skills    the list of skills to activate.
-     * @param loginName the agent login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean deactivateSkills(List<Integer> skills);
