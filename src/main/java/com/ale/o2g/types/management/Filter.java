@@ -118,10 +118,10 @@ public class Filter {
             return new Filter(String.format("%s==*%s", attrName, value));
         }
         else if (operation == Operation.GreatherThanOrEquals) {
-            return new Filter(String.format("%s=ge=*%s", attrName, value));
+            return new Filter(String.format("%s=ge=%s", attrName, value));
         }
         else if (operation == Operation.LessThanOrEquals) {
-            return new Filter(String.format("%s=le=*%s", attrName, value));
+            return new Filter(String.format("%s=le=%s", attrName, value));
         }
         else {
             throw new IllegalArgumentException(String.format("Unknown operation: %s", operation));
