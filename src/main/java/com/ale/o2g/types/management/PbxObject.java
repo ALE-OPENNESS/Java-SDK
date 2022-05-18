@@ -55,7 +55,7 @@ public class PbxObject {
     }
     
     /**
-     * Return the collection of sub-objects names.
+     * Returns the collection of sub-objects names.
      * @return the sub-objects.
      */
     public final Collection<String> getObjectNames() {
@@ -63,7 +63,7 @@ public class PbxObject {
     }
 
     /**
-     * Return whether this object can be deleted.
+     * Returns whether this object can be deleted.
      * @return {@code true} if the object can be deleted; {@code false} otherwise.
      */
     public final boolean canBeDeleted() {
@@ -71,7 +71,7 @@ public class PbxObject {
     }
 
     /**
-     * Return whether this object can be modified.
+     * Returns whether this object can be modified.
      * @return {@code true} if the object can be modified; {@code false} otherwise.
      */
     public final boolean canBeSet() {
@@ -91,7 +91,7 @@ public class PbxObject {
     }
 
     /**
-     * Return this object name. 
+     * Returns this object name. 
      * @return the objectName the object name.
      */
     public final String getName() {
@@ -99,7 +99,7 @@ public class PbxObject {
     }
 
     /**
-     * Return this object instance id.
+     * Returns this object instance id.
      * @return the id the object instance id.
      */
     public final String getId() {

@@ -118,7 +118,7 @@ public interface TelephonyService extends IService {
     boolean basicDropMe();
 
     /**
-     * Retrieve the calls in progress for the specified user.
+     * Retrieves the calls in progress for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
@@ -779,7 +779,6 @@ public interface TelephonyService extends IService {
      * @param callRef  the held call reference
      * @param deviceId the device phone number for which the operation is done
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #redirect(String callRef, String redirectTo)
      */
     boolean retrieve(String callRef, String deviceId);
 
@@ -1221,6 +1220,30 @@ public interface TelephonyService extends IService {
      */
     boolean deleteCallbacks();
 
+    /**
+     * Deletes the specified callback requests for the specified user.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * 
+     * @param callbackId the callback identifier
+     * @param loginName the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean deleteCallback(String callbackId, String loginName);
+
+    /**
+     * Deletes the specified callback requests for the specified user.
+     * <p>
+     * This method with return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * 
+     * @param callbackId the callback identifier
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean deleteCallback(String callbackId);
+    
     /**
      * Returns the current new message for the specified user.
      * <p>

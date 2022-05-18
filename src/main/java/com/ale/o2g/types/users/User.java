@@ -72,10 +72,9 @@ public final class User {
     }
 
     /**
-     * Return this user's voice mail number.
+     * Return this user's voice mail information.
      * 
-     * @return the voic email number or {@code null} if the user do not have a voice
-     *         mail.
+     * @return the voice mail information or {@code null} if the user do not have a voice mail.
      */
     public Voicemail getVoicemail() {
         return voicemail;

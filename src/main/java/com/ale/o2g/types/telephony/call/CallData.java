@@ -68,7 +68,7 @@ public class CallData {
     }
 
     /**
-     * Returns whether this call is anonymous
+     * Returns whether this call is anonymous.
      * 
      * @return {@code true} if the call is anonymous; {@code false} otherwise.
      */
@@ -122,7 +122,7 @@ public class CallData {
     }
 
     /**
-     * Return this call account info .
+     * Return this call account info.
      * 
      * @return the account info.
      */

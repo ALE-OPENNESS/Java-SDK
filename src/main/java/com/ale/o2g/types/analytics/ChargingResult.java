@@ -65,7 +65,7 @@ public class ChargingResult {
     }
 
     /**
-     * Return the total number of valuable tickets; tickets with a non zero cost.
+     * Returns the total number of valuable tickets; tickets with a non zero cost.
      * @return the valuableTicketCount
      */
     public final int getValuableTicketCount() {

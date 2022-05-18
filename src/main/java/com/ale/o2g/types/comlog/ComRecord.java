@@ -51,7 +51,7 @@ public class ComRecord {
     /**
      * Returns the reference of the call that has created this communication record.
      * 
-     * @return the callRef the call reference?
+     * @return the callRef the call reference
      * @see com.ale.o2g.types.telephony.Call#getCallRef() Call.getCallRef
      */
     public final String getCallRef() {

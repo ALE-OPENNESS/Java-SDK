@@ -24,17 +24,17 @@ package com.ale.o2g.types.rsi;
 public enum RoutingCallerType {
 
     /**
-     * The call is internal.
+     * The caller is internal.
      */
     INTERNAL,
     
     /**
-     * The call is external.
+     * The caller is external.
      */
     EXTERNAL,
     
     /**
-     * The call origin is unknown.
+     * The caller origin is unknown.
      */
     UNKNOWN
 }

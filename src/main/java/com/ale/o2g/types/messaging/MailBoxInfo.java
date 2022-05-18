@@ -41,7 +41,7 @@ public class MailBoxInfo {
     }
 
     /**
-     * Returns teh new voice messages in this mail box.
+     * Returns the new voice messages in this mail box.
      * 
      * @return the new voice messages.
      */

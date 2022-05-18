@@ -160,7 +160,7 @@ public class ComRecordParticipant {
     }
 
     /**
-     * Returns wheter this participant is anonymous.
+     * Returns whether this participant is anonymous.
      * 
      * @return {@code true} if the participant is anonymous; {@code false} otherwise.
      */

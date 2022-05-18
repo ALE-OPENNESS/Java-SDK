@@ -49,9 +49,9 @@ public class RsiPoint {
     }
 
     /**
-     * Returns the OmniPcxEnterprise node on which this RSI point is configured.
+     * Returns the OmniPcx Enterprise node on which this RSI point is configured.
      * 
-     * @return the OmniPcxEnterprise node.
+     * @return the OmniPcx Enterprise node.
      */
     public final int getNode() {
         return node;

@@ -130,7 +130,7 @@ public interface RoutingService extends IService {
     RoutingCapabilities getCapabilities();
 
     /**
-     * Set the activation state of the remote extension device for the specified
+     * Sets the activation state of the remote extension device for the specified
      * user.
      * <p>
      * When the remote extension is activated, it rings on incoming call on the user
@@ -148,7 +148,7 @@ public interface RoutingService extends IService {
     boolean setRemoteExtensionActivation(boolean active, String loginName);
 
     /**
-     * Set the activation state of the remote extension device for the user who has
+     * Sets the activation state of the remote extension device for the user who has
      * opened the session.
      * <p>
      * When the remote extension is activated, it rings on incoming call on the user
@@ -165,7 +165,7 @@ public interface RoutingService extends IService {
     boolean setRemoteExtensionActivation(boolean active);
 
     /**
-     * Get the Do Not Disturb state of the specified user.
+     * Gets the Do Not Disturb state of the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
@@ -178,7 +178,7 @@ public interface RoutingService extends IService {
     DndState getDndState(String loginName);
 
     /**
-     * Get the Do Not Disturb state of the user who has opened the session.
+     * Gets the Do Not Disturb state of the user who has opened the session.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
@@ -190,7 +190,7 @@ public interface RoutingService extends IService {
     DndState getDndState();
 
     /**
-     * Activate the Do Not Disturb for the specified user.
+     * Activates the Do Not Disturb for the specified user.
      * <p>
      * This method does nothing and return {@code true} if the Do Not Disturb is
      * already activated.
@@ -205,7 +205,7 @@ public interface RoutingService extends IService {
     boolean activateDnd(String loginName);
 
     /**
-     * Activated the Do Not Disturb for the user who has opened the session.
+     * Activates the Do Not Disturb for the user who has opened the session.
      * <p>
      * This method does nothing and return {@code true} if the Do Not Disturb is
      * already activated.
@@ -219,7 +219,7 @@ public interface RoutingService extends IService {
     boolean activateDnd();
 
     /**
-     * Cancel the Do Not Disturb for the specified user.
+     * Cancels the Do Not Disturb for the specified user.
      * <p>
      * This method does nothing and return {@code true} if the Do Not Disturb was
      * not activated.
@@ -234,7 +234,7 @@ public interface RoutingService extends IService {
     boolean cancelDnd(String loginName);
 
     /**
-     * Cancel the Do Not Disturb for the user who has opened the session.
+     * Cancels the Do Not Disturb for the user who has opened the session.
      * <p>
      * This method does nothing and return {@code true} if the Do Not Disturb was
      * not activated.
@@ -248,7 +248,7 @@ public interface RoutingService extends IService {
     boolean cancelDnd();
 
     /**
-     * Get the forward state of the specified user.
+     * Gets the forward state of the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
@@ -261,7 +261,7 @@ public interface RoutingService extends IService {
     Forward getForward(String loginName);
 
     /**
-     * Get the forward state of the user who has opened the session.
+     * Gets the forward state of the user who has opened the session.
      * <p>
      * This method will fail and return {@code false} if it is invoked from a
      * session opened by an administrator.
@@ -273,7 +273,7 @@ public interface RoutingService extends IService {
     Forward getForward();
 
     /**
-     * Cancel the forward for the specified user.
+     * Cancels the forward for the specified user.
      * <p>
      * This method does nothing and return {@code true} if there is no forward
      * activated.
@@ -288,7 +288,7 @@ public interface RoutingService extends IService {
     boolean cancelForward(String loginName);
 
     /**
-     * Cancel the forward for the user who has opened the session.
+     * Cancels the forward for the user who has opened the session.
      * <p>
      * This method does nothing and return {@code true} if there is no forward
      * activated.
@@ -302,7 +302,7 @@ public interface RoutingService extends IService {
     boolean cancelForward();
 
     /**
-     * Set a forward on voice mail with the specified condition, for the specified
+     * Sets a forward on voice mail with the specified condition, for the specified
      * user.
      * <p>
      * This method will fail and return {@code false} if the user does not have a
@@ -320,7 +320,7 @@ public interface RoutingService extends IService {
     boolean forwardOnVoiceMail(Forward.Condition condition, String loginName);
 
     /**
-     * Set a forward on voice mail with the specified condition, for the user who
+     * Sets a forward on voice mail with the specified condition, for the user who
      * has opened the session.
      * <p>
      * This method will fail and return {@code false} if the user does not have a
@@ -337,7 +337,7 @@ public interface RoutingService extends IService {
     boolean forwardOnVoiceMail(Forward.Condition condition);
 
     /**
-     * Set a forward on the specified number, with the specified condition, for the
+     * Sets a forward on the specified number, with the specified condition, for the
      * specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
@@ -352,7 +352,7 @@ public interface RoutingService extends IService {
     boolean forwardOnNumber(String number, Forward.Condition condition, String loginName);
 
     /**
-     * Set a forward on the specified number, with the specified condition, for the
+     * Sets a forward on the specified number, with the specified condition, for the
      * user who has opened the session.
      * <p>
      * This method will fail and return {@code false} if it is invoked from a
@@ -367,7 +367,7 @@ public interface RoutingService extends IService {
     boolean forwardOnNumber(String number, Forward.Condition condition);
 
     /**
-     * Cancel the overflow for the specified user.
+     * Cancels the overflow for the specified user.
      * <p>
      * This method does nothing and return {@code true} if there is no overflow
      * activated.
@@ -382,7 +382,7 @@ public interface RoutingService extends IService {
     boolean cancelOverflow(String loginName);
 
     /**
-     * Cancel the overflow for the user who has opened the session.
+     * Cancels the overflow for the user who has opened the session.
      * <p>
      * This method does nothing and return {@code true} if there is no overflow
      * activated.
@@ -396,7 +396,7 @@ public interface RoutingService extends IService {
     boolean cancelOverflow();
 
     /**
-     * Get the overflow state for the specified user.
+     * Gets the overflow state for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
@@ -409,7 +409,7 @@ public interface RoutingService extends IService {
     Overflow getOverflow(String loginName);
 
     /**
-     * Get the overflow state for the user who has opened the session.
+     * Gets the overflow state for the user who has opened the session.
      * <p>
      * This method will fail and return {@code false} if it is invoked from a
      * session opened by an administrator.
@@ -421,7 +421,7 @@ public interface RoutingService extends IService {
     Overflow getOverflow();
 
     /**
-     * Activate an overflow on voice mail with the specified condition, for the
+     * Activates an overflow on voice mail with the specified condition, for the
      * specified user.
      * <p>
      * This method will fail and return {@code false} if the user does not have a
@@ -439,7 +439,7 @@ public interface RoutingService extends IService {
     boolean overflowOnVoiceMail(Overflow.Condition condition, String loginName);
 
     /**
-     * Activate an overflow on voice mail with the specified condition, for the user
+     * Activates an overflow on voice mail with the specified condition, for the user
      * who has opened the session.
      * <p>
      * This method will fail and return {@code false} if the user does not have a
@@ -485,7 +485,7 @@ public interface RoutingService extends IService {
 //    boolean overflowOnAssociate(Overflow.Condition condition);
 
     /**
-     * Get the routing state of the specified user.
+     * Gets the routing state of the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
@@ -497,7 +497,7 @@ public interface RoutingService extends IService {
     RoutingState getRoutingState(String loginName);
 
     /**
-     * Get the routing state of the user who has opened the session.
+     * Gets the routing state of the user who has opened the session.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
@@ -508,7 +508,7 @@ public interface RoutingService extends IService {
     RoutingState getRoutingState();
 
     /**
-     * Ask a snapshot event on the specified user.
+     * Asks a snapshot event on the specified user.
      * <p>
      * The event OnRoutingStateChanged will contain the DynamicState
      * (forward/overflow/dnd state). If a second request is asked since the previous

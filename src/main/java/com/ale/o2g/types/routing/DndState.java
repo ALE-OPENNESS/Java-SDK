@@ -34,7 +34,7 @@ public class DndState {
 	private boolean activate;
 
 	/**
-	 * Return wether the DoNotDisturb is activated.
+	 * Return whether the DoNotDisturb is activated.
 	 * 
 	 * @return {@code true} if the DoNotDisturb is activated; {@code false}
 	 *         otherwise.

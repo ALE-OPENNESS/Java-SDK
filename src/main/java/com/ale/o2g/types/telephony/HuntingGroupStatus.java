@@ -26,7 +26,7 @@ public class HuntingGroupStatus {
     private boolean logon;
 
     /**
-     * Return wether a user is logged in a hunting group.
+     * Return whether a user is logged in a hunting group.
      * @return {@code true} if the user is logged; {@code false} otherwise.
      */
 	public final boolean isLoggedOn() {

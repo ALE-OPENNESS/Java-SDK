@@ -21,7 +21,7 @@ package com.ale.o2g.types.analytics;
 import java.util.Date;
 
 /**
- * {@code ChargingFile} class represent a chaging file on OmniPCX Enterprise.
+ * {@code ChargingFile} class represent a charging file on OmniPCX Enterprise.
  */
 public class ChargingFile {
 

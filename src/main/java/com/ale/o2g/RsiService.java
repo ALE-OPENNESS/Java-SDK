@@ -156,7 +156,7 @@ public interface RsiService extends IService {
      * @param callingLine      an optional calling line value that will be presented
      *                         to the selected route
      * @param associatedData   the optional associated data to attach to the call
-     * @param routeToVoiceMail {@code true} iif the selected route is the voice
+     * @param routeToVoiceMail {@code true} if the selected route is the voice
      *                         mail; {@code false} otherwise.
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see com.ale.o2g.events.rsi.OnRouteRequestEvent OnRouteRequestEvent.

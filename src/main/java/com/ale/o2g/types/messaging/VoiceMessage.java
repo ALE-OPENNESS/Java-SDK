@@ -60,7 +60,7 @@ public class VoiceMessage {
     }
     
     /**
-     * Returns teh date this message has been deposit.
+     * Returns the date this message has been deposit.
      * @return the date of the message.
      */
     public final Date getDate() {
@@ -76,7 +76,7 @@ public class VoiceMessage {
     }
     
     /**
-     * Return whether this message has high priority
+     * Return whether this message has high priority.
      * @return {@code true} is the message has high priority; {@code false} otherwise.
      */
     public final boolean isHighPriority() {
