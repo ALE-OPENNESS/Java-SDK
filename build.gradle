@@ -41,18 +41,17 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    sign configurations.archives
-}
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             groupId = 'io.github.ale-openness.o2g'
             artifactId = 'o2g-sdk'
-            version = '1.1.4'
+            version = '1.1.5'
 
             from components.java
+            artifact sourcesJar
+            artifact javadocJar
 
 			pom {
                 name = 'o2g-sdk'
@@ -64,6 +63,18 @@ publishing {
 	                    name = 'MIT License'
 	                    url = 'http://www.opensource.org/licenses/mit-license.php'
                     }
+                }
+				developers {
+                    developer {
+                        id = 'fredmab'
+                        name = 'Frederic Mabileau'
+                        email = 'frederic.mabileau@al-enterprise.com'
+                    }
+                }                
+                scm {
+                	connection = 'scm:git:https://github.com/ALE-OPENNESS/Java-SDK'
+                	developerConnection = 'scm:git:https://github.com/ALE-OPENNESS/Java-SDK'
+                	url = 'https://github.com/ALE-OPENNESS/Java-SDK'
                 }
             }
         }
@@ -79,3 +90,10 @@ publishing {
     	}
     }
 }
+
+
+signing {
+//    sign configurations.archives
+    sign publishing.publications.mavenJava
+}
+

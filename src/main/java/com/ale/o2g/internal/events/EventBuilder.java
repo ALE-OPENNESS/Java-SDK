@@ -61,9 +61,9 @@ public class EventBuilder {
         eventRegistrar.registerAdapter("OnRoutingStateChangedEvent", OnInternalRoutingStateChangedEvent::adapt, OnInternalRoutingStateChangedEvent.class);
 
         eventRegistrar.registerEventListener(ManagementEventListener.class);
-        eventRegistrar.registerAdapter("OnPbxObjectCreatedEvent", OnInternalPbxObjectEvent::adaptCreated, OnInternalPbxObjectEvent.class);
-        eventRegistrar.registerAdapter("OnPbxObjectDeletedEvent", OnInternalPbxObjectEvent::adaptDeleted, OnInternalPbxObjectEvent.class);
-        eventRegistrar.registerAdapter("OnPbxObjectModifiedEvent", OnInternalPbxObjectEvent::adaptModified, OnInternalPbxObjectEvent.class);
+        eventRegistrar.registerAdapter("OnPbxObjectInstanceCreatedEvent", OnInternalPbxObjectEvent::adaptCreated, OnInternalPbxObjectEvent.class);
+        eventRegistrar.registerAdapter("OnPbxObjectInstanceDeletedEvent", OnInternalPbxObjectEvent::adaptDeleted, OnInternalPbxObjectEvent.class);
+        eventRegistrar.registerAdapter("OnPbxObjectInstanceModifiedEvent", OnInternalPbxObjectEvent::adaptModified, OnInternalPbxObjectEvent.class);
         
         eventRegistrar.registerEventListener(MaintenanceEventListener.class);
         eventRegistrar.registerAdapter("OnCtiLinkDownEvent", OnInternalNodeIdEvent::adaptLinkDown, OnInternalNodeIdEvent.class);
