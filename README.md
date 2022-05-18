@@ -12,7 +12,7 @@ Add the following dependancy to your project pom.
   <dependency>
     <groupId>io.github.ale-openness.o2g</groupId>
     <artifactId>o2g-sdk</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.5</version>
   </dependency>
 ```
 
