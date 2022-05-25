@@ -144,7 +144,8 @@ public class ServiceFactory {
 					logger.debug("bootstrap done: private access");
 				}
 			}
-			catch (O2GException e) {
+			catch (Exception e) {
+			    // Catch exception in case of getO2GService can be returned
 				logger.debug("Unable to bootstrap on {}", host.getPrivateAddress());
 				if (host.getPublicAddress() == null) {
 					// In case there is no public address, bootstrap definitively failed !
@@ -170,7 +171,8 @@ public class ServiceFactory {
 					logger.debug("bootstrap done: public access");
 				}
 			}
-			catch (O2GException e) {
+			catch (Exception e) {
+                // Catch exception in case of getO2GService can be returned
 				logger.debug("Unable to bootstrap on {address} ", host.getPublicAddress());
 				throwUnableToConnect(host, e);
 			}
