@@ -179,7 +179,7 @@ public class PbxAttribute {
      *             "sequence", 
      *             PbxAttributeMap.create(Arrays.asList(
      *                 PbxAttribute.create("Param1", 1),
-     *                 PbxAttribute.Create("Param2", true)
+     *                 PbxAttribute.create("Param2", true)
      *             )
      *         );
      * }</pre>
@@ -283,7 +283,7 @@ public class PbxAttribute {
     }
     
     /**
-     * Returns this attribuet value as a boolean.
+     * Returns this attribute value as a boolean.
      * @return a boolean value.
      */
     public boolean asBool() {
@@ -291,7 +291,7 @@ public class PbxAttribute {
     }
     
     /**
-     * Sets the value of this attribute as a boolean
+     * Sets the value of this attribute as a boolean.
      * @param value the boolean value
      */
     public void set(boolean value) {

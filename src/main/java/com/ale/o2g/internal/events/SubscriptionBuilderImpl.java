@@ -22,11 +22,13 @@ import com.ale.o2g.Subscription;
 import com.ale.o2g.Subscription.Builder;
 import com.ale.o2g.Subscription.Filter;
 import com.ale.o2g.events.EventPackage;
+import com.ale.o2g.events.cca.CallCenterAgentEventListener;
 import com.ale.o2g.events.comlog.CommunicationLogEventListener;
 import com.ale.o2g.events.eventsummary.EventSummaryEventListener;
 import com.ale.o2g.events.maintenance.MaintenanceEventListener;
 import com.ale.o2g.events.management.ManagementEventListener;
 import com.ale.o2g.events.routing.RoutingEventListener;
+import com.ale.o2g.events.rsi.RsiEventListener;
 import com.ale.o2g.events.telephony.TelephonyEventListener;
 import com.ale.o2g.events.users.UsersEventListener;
 import com.ale.o2g.internal.util.EventListenersMap;
@@ -49,31 +51,82 @@ public class SubscriptionBuilderImpl implements Subscription.Builder {
 		listeners.add(UsersEventListener.class, listener);
 		return this;
 	}
+	
+
+    @Override
+    public Builder addRsiEventListener(RsiEventListener listener, String[] ids) {
+        
+        if (ids == null) {
+            filter.addPackages(EventPackage.RSI);
+        }
+        else {
+            filter.addPackages(ids, EventPackage.RSI);
+        }
+        listeners.add(RsiEventListener.class, listener);
+        return this;
+    }
+
+    @Override
+    public Builder addCallCenterAgentEventListener(CallCenterAgentEventListener listener, String[] ids) {
+        
+        if (ids == null) {
+            filter.addPackages(EventPackage.AGENT);
+        }
+        else {
+            filter.addPackages(ids, EventPackage.AGENT);
+        }
+        listeners.add(CallCenterAgentEventListener.class, listener);
+        return this;
+    }
 
 	@Override
-	public Builder addEventSummaryEventListener(EventSummaryEventListener listener) {
-		filter.addPackages(EventPackage.EVENT_SUMMARY);
+	public Builder addEventSummaryEventListener(EventSummaryEventListener listener, String[] ids) {
+	    
+        if (ids == null) {
+            filter.addPackages(EventPackage.EVENT_SUMMARY);
+        }
+        else {
+            filter.addPackages(ids, EventPackage.EVENT_SUMMARY);
+        }
 		listeners.add(EventSummaryEventListener.class, listener);
 		return this;
 	}
 
 	@Override
-	public Builder addTelephonyEventListener(TelephonyEventListener listener) {
-		filter.addPackages(EventPackage.TELEPHONY);
+	public Builder addTelephonyEventListener(TelephonyEventListener listener, String[] ids) {
+        
+        if (ids == null) {
+            filter.addPackages(EventPackage.TELEPHONY);
+        }
+        else {
+            filter.addPackages(ids, EventPackage.TELEPHONY);
+        }
 		listeners.add(TelephonyEventListener.class, listener);
 		return this;
 	}
 
 	@Override
-	public Builder addRoutingEventListener(RoutingEventListener listener) {
-		filter.addPackages(EventPackage.ROUTING);
+	public Builder addRoutingEventListener(RoutingEventListener listener, String[] ids) {
+	    
+	    if (ids == null) {
+	        filter.addPackages(EventPackage.ROUTING);
+	    }
+	    else {
+            filter.addPackages(ids, EventPackage.ROUTING);
+	    }
 		listeners.add(RoutingEventListener.class, listener);
 		return this;
 	}
 
     @Override
-    public Builder addCommunicationLogEventListener(CommunicationLogEventListener listener) {
-        filter.addPackages(EventPackage.CALLLOG);
+    public Builder addCommunicationLogEventListener(CommunicationLogEventListener listener, String[] ids) {
+        
+        if (ids == null) {
+            filter.addPackages(EventPackage.CALLLOG);
+        }
+        else {
+            filter.addPackages(ids, EventPackage.CALLLOG);
+        }
         listeners.add(CommunicationLogEventListener.class, listener);
         return this;
     }
@@ -115,4 +168,40 @@ public class SubscriptionBuilderImpl implements Subscription.Builder {
 
 		return subscription;
 	}
+
+
+    @Override
+    public Builder addEventSummaryEventListener(EventSummaryEventListener listener) {
+        return this.addEventSummaryEventListener(listener, null);
+    }
+
+
+    @Override
+    public Builder addTelephonyEventListener(TelephonyEventListener listener) {
+        return this.addTelephonyEventListener(listener, null);
+    }
+
+
+    @Override
+    public Builder addRoutingEventListener(RoutingEventListener listener) {
+        return this.addRoutingEventListener(listener, null);
+    }
+
+
+    @Override
+    public Builder addRsiEventListener(RsiEventListener listener) {
+        return this.addRsiEventListener(listener, null);
+    }
+
+
+    @Override
+    public Builder addCallCenterAgentEventListener(CallCenterAgentEventListener listener) {
+        return this.addCallCenterAgentEventListener(listener, null);
+    }
+
+
+    @Override
+    public Builder addCommunicationLogEventListener(CommunicationLogEventListener listener) {
+        return this.addCommunicationLogEventListener(listener, null);
+    }
 }

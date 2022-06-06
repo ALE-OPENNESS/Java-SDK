@@ -19,7 +19,7 @@
 package com.ale.o2g.types.telephony.call;
 
 /**
- * {@code MediaState} represents a media state. A media can be audio or video.
+ * {@code MediaState} represents a media state.
  */
 public enum MediaState {
     

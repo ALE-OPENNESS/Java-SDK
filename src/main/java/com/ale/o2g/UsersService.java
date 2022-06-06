@@ -44,14 +44,14 @@ public interface UsersService extends IService {
      * if {@code nodeIds} is {@code null}, retrieves the login of users from all the
      * connected OmniPCX Enterprise nodes. This method is generally used by an
      * administrator. if it is used by a user, {@code nodeIds} must be set to
-     * {@code null} and {@code onlyACD} to false. In this case only the user login
+     * {@code null} and {@code onlyACD} to {@code false}. In this case only the user login
      * is retrieved.
      * 
      * @param nodeIds Specify a list of OXE nodes Id in which the query is done.
      *                This parameter is only valid for an administrator session.
      * @param onlyACD Allows to select only the ACD operators (agents or
      *                supervisors) during the query. This parameter is only valid
-     *                for an administrator session. .
+     *                for an administrator session.
      * @return The collection of users identified by their login. If getLogins is used by
      *         a user session, it return only the user's login.
      */

@@ -74,6 +74,8 @@ public class ChunkEventDispatcher extends CancelableQueueTask<O2GEventDescriptor
                     invocationMethod.invoke(listener, o2gEvent);
                 }
                 catch (Exception e) {
+                    logger.error("REFLEXION Error: {}", e);
+                    e.printStackTrace();
                     throw e;
                 }
             }

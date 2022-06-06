@@ -20,7 +20,7 @@ package com.ale.o2g.types.cca;
 
 /**
  * {@code WithdrawReason} represents a reason why an agent is in withdraw state.
- * This reason is udes by CCD for statistic purpose.
+ * This reason is uses by CCD for statistic purpose.
  */
 public class WithdrawReason {
 
@@ -28,7 +28,7 @@ public class WithdrawReason {
     private String label;
 
     /**
-     * Returnq the index of this withdraw reason.
+     * Return the index of this withdraw reason.
      * 
      * @return the index of this reason in the agent processing it is defined in.
      */
@@ -37,7 +37,7 @@ public class WithdrawReason {
     }
 
     /**
-     * Return the labelq of this withdraw reason.
+     * Return the label of this withdraw reason.
      * 
      * @return the string label that represents the withdraw reason.
      */

@@ -53,7 +53,6 @@ public interface CallCenterAgentService extends IService {
      */
     OperatorState getOperatorState(String loginName);
 
-
     /**
      * Gets the specified agent or supervisor state.
      * <p>
@@ -277,8 +276,7 @@ public interface CallCenterAgentService extends IService {
     /**
      * Requests to listen to the agent by a supervisor.
      * <p>
-     * On success, an
-     * {@link com.ale.o2g.events.cca.OnSupervisorHelpRequestedEvent
+     * On success, an {@link com.ale.o2g.events.cca.OnSupervisorHelpRequestedEvent
      * OnSupervisorHelpRequestedEvent} is raised. for both the agent and the
      * supervisor.
      * <p>
@@ -289,15 +287,15 @@ public interface CallCenterAgentService extends IService {
      * @param agentNumber the listened agent number
      * @param loginName   the supervisor login name
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see com.ale.o2g.events.cca.CallCenterAgentEventListener CallCenterAgentEventListener
+     * @see com.ale.o2g.events.cca.CallCenterAgentEventListener
+     *      CallCenterAgentEventListener
      */
     boolean requestPermanentListening(String agentNumber, String loginName);
 
     /**
      * Requests to listen to the agent by a supervisor.
      * <p>
-     * On success, an
-     * {@link com.ale.o2g.events.cca.OnSupervisorHelpRequestedEvent
+     * On success, an {@link com.ale.o2g.events.cca.OnSupervisorHelpRequestedEvent
      * OnSupervisorHelpRequestedEvent} is raised. for both the agent and the
      * supervisor.
      * <p>
@@ -306,7 +304,8 @@ public interface CallCenterAgentService extends IService {
      * 
      * @param agentNumber the listened agent number
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see com.ale.o2g.events.cca.CallCenterAgentEventListener CallCenterAgentEventListener
+     * @see com.ale.o2g.events.cca.CallCenterAgentEventListener
+     *      CallCenterAgentEventListener
      */
     boolean requestPermanentListening(String agentNumber);
 
@@ -373,8 +372,7 @@ public interface CallCenterAgentService extends IService {
     /**
      * Requests help of the supervisor.
      * <p>
-     * On success, an
-     * {@link com.ale.o2g.events.cca.OnSupervisorHelpRequestedEvent
+     * On success, an {@link com.ale.o2g.events.cca.OnSupervisorHelpRequestedEvent
      * OnSupervisorHelpRequestedEvent} is raised for both the agent and supervisor.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
@@ -389,8 +387,7 @@ public interface CallCenterAgentService extends IService {
     /**
      * Requests help of the supervisor.
      * <p>
-     * On success, an
-     * {@link com.ale.o2g.events.cca.OnSupervisorHelpRequestedEvent
+     * On success, an {@link com.ale.o2g.events.cca.OnSupervisorHelpRequestedEvent
      * OnSupervisorHelpRequestedEvent} is raised for both the agent and supervisor.
      * <p>
      * This method will fail return {@code false} if it is invoked from a session
@@ -438,8 +435,7 @@ public interface CallCenterAgentService extends IService {
      * Cancels a supervisor help request.
      * <p>
      * This method is invoked by an agent when he want to cancel an help request. On
-     * success, an
-     * {@link com.ale.o2g.events.cca.OnSupervisorHelpCancelledEvent
+     * success, an {@link com.ale.o2g.events.cca.OnSupervisorHelpCancelledEvent
      * OnSupervisorHelpCancelledEvent} is raised.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
@@ -456,8 +452,7 @@ public interface CallCenterAgentService extends IService {
      * Cancels a supervisor help request.
      * <p>
      * This method is invoked by an agent when he want to cancel an help request. On
-     * success, an
-     * {@link com.ale.o2g.events.cca.OnSupervisorHelpCancelledEvent
+     * success, an {@link com.ale.o2g.events.cca.OnSupervisorHelpCancelledEvent
      * OnSupervisorHelpCancelledEvent} is raised.
      * <p>
      * This method will fail return {@code false} if it is invoked from a session
@@ -475,9 +470,9 @@ public interface CallCenterAgentService extends IService {
      * <p>
      * The {@link com.ale.o2g.events.cca.OnAgentStateChangedEvent
      * OnAgentStateChangedEvent} event contain the operator
-     * {@link com.ale.o2g.types.cca.OperatorState OperatorState}
-     * object. If a second request is asked since the previous one is still in
-     * progress, it has no effect.
+     * {@link com.ale.o2g.types.cca.OperatorState OperatorState} object. If a second
+     * request is asked since the previous one is still in progress, it has no
+     * effect.
      * <p>
      * If an administrator invokes this method with {@code loginName=null}, the
      * snapshot event request is done for all the agents. The event processing can
@@ -495,9 +490,9 @@ public interface CallCenterAgentService extends IService {
      * <p>
      * The {@link com.ale.o2g.events.cca.OnAgentStateChangedEvent
      * OnAgentStateChangedEvent} event contain the operator
-     * {@link com.ale.o2g.types.cca.OperatorState OperatorState}
-     * object. If a second request is asked since the previous one is still in
-     * progress, it has no effect.
+     * {@link com.ale.o2g.types.cca.OperatorState OperatorState} object. If a second
+     * request is asked since the previous one is still in progress, it has no
+     * effect.
      * <p>
      * The snapshot event request is done for all the agents. The event processing
      * can be long depending on the number of users.
@@ -505,6 +500,71 @@ public interface CallCenterAgentService extends IService {
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean requestSnaphot();
+
+    /**
+     * Activates the specified skills.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * <p>
+     * This method doesn't control the skills number. If a skill number is invalid
+     * (not assigned to the operator), it is ignored and the method returns
+     * {@code true}.
+     * 
+     * @param skills    the list of skills to activate.
+     * @param loginName the agent login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean activateSkills(List<Integer> skills, String loginName);
+
+    /**
+     * Activates the specified skills.
+     * <p>
+     * This method will fail return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     * <p>
+     * This method doesn't control the skills number. If a skill number is invalid
+     * (not assigned to the operator), it is ignored and the method returns
+     * {@code true}.
+     * 
+     * @param skills    the list of skills to activate.
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean activateSkills(List<Integer> skills);
+
+
+    /**
+     * Deactivates the specified skills.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * <p>
+     * This method doesn't control the skills number. If a skill number is invalid
+     * (not assigned to the operator), it is ignored and the method returns
+     * {@code true}.
+     * 
+     * @param skills    the list of skills to activate.
+     * @param loginName the agent login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean deactivateSkills(List<Integer> skills, String loginName);
+
+    /**
+     * Deactivates the specified skills.
+     * <p>
+     * This method will fail return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     * <p>
+     * This method doesn't control the skills number. If a skill number is invalid
+     * (not assigned to the operator), it is ignored and the method returns
+     * {@code true}.
+     * 
+     * @param skills    the list of skills to activate.
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean deactivateSkills(List<Integer> skills);
 
     /**
      * Returns the list of withdraw reason for the specified processing group.

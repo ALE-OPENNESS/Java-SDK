@@ -19,7 +19,7 @@
 package com.ale.o2g.types.analytics;
 
 /**
- * {@code CallType} represents the possible call type in a charging ticket.
+ * {@code CallType} represents the possible call types in a charging ticket.
  */
 public enum CallType {
 

@@ -36,8 +36,8 @@ package com.ale.o2g.types.routing;
  * </tr>
  * <tr>
  * <td>Overflow</td>
- * <td>The user can configure an overflow on his asociate or on his voce mail.
- * If a forward is configured, it is considered prio the overflow.</td>
+ * <td>The user can configure an overflow on his voice mail.
+ * If a forward is configured, it is considered prior the overflow.</td>
  * </tr>
  * <tr>
  * <td>Do Not Disturb</td>

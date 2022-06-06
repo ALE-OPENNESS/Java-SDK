@@ -67,7 +67,7 @@ public class O2GDestination {
 	public com.ale.o2g.types.routing.Destination toDestination() {
         if ("NUMBER".equals(type)) return com.ale.o2g.types.routing.Destination.NUMBER;
         else if ("VOICEMAIL".equals(type)) return com.ale.o2g.types.routing.Destination.VOICEMAIL;
-        else if ("ASSOCIATE".equals(type)) return com.ale.o2g.types.routing.Destination.ASSOCIATE;
+//        else if ("ASSOCIATE".equals(type)) return com.ale.o2g.types.routing.Destination.ASSOCIATE;
         else return com.ale.o2g.types.routing.Destination.NONE;
     }
 

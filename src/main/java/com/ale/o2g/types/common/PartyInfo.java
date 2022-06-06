@@ -127,7 +127,7 @@ public class PartyInfo {
     
     
     /**
-     * Returns this participant's identifier; Either the login name or the phoen number.
+     * Returns this participant's identifier; Either the login name or the phone number.
      * @return the id the identifier.
      */
     public final Identifier getId() {

@@ -760,6 +760,18 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
 		return this.pickUp(deviceId, otherCallRef, otherPhoneNumber, false);
 	}
 
+
+    @Override
+    public boolean intrusion(String deviceId) {
+
+        URI uriPost = URIBuilder.appendPath(uri, "devices", AssertUtil.requireNotEmpty(deviceId, "deviceId"), "intrusion");
+
+        HttpRequest request = HttpUtil.POST(uriPost);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+	
+	
 	@Override
 	public boolean unPark(String heldCallRef, String deviceId) {
 
@@ -1003,4 +1015,22 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
 	public boolean requestSnapshot() {
 		return this.requestSnapshot(null);
 	}
+
+    @Override
+    public boolean deleteCallback(String callbackId, String loginName) {
+
+        URI uriDelete = URIBuilder.appendPath(uri, "incomingCallbacks", AssertUtil.requireNotEmpty(callbackId, "callbackId"));
+        if (loginName != null) {
+            uriDelete = URIBuilder.appendQuery(uriDelete, "loginName", loginName);
+        }
+
+        HttpRequest request = HttpUtil.DELETE(uriDelete);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
+    @Override
+    public boolean deleteCallback(String callbackId) {
+        return this.deleteCallback(callbackId, null);
+    }
 }

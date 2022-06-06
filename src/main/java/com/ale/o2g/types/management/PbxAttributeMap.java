@@ -64,7 +64,7 @@ public class PbxAttributeMap implements Iterable<PbxAttribute> {
 
     /**
      * Adds the specified attribute to this sequence. It's possible to chain the
-     * {@code add} operation to create a complete sequence.
+     * {@code add} operations to create a complete sequence.
      * 
      * <pre>
      * {@code 
@@ -100,8 +100,8 @@ public class PbxAttributeMap implements Iterable<PbxAttribute> {
      * <pre>{@code
      * 
      *     PbxAttributeMap sequence = PbxAttributeMap.create()
-     *                                   .add(PbxAttribute.Create("Param1", 1))
-     *                                   .add(PbxAttribute.Create("Param2", true));
+     *                                   .add(PbxAttribute.create("Param1", 1))
+     *                                   .add(PbxAttribute.create("Param2", true));
      * }
      * </pre>
      * 
@@ -129,7 +129,7 @@ public class PbxAttributeMap implements Iterable<PbxAttribute> {
      *     PbxAttributeMap sequence = 
      *         PbxAttributeMap.create(Arrays.asList(
      *                                   PbxAttribute.create("Param1", 1),
-     *                                   PbxAttribute.Create("Param2", true)
+     *                                   PbxAttribute.create("Param2", true)
      *                               ));
      * }
      * </pre>

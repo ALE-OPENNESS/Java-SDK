@@ -25,7 +25,7 @@ package com.ale.o2g.types.telephony.call;
 public class Leg {
 
     /**
-     * {@code Capabilities} represents the capability of a log. The action that can
+     * {@code Capabilities} represents the capability of a leg. The action that can
      * be carried out on the leg according to its state.
      */
     public static class Capabilities {
@@ -159,7 +159,7 @@ public class Leg {
     }
 
     /**
-     * Returns the leg capabilities
+     * Returns the leg capabilities.
      * 
      * @return the capabilities
      */

@@ -81,7 +81,7 @@ public class Forward {
     }
 
     /**
-     * Returns the nuber destination of this forward.
+     * Returns the number destination of this forward.
      * 
      * @return the number or {@code null} if the forward destination is not a
      *         number.

@@ -75,7 +75,7 @@ public final class AcdData {
     }
 
     /**
-     * Returns The information about the possible transfer on a pilot.
+     * Returns the information about the possible transfer on a pilot.
      * 
      * @return the information about the possible transfer or {@code null} if there
      *         is no transfer in progress.

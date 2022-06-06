@@ -67,7 +67,7 @@ public class PbxStatus {
     }
 
     /**
-     * Returns thie OmniPCX Enterprise node number.
+     * Returns this OmniPCX Enterprise node number.
      * 
      * @return the node number
      */
