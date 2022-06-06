@@ -41,8 +41,9 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    sign configurations.archives
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
@@ -65,6 +66,18 @@ publishing {
 	                    url = 'http://www.opensource.org/licenses/mit-license.php'
                     }
                 }
+				developers {
+                    developer {
+                        id = 'fredmab'
+                        name = 'Frederic Mabileau'
+                        email = 'frederic.mabileau@al-enterprise.com'
+                    }
+                }
+				scm {
+                    connection = 'scm:git:git://github.com/ALE-OPENNESS/Java-SDK'
+                    developerConnection = 'scm:git:git://github.com/ALE-OPENNESS/Java-SDK'
+                    url = 'https://github.com/ALE-OPENNESS/Java-SDK'
+                }
             }
         }
  	}
@@ -79,3 +92,8 @@ publishing {
     	}
     }
 }
+
+signing {
+    sign publishing.publications.maven
+}
+
