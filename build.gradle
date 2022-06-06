@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'org.slf4j:slf4j-api:1.7.32'
 }
 
@@ -50,7 +50,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'io.github.ale-openness.o2g'
             artifactId = 'o2g-sdk'
-            version = '1.0.1'
+            version = '1.1.9'
 
             from components.java
 
