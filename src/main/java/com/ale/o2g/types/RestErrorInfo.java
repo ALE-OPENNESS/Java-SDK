@@ -18,6 +18,8 @@
 */
 package com.ale.o2g.types;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code RestErrorInfo} gives the detail information on an error raised during
  * a service invocation. Most of the O2G services return the following code in
@@ -61,6 +63,7 @@ public class RestErrorInfo {
         /**
          * {@code RoutingErrorCause} represents the differents routing error causes.
          */
+        @JsonEnumDeserializerFallback(value = "UNKNOWN")
         public enum RoutingErrorCause {
 
             /**
@@ -137,6 +140,7 @@ public class RestErrorInfo {
         /**
          * {@code RoutingErrorType} represents the different type of routing error.
          */
+        @JsonEnumDeserializerFallback(value = "UNKNOWN")
         public enum RoutingErrorType {
 
             /**
@@ -227,6 +231,7 @@ public class RestErrorInfo {
         /**
          * {@code TelephonyErrorCause} represents the telephony error cause.
          */
+        @JsonEnumDeserializerFallback(value = "UNKNOWN")
         public enum TelephonyErrorCause {
 
             /**
@@ -284,6 +289,7 @@ public class RestErrorInfo {
         /**
          * {@code TelephonyErrorType} represents the telephony error types.
          */
+        @JsonEnumDeserializerFallback(value = "UNKNOWN")
         public enum TelephonyErrorType {
             /**
              * Unknown error, the O2G is unable to identify the root cause of the error.
@@ -393,6 +399,7 @@ public class RestErrorInfo {
          * {@code UserPreferencesErrorType} represents the possible error types for the
          * user preferences.
          */
+        @JsonEnumDeserializerFallback(value = "UNKNOWN")
         public enum UserPreferencesErrorType {
 
             /**

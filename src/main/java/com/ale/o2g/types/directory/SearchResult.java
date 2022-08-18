@@ -21,6 +21,7 @@ package com.ale.o2g.types.directory;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 import com.ale.o2g.types.common.PartyInfo;
 
 /**
@@ -34,6 +35,7 @@ public class SearchResult {
      * DirectoryService.getResults} is done, the returned result code must be
      * tested.
      */
+    @JsonEnumDeserializerFallback(value = "TIMEOUT")
     public static enum Code {
 
         /**

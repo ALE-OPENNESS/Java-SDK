@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.telephony.user;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * Represent the possible user states.
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum UserState {
     /**
      * The user is free, there is no call in progress

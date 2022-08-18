@@ -18,6 +18,8 @@
 */
 package com.ale.o2g.types.users;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code Voicemail} represents a voice mail box associated to a user.
  */
@@ -26,6 +28,7 @@ public class Voicemail {
     /**
      * The type of voice mail
      */
+    @JsonEnumDeserializerFallback(value = "EXTERNAL")
     public enum Type {
 
         /**

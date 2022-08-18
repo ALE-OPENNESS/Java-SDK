@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.analytics;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code CallType} represents the possible call types in a charging ticket.
  */
+@JsonEnumDeserializerFallback(value = "Unspecified")
 public enum CallType {
 
     /**

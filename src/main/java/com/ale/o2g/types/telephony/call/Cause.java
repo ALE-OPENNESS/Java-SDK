@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.telephony.call;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code Cause} lists the different call causes.
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum Cause {
 
     /**

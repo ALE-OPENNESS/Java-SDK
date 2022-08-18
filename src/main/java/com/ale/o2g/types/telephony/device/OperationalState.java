@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.telephony.device;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code OperationalState} represents a device dynamic state.
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum OperationalState {
     
     /**

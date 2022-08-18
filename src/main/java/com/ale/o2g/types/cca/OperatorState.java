@@ -18,6 +18,8 @@
 */
 package com.ale.o2g.types.cca;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code OperatorState} represents the state of a CCD operator.
  */
@@ -27,6 +29,7 @@ public class OperatorState {
      * {@code OperatorMainState} represents the login, logoff status of a CCD
      * operator.
      */
+    @JsonEnumDeserializerFallback(value = "UNKNOWN")
     public static enum OperatorMainState {
 
         /**
@@ -53,6 +56,7 @@ public class OperatorState {
     /**
      * {@code OperatorDynamicState} represents the CCD operator dynamic state.
      */
+    @JsonEnumDeserializerFallback(value = "UNKNOWN")
     public static enum OperatorDynamicState {
 
         /**
@@ -116,7 +120,12 @@ public class OperatorState {
         /**
          * The operator is in wrapup after a callback call.
          */
-        WRAPUP_CALLBACK
+        WRAPUP_CALLBACK,
+        
+        /**
+         * The O2G server is unable to get the operator state.
+         */
+        UNKNOWN
     }
 
     private OperatorMainState mainState;

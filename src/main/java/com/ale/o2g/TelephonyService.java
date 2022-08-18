@@ -28,6 +28,7 @@ import com.ale.o2g.types.telephony.HuntingGroups;
 import com.ale.o2g.types.telephony.MiniMessage;
 import com.ale.o2g.types.telephony.RecordingAction;
 import com.ale.o2g.types.telephony.TelephonicState;
+import com.ale.o2g.types.telephony.call.CorrelatorData;
 import com.ale.o2g.types.telephony.call.Leg;
 import com.ale.o2g.types.telephony.call.Participant;
 import com.ale.o2g.types.telephony.device.DeviceState;
@@ -166,6 +167,22 @@ public interface TelephonyService extends IService {
      * @return the call in case of success; {@code null} otherwise.
      */
     Call getCall(String callRef);
+
+    /**
+     * Attachs the specified correlator data to the specified call.
+     * <p>
+     * This is used by the application to provide application-related information
+     * (limited to 32 bytes). In general, it is used to give information concerning
+     * a previously established call to the party of a second call.
+     * 
+     * @param callRef        the call reference
+     * @param deviceId       the device phone number for which the operation is
+     *                       invoked. If the session is opened by a User, the device
+     *                       phone number must be one of the user.
+     * @param correlatorData the correlator data to add
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+//    boolean attachData(String callRef, String deviceId, CorrelatorData correlatorData);
 
     /**
      * Initiates a call from the specified device to the specified called number for
@@ -653,6 +670,34 @@ public interface TelephonyService extends IService {
      * @see #dropParticipant(String callRef, String participantId, String loginName)
      */
     boolean dropParticipant(String callRef, String participantId);
+
+    /**
+     * Hangs on an active call, all the parties are released.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * 
+     * @param callRef   the call reference to hang on
+     * @param loginName the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean release(String callRef, String loginName);
+
+    /**
+     * Hangs on an active call, all the parties are released.
+     * <p>
+     * If the call is a single call, it is released; if it is a conference, the call
+     * carries on without the participant.
+     * <p>
+     * This method with return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * 
+     * @param callRef the call reference to hang on
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #release(String callRef, String loginName)
+     */
+    boolean release(String callRef);
 
     /**
      * Releases the current call (active or ringing) to retrieve a previously put in
@@ -1228,7 +1273,7 @@ public interface TelephonyService extends IService {
      * administrator.
      * 
      * @param callbackId the callback identifier
-     * @param loginName the login name
+     * @param loginName  the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean deleteCallback(String callbackId, String loginName);
@@ -1243,7 +1288,7 @@ public interface TelephonyService extends IService {
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean deleteCallback(String callbackId);
-    
+
     /**
      * Returns the current new message for the specified user.
      * <p>

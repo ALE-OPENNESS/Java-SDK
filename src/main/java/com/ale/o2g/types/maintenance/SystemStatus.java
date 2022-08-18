@@ -21,6 +21,8 @@ package com.ale.o2g.types.maintenance;
 import java.util.Collection;
 import java.util.Date;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code SystemStatus} class provide a full status of the O2G server and its
  * connections.
@@ -30,6 +32,7 @@ public class SystemStatus {
     /**
      * {@code Configuration} represents the possible O2G server configurations.
      */
+    @JsonEnumDeserializerFallback(value = "UNKNOWN")
     public enum Configuration {
         /**
          * O2G Server is configured for management. An O2G server configured for
@@ -40,7 +43,12 @@ public class SystemStatus {
         /**
          * O2G Server is configured with full services.
          */
-        FULL_SERVICES
+        FULL_SERVICES,
+        
+        /**
+         * Unknown O2G configuration.
+         */
+        UNKNOWN
     }
 
     private ServerAddress logicalAddress;

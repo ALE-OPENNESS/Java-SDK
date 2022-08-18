@@ -1033,4 +1033,22 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
     public boolean deleteCallback(String callbackId) {
         return this.deleteCallback(callbackId, null);
     }
+
+    @Override
+    public boolean release(String callRef, String loginName) {
+
+        URI uriDelete = URIBuilder.appendPath(uri, "calls", AssertUtil.requireNotEmpty(callRef, "callRef"));
+        if (loginName != null) {
+            uriDelete = URIBuilder.appendQuery(uriDelete, "loginName", loginName);
+        }
+
+        HttpRequest request = HttpUtil.DELETE(uriDelete);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
+    @Override
+    public boolean release(String callRef) {
+        return this.release(callRef, null);
+    }
 }

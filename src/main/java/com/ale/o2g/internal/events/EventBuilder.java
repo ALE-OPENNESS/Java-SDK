@@ -36,6 +36,7 @@ import com.ale.o2g.internal.events.maintenance.OnInternalNodeIdEvent;
 import com.ale.o2g.internal.events.management.OnInternalPbxObjectEvent;
 import com.ale.o2g.internal.events.routing.OnInternalRoutingStateChangedEvent;
 import com.ale.o2g.internal.util.AnnotationExclusionStrategy;
+import com.ale.o2g.internal.util.EnumAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -77,7 +78,9 @@ public class EventBuilder {
 
 	}
 
-	protected static Gson gson = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy()).create();
+	protected static Gson gson = new GsonBuilder().
+	        registerTypeAdapterFactory(new EnumAdapterFactory()).
+	        setExclusionStrategies(new AnnotationExclusionStrategy()).create();
 
 	@SuppressWarnings("unchecked")
 	public static O2GEventDescriptor get(String evJson) {
@@ -85,7 +88,7 @@ public class EventBuilder {
 		// retrieve the short event name
 		String eventName = String.format("%sEvent", gson.fromJson(evJson, O2GEvent.class).getName());
 		
-		String qualifiedEventName = eventRegistrar.getQualifiedName(eventName);;
+		String qualifiedEventName = eventRegistrar.getQualifiedName(eventName);
 
 		Class<? extends O2GEvent> typeEvent = null;
 

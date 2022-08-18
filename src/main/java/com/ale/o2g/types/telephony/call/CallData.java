@@ -36,7 +36,7 @@ public class CallData {
     private RecordState recordState;
     private Collection<Tag> tags;
     private Call.Capabilities capabilities;
-    private String associateData;
+    private String associatedData;
     private String accountInfo;
     private AcdData acdCallData;
 
@@ -117,8 +117,8 @@ public class CallData {
      * 
      * @return the associate data.
      */
-    public final String getAssociateData() {
-        return associateData;
+    public final String getAssociatedData() {
+        return associatedData;
     }
 
     /**

@@ -18,6 +18,8 @@
 */
 package com.ale.o2g.types.users;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code Device} class represents a device of a user.
  */
@@ -26,6 +28,7 @@ public class Device {
     /**
      * The device type
      */
+    @JsonEnumDeserializerFallback(value = "UNKNOWN")
     public enum Type {
 
         /**
@@ -46,7 +49,12 @@ public class Device {
         /**
          * The device is a softphone. A phone started from a computer with VOIP.
          */
-        SOFTPHONE
+        SOFTPHONE,
+
+        /**
+         * Unknown device type.
+         */
+        UNKNOWN
     }
 
     private Type type;

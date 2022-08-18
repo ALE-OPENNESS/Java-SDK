@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.analytics;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code TelFacility} represents the telephonic facilities.
  */
+@JsonEnumDeserializerFallback(value = "None")
 public enum TelFacility {
     
     /**

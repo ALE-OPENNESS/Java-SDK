@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.comlog;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code Role} defines the roles a participant can have in a com record.
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum Role {
 
     /**

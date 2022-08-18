@@ -18,6 +18,8 @@
 */
 package com.ale.o2g.types.maintenance;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code PbxStatus} provides general information on an OmniPCX Enterprise node.
  * Its connection state, version, addresses...
@@ -28,6 +30,7 @@ public class PbxStatus {
      * {@code CTILinkState} represents the differents possible states of the CTI
      * link between OmniPCX Enterprise and O2G server.
      */
+    @JsonEnumDeserializerFallback(value = "DISCONNECTED")
     public static enum CTILinkState {
 
         /**

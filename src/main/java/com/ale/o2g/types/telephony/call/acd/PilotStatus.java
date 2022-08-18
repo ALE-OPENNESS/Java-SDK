@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.telephony.call.acd;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code PilotStatus} represents the possible state of a CCD pilot.
  */
+@JsonEnumDeserializerFallback(value = "OTHER")
 public enum PilotStatus {
     
     /**

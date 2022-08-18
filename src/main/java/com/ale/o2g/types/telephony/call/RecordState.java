@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.telephony.call;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code RecordState} represent the recording state of a call.
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum RecordState {
     
     /**
@@ -31,5 +34,10 @@ public enum RecordState {
     /**
      * The recording is in progress.
      */
-    RECORDING
+    RECORDING,
+        
+    /**
+     * Unknown state.
+     */
+    UNKNOWN
 }

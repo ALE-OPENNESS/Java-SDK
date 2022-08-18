@@ -183,7 +183,7 @@ public class SessionImpl implements Session {
             ISubscriptions subscriptionsService = serviceFactory.getSubscriptionsService();
             SubscriptionResult subscriptionResult = subscriptionsService.create(subscription);
     		
-	        if (subscriptionResult.isAccepted()) {
+	        if ((subscriptionResult != null) && subscriptionResult.isAccepted()) {
 	        	
 	            subscriptionId = subscriptionResult.getId();
 	
@@ -204,7 +204,12 @@ public class SessionImpl implements Session {
 	        }
 	        else {
 	            logger.error("Subscription has been refused. Fix the subscription request.");
-	            throw new O2GException("Subscription Refused : " + subscriptionResult.getMessage());
+	            if (subscriptionResult != null) {
+	                throw new O2GException("Subscription Refused : " + subscriptionResult.getMessage());
+	            }
+	            else {
+                    throw new O2GException("Subscription Refused");
+	            }
 	        }
     	}
     	catch (Exception e) {

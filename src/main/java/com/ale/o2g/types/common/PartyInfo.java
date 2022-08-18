@@ -18,6 +18,8 @@
 */
 package com.ale.o2g.types.common;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code PartyInfo} represents a party involved in a call.
  */
@@ -34,6 +36,7 @@ public class PartyInfo {
         /**
          * {@code MainType} represents the main type a participant can be.
          */
+        @JsonEnumDeserializerFallback(value = "UNKNOWN")
         public static enum MainType {
 
             /**

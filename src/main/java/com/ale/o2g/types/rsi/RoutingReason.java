@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.rsi;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code RoutingReason} represents the possible reason associated to a route request.
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum RoutingReason {
 
     /**

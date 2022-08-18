@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.comlog;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code Reason} enum defines the why reason the communication has been released, established or rerouted.
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum Reason {
     
     /**

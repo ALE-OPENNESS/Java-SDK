@@ -18,9 +18,12 @@
 */
 package com.ale.o2g.types.telephony.call;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
+
 /**
  * {@code MediaState} represents a media state.
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum MediaState {
     
     /**
