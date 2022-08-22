@@ -22,6 +22,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,12 +87,14 @@ public class ServiceFactory {
 
 	private String apiVersion;
 	private AccessMode accessMode;
+	private ExecutorService executorService;
 
 	public ServiceFactory(String apiVersion) throws O2GException {
 		this.apiVersion = apiVersion;
 
 		try {
-			httpClient = HttpClientBuilder.getInstance().build();
+		    executorService = Executors.newCachedThreadPool();
+			httpClient = HttpClientBuilder.getInstance().build(executorService);
 		}
 		catch (Exception e) {
 			throw new O2GException(e);
@@ -339,5 +343,9 @@ public class ServiceFactory {
 
 		// Add maintenance service
 		servicesUri.put(Service.Maintenance, URI.create(baseUrl + "/system"));
+	}
+	
+	public void shutdown() {
+	    executorService.shutdown();
 	}
 }

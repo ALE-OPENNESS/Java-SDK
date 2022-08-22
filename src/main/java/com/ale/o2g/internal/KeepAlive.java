@@ -43,6 +43,7 @@ public class KeepAlive {
 	}
 
 	public void cancel() {
-		future.cancel(false);
+		future.cancel(true);
+		scheduler.shutdown();
 	}
 }

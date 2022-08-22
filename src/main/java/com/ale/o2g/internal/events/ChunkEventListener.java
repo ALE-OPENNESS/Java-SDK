@@ -28,6 +28,8 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
@@ -50,6 +52,7 @@ public class ChunkEventListener extends CancelableQueueTask<O2GEventDescriptor> 
 	private HttpClient httpClient;
 	private URI uri;
 	private Semaphore signalReady;
+	private ExecutorService executorService;
 
 	public ChunkEventListener(BlockingQueue<O2GEventDescriptor> queue, URI uri, Semaphore signalReady)
 			throws Exception {
@@ -58,7 +61,8 @@ public class ChunkEventListener extends CancelableQueueTask<O2GEventDescriptor> 
 		this.uri = uri;
 		this.signalReady = signalReady;
 
-		httpClient = HttpClientBuilder.getInstance().build();
+		executorService = Executors.newCachedThreadPool();
+		httpClient = HttpClientBuilder.getInstance().build(executorService);
 	}
 
 	private void readChunks(InputStream eventStream) {
@@ -113,6 +117,10 @@ public class ChunkEventListener extends CancelableQueueTask<O2GEventDescriptor> 
 					break;
 				}
 			}
+		}
+		
+		if (executorService != null) {
+		    executorService.shutdown();
 		}
 	}
 

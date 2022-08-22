@@ -64,7 +64,7 @@ public abstract class AbstractRESTService {
         this.uri = uri;
         this.httpClient = httpClient;
     }
-
+    
     protected boolean isSucceeded(int statusCode) {
         return (statusCode >= 200) && (statusCode <= 299);
     }

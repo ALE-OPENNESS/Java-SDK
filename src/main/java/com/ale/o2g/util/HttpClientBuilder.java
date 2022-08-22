@@ -24,6 +24,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpClient.Builder;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.ExecutorService;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -83,11 +84,18 @@ public class HttpClientBuilder {
 
 	}
 
-	public HttpClient build() throws Exception {
+    public HttpClient build() throws Exception {
+        return this.build(null);
+    }
+
+    public HttpClient build(ExecutorService executorService) throws Exception {
 
 		Builder builder = HttpClient.newBuilder().cookieHandler(new CookieManager());
 
-				
+		if (executorService != null) {
+		    builder.executor(executorService);
+		}
+
 		if (System.getProperty("o2g.disable.ssl") != null) {
 
 			// Initialize SSL
@@ -105,7 +113,6 @@ public class HttpClientBuilder {
             });
 
             builder = builder.sslContext(sc);
-
 		}
 
 		return builder.build();

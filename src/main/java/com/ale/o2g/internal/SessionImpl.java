@@ -165,6 +165,8 @@ public class SessionImpl implements Session {
         // Close the session
         ISessions sessionService = serviceFactory.getSessionsService();
         sessionService.close();
+        
+        serviceFactory.shutdown();
 
         logger.info("Session is closed.");
 	}
