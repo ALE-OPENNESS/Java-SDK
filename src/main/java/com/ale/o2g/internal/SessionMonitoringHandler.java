@@ -16,34 +16,29 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package com.ale.o2g.internal.util;
+package com.ale.o2g.internal;
 
-import java.util.concurrent.BlockingQueue;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.ale.o2g.Session;
+import com.ale.o2g.SessionMonitoringPolicy;
 
 /**
- * 
- * @author d3mabil
  *
  */
-public abstract class CancelableQueueTask<E> extends CancelableTask {
-
-	final static Logger logger = LoggerFactory.getLogger(CancelableQueueTask.class);
-
-	private BlockingQueue<E> queue;
-
-    public CancelableQueueTask(BlockingQueue<E> queue, String taskName) {
-    	super(taskName);
-        this.queue = queue;
+public class SessionMonitoringHandler {
+    
+    private Session session;
+    private SessionMonitoringPolicy sessionMonitoringPolicy;
+    
+    public SessionMonitoringHandler(SessionMonitoringPolicy sessionMonitoringPolicy, Session session) {
+        this.session = session;
+        this.sessionMonitoringPolicy = sessionMonitoringPolicy;
     }
     
-    protected E get() throws InterruptedException {
-        return queue.take();
+    public SessionMonitoringPolicy getPolicy() {
+        return this.sessionMonitoringPolicy;
     }
-
-    protected void add(E e) throws InterruptedException {
-    	queue.put(e);
+    
+    public Session getSession() {
+        return this.session;
     }
 }

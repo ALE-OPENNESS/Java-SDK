@@ -1,5 +1,5 @@
 /*
-* Copyright 2021 ALE International
+* Copyright 2022 ALE International
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 * software and associated documentation files (the "Software"), to deal in the Software 
@@ -18,6 +18,7 @@
 */
 package com.ale.o2g.internal.events;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.List;
@@ -27,27 +28,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ale.o2g.events.O2GEvent;
-import com.ale.o2g.internal.util.CancelableQueueTask;
+import com.ale.o2g.internal.SessionMonitoringHandler;
+import com.ale.o2g.internal.util.AbstractQueuedThread;
 import com.ale.o2g.internal.util.EventListenersMap;
 
 /**
- * 
  *
  */
-public class ChunkEventDispatcher extends CancelableQueueTask<O2GEventDescriptor> {
+public class ChunkEventDispatcher extends AbstractQueuedThread<O2GEventDescriptor> {
 
     final static Logger logger = LoggerFactory.getLogger(ChunkEventDispatcher.class);
-
-    final static private O2GEventDescriptor END_MARKER_EVENT = new O2GEventDescriptor(null, null, null);
-
     private EventListenersMap listeners;
+    private SessionMonitoringHandler sessionMonitoringHandler;
 
-    public ChunkEventDispatcher(BlockingQueue<O2GEventDescriptor> queue, EventListenersMap listeners) {
-        super(queue, ChunkEventDispatcher.class.getSimpleName());
-
+    public ChunkEventDispatcher(BlockingQueue<O2GEventDescriptor> queue, EventListenersMap listeners, SessionMonitoringHandler sessionMonitoringHandler) {
+        super(queue, "ChunkEventDispatcher");
         this.listeners = listeners;
+        this.sessionMonitoringHandler = sessionMonitoringHandler;
     }
 
+    
     private Class<?> getEventClass(O2GEvent o2gEvent) {
 
         Class<?> eventClass = o2gEvent.getClass();
@@ -60,8 +60,7 @@ public class ChunkEventDispatcher extends CancelableQueueTask<O2GEventDescriptor
         }
     }
 
-    private void dispatchHandler(List<EventListener> listenersList, O2GEvent o2gEvent, String methodName)
-            throws Exception {
+    private void dispatchHandler(List<EventListener> listenersList, O2GEvent o2gEvent, String methodName) {
 
         for (EventListener listener : listenersList) {
 
@@ -73,10 +72,17 @@ public class ChunkEventDispatcher extends CancelableQueueTask<O2GEventDescriptor
                     invocationMethod.setAccessible(true);
                     invocationMethod.invoke(listener, o2gEvent);
                 }
+                catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+
+                    String error = String.format("Invocation error method %s(%s) on interface %s", methodName,
+                            o2gEvent.getClass().getName(), listenerClass.getName());
+                    
+                    logger.error("REFLEXION Error: {}", error);
+                    throw new Error(error);
+                }
                 catch (Exception e) {
-                    logger.error("REFLEXION Error: {}", e);
-                    e.printStackTrace();
-                    throw e;
+                    logger.error("Exception during event treatment", e);
+                    sessionMonitoringHandler.getPolicy().eventTreatmentException(e);
                 }
             }
             catch (NoSuchMethodException | SecurityException e) {
@@ -90,36 +96,20 @@ public class ChunkEventDispatcher extends CancelableQueueTask<O2GEventDescriptor
         }
     }
 
+    
     @Override
-    protected void cancelableRun() throws Exception {
+    protected boolean run() throws InterruptedException {
 
-        while (true) {
+        O2GEventDescriptor o2gEventDescriptor = get();
+        Class<? extends EventListener> listenerClass = o2gEventDescriptor.listener();
+        if (listenerClass != null) {
 
-            O2GEventDescriptor o2gEventDescriptor = get();
-            if (o2gEventDescriptor == END_MARKER_EVENT) {
-                logger.trace("Queue listening canceled");
-                break;
-            }
-
-            Class<? extends EventListener> listenerClass = o2gEventDescriptor.listener();
-            if (listenerClass != null) {
-
-                List<EventListener> ll = listeners.getListeners(listenerClass);
-                if ((ll != null) && !ll.isEmpty()) {
-                    dispatchHandler(ll, o2gEventDescriptor.event(), o2gEventDescriptor.methodName());
-                }
+            List<EventListener> ll = listeners.getListeners(listenerClass);
+            if ((ll != null) && !ll.isEmpty()) {
+                dispatchHandler(ll, o2gEventDescriptor.event(), o2gEventDescriptor.methodName());
             }
         }
-    }
-
-    @Override
-    protected void cancel() {
-        super.cancel();
-        try {
-            add(END_MARKER_EVENT);
-        }
-        catch (InterruptedException e) {
-            // Ignored
-        }
+        
+        return true;
     }
 }

@@ -64,11 +64,9 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
 	
 	private static record MakeBasicCallRequest(String deviceId, String callee, boolean autoAnswer) {}
 	private static record DeviceIdRequest(String deviceId) {}
-	private static record MakeCallRequest(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone, String associatedData, String pin, String businessCode, String callingNumber) {
-		public MakeCallRequest(String deviceId, String callee, boolean autoAnswer) {
-			this(deviceId, callee, autoAnswer, false, null, null, null, null);
-		}
-	}
+	private static record MakeCallRequest(String deviceId, String callee, boolean autoAnswer, 
+	        boolean inhibitProgressTone, String associatedData, String pin, String secretCode, String businessCode, String callingNumber) {}
+	
 	private static record SendAssociatedDataRequest(String deviceId, String associatedData) {}
 	private static record BlindTransferRequest(String transferTo, boolean anonymous) {}
 	private static record HeldCallRequest(String heldCallRef) {}
@@ -175,22 +173,39 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
 		return this.getCall(callRef, null);
 	}
 	
+
+    @Override
+    public boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
+            String associatedData, String callingNumber, String loginName) {
+        
+        URI uriPost = URIBuilder.appendPath(uri, "calls");
+        if (loginName != null) {
+            uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
+        }
+                
+        String json = gson.toJson(new MakeCallRequest(
+                AssertUtil.requireNotEmpty(deviceId, "deviceId"),
+                AssertUtil.requireNotEmpty(callee, "callee"),
+                autoAnswer,
+                inhibitProgressTone,
+                associatedData,
+                null, null, null,
+                callingNumber));
+        
+        HttpRequest request = HttpUtil.POST(uriPost, json);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
+    @Override
+    public boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
+            String associatedData, String callingNumber) {
+        return this.makeCall(deviceId, callee, autoAnswer, false, null, null, null);
+    }
+	
 	@Override
 	public boolean makeCall(String deviceId, String callee, boolean autoAnswer, String loginName) {
-		
-		URI uriPost = URIBuilder.appendPath(uri, "calls");
-        if (loginName != null) {
-        	uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
-        }
-		
-		String json = gson.toJson(new MakeCallRequest(
-				AssertUtil.requireNotEmpty(deviceId, "deviceId"),
-				AssertUtil.requireNotEmpty(callee, "callee"),
-				autoAnswer));
-		
-		HttpRequest request = HttpUtil.POST(uriPost, json);
-		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-		return isSucceeded(response);
+		return this.makeCall(deviceId, callee, autoAnswer, false, null, null, loginName);
 	}
 
 	@Override
@@ -198,6 +213,64 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
 		return this.makeCall(deviceId, callee, autoAnswer, null);
 	}
 	
+
+    @Override
+    public boolean makePrivateCall(String deviceId, String callee, boolean autoAnswer, String pin, String secretCode,
+            String loginName) {
+        
+        URI uriPost = URIBuilder.appendPath(uri, "calls");
+        if (loginName != null) {
+            uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
+        }
+        
+        String json = gson.toJson(new MakeCallRequest(
+                AssertUtil.requireNotEmpty(deviceId, "deviceId"),
+                AssertUtil.requireNotEmpty(callee, "callee"),
+                autoAnswer,
+                false,
+                null,
+                pin, secretCode, 
+                null,
+                null));
+        
+        HttpRequest request = HttpUtil.POST(uriPost, json);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
+    @Override
+    public boolean makePrivateCall(String deviceId, String callee, boolean autoAnswer, String pin, String secretCode) {
+        return this.makePrivateCall(deviceId, callee, autoAnswer, pin, secretCode, null);
+    }	
+	
+    
+    @Override
+    public boolean makeBusinessCall(String deviceId, String callee, boolean autoAnswer, String businessCode,
+            String loginName) {
+        URI uriPost = URIBuilder.appendPath(uri, "calls");
+        if (loginName != null) {
+            uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
+        }
+        
+        String json = gson.toJson(new MakeCallRequest(
+                AssertUtil.requireNotEmpty(deviceId, "deviceId"),
+                AssertUtil.requireNotEmpty(callee, "callee"),
+                autoAnswer,
+                false,
+                null,
+                null, null, 
+                AssertUtil.requireNotEmpty(businessCode, "businessCode"),
+                null));
+        
+        HttpRequest request = HttpUtil.POST(uriPost, json);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
+    @Override
+    public boolean makeBusinessCall(String deviceId, String callee, boolean autoAnswer, String businessCode) {
+        return this.makeBusinessCall(deviceId, callee, autoAnswer, businessCode, null);
+    }
 	
 	@Override
 	public boolean alternate(String callRef, String deviceId) {

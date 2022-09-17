@@ -40,8 +40,24 @@ public final class O2G {
      * @param host the host
      * @return the connected endpoint
      * @throws O2GException when the service end point can not be reached.
+     * @deprecated use connect methid instead.
      */
     public static ServiceEndPoint Connect(Host host) throws O2GException {
+
+        ServiceFactory serviceFactory = new ServiceFactory(ApiVersion);
+        ServerInfo serverInfo = serviceFactory.bootstrap(host);
+
+        return new ServiceEndPointImpl(serviceFactory, serverInfo);
+    }
+
+    /**
+     * Attemps to establish a connection on the specified Host.
+     * 
+     * @param host the host
+     * @return the connected endpoint
+     * @throws O2GException when the service end point can not be reached.
+     */
+    public static ServiceEndPoint connect(Host host) throws O2GException {
 
         ServiceFactory serviceFactory = new ServiceFactory(ApiVersion);
         ServerInfo serverInfo = serviceFactory.bootstrap(host);

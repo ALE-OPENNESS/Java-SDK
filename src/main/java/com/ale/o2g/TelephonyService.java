@@ -28,7 +28,6 @@ import com.ale.o2g.types.telephony.HuntingGroups;
 import com.ale.o2g.types.telephony.MiniMessage;
 import com.ale.o2g.types.telephony.RecordingAction;
 import com.ale.o2g.types.telephony.TelephonicState;
-import com.ale.o2g.types.telephony.call.CorrelatorData;
 import com.ale.o2g.types.telephony.call.Leg;
 import com.ale.o2g.types.telephony.call.Participant;
 import com.ale.o2g.types.telephony.device.DeviceState;
@@ -223,6 +222,156 @@ public interface TelephonyService extends IService {
      *      loginName)
      */
     boolean makeCall(String deviceId, String callee, boolean autoAnswer);
+
+    /**
+     * Initiates a new call to another user (the callee), using the specified
+     * deviceId and options.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately
+     * 
+     * @param deviceId            the device phone number for which the call is made
+     * @param callee              the called number
+     * @param autoAnswer          automatic answer on make call
+     * @param inhibitProgressTone allows to inhibit the progress tone on the current
+     *                            external call
+     * @param associatedData      correlator data to add to the call
+     * @param callingNumber       calling number to present to the public network
+     * @param loginName           the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makeCall(String deviceId, String callee, boolean autoAnswer, String
+     *      loginName)
+     */
+    boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
+            String associatedData, String callingNumber, String loginName);
+
+    /**
+     * Initiates a new call to another user (the callee), using the specified
+     * deviceId and options.
+     * <p>
+     * This method with return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately
+     * 
+     * @param deviceId            the device phone number for which the call is made
+     * @param callee              the called number
+     * @param autoAnswer          automatic answer on make call
+     * @param inhibitProgressTone allows to inhibit the progress tone on the current
+     *                            external call
+     * @param associatedData      correlator data to add to the call
+     * @param callingNumber       calling number to present to the public network
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makeCall(String, String, boolean, boolean, String, String, String)
+     */
+    boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
+            String associatedData, String callingNumber);
+
+    /**
+     * Initiates a new private call to another user (the callee), using a pin code
+     * and an optional secret code.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately.
+     * 
+     * <p>
+     * The private call is a service which allows a user to specify that the
+     * external call made is personal and not professional. The charging for this
+     * type of call can then be given specific processing. It requires the user
+     * enters a PIN code (Personal Identification Number)
+     * 
+     * @param deviceId   the device phone number for which the call is made
+     * @param callee     the called number
+     * @param autoAnswer automatic answer on make call
+     * @param pin        the PIN code to identify the caller
+     * @param secretCode the optional secret code used to confirm the PIN code
+     * @param loginName  the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makePrivateCall(String, String, boolean, String, String)
+     */
+    boolean makePrivateCall(String deviceId, String callee, boolean autoAnswer, String pin, String secretCode,
+            String loginName);
+
+    /**
+     * Initiates a new private call to another user (the callee), using a pin code
+     * and an optional secret code.
+     * <p>
+     * This method with return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately.
+     * 
+     * <p>
+     * The private call is a service which allows a user to specify that the
+     * external call made is personal and not professional. The charging for this
+     * type of call can then be given specific processing. It requires the user
+     * enters a PIN code (Personal Identification Number)
+     * 
+     * @param deviceId   the device phone number for which the call is made
+     * @param callee     the called number
+     * @param autoAnswer automatic answer on make call
+     * @param pin        the PIN code to identify the caller
+     * @param secretCode the optional secret code used to confirm the PIN code
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makePrivateCall(String, String, boolean, String, String, String)
+     */
+    boolean makePrivateCall(String deviceId, String callee, boolean autoAnswer, String pin, String secretCode);
+
+    /**
+     * Initiates a new business call to another user (the callee), using the
+     * specified business code.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately.
+     * 
+     * @param deviceId     the device phone number for which the call is made
+     * @param callee       the called number
+     * @param autoAnswer   automatic answer on make call
+     * @param businessCode the cost center on which the call will be charged.
+     * @param loginName    the login name
+     * @return {@code true} in case of success; {@code false} otherwise. #see
+     *         {@link #makeBusinessCall(String, String, boolean, String)}
+     */
+    boolean makeBusinessCall(String deviceId, String callee, boolean autoAnswer, String businessCode, String loginName);
+
+    /**
+     * Initiates a new business call to another user (the callee), using the
+     * specified business code.
+     * <p>
+     * This method with return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately.
+     * 
+     * @param deviceId     the device phone number for which the call is made
+     * @param callee       the called number
+     * @param autoAnswer   automatic answer on make call
+     * @param businessCode the cost center on which the call will be charged.
+     * @return {@code true} in case of success; {@code false} otherwise. #see
+     *         {@link #makeBusinessCall(String, String, boolean, String)}
+     */
+    boolean makeBusinessCall(String deviceId, String callee, boolean autoAnswer, String businessCode);
 
     /**
      * Puts an active call on hold and retrieve a call that has been previously put

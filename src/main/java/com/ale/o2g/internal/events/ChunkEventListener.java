@@ -19,112 +19,166 @@
 package com.ale.o2g.internal.events;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ale.o2g.O2GException;
+import com.ale.o2g.SessionMonitoringPolicy.Behavior;
 import com.ale.o2g.events.O2GEvent;
 import com.ale.o2g.events.common.OnChannelInformationEvent;
-import com.ale.o2g.internal.util.CancelableQueueTask;
+import com.ale.o2g.internal.SessionMonitoringHandler;
+import com.ale.o2g.internal.util.AbstractQueuedThread;
 import com.ale.o2g.util.HttpClientBuilder;
 
 /**
- * 
  *
  */
-public class ChunkEventListener extends CancelableQueueTask<O2GEventDescriptor> {
+public class ChunkEventListener extends AbstractQueuedThread<O2GEventDescriptor> {
 
-	final static Logger logger = LoggerFactory.getLogger(ChunkEventListener.class);
+    final static Logger logger = LoggerFactory.getLogger(ChunkEventListener.class);
 
-	private HttpClient httpClient;
-	private URI uri;
-	private Semaphore signalReady;
-	private ExecutorService executorService;
+    private ExecutorService executorService = Executors.newCachedThreadPool();
+    private HttpClient httpClient;
+    private URI uri;
+    private Semaphore signalReady;
+    private SessionMonitoringHandler sessionMonitoringHandler;
+    private boolean chunkEstablished = false;
 
-	public ChunkEventListener(BlockingQueue<O2GEventDescriptor> queue, URI uri, Semaphore signalReady)
-			throws Exception {
-		super(queue, ChunkEventListener.class.getSimpleName());
+    public ChunkEventListener(BlockingQueue<O2GEventDescriptor> queue, URI uri, Semaphore signalReady, SessionMonitoringHandler sessionMonitoringHandler)
+            throws Exception {
+        super(queue, "ChunkEventListener");
 
-		this.uri = uri;
-		this.signalReady = signalReady;
+        this.uri = uri;
+        this.signalReady = signalReady;
+        this.sessionMonitoringHandler = sessionMonitoringHandler;
+        httpClient = HttpClientBuilder.getInstance().build(executorService);
+    }
 
-		executorService = Executors.newCachedThreadPool();
-		httpClient = HttpClientBuilder.getInstance().build(executorService);
-	}
+    
+    
+    private void readChunks(InputStream eventStream) throws InterruptedException {
+        
+        BufferedReader reader = new BufferedReader(new InputStreamReader(eventStream));
+        
+        // Loop forever
+        while (true) {
+            
+            // Read the event
+            String sEvent = null;
+            try {
+                sEvent = reader.readLine();
+            }
+            catch (IOException e) {
+                // The connexion has been broken, we have to exit from the reading loop
+                logger.error("Unable to read event from channel", e);
+                break;
+            }
+            
+            if (sEvent == null) {
+                // Not sure this can happen, but in case an event can't be read, just ignore
+                logger.error("Reading null event");
+                continue;
+            }
+            
+            // Create the descriptor
+            O2GEventDescriptor eventDescriptor = EventBuilder.get(sEvent);
+            if (eventDescriptor == null) {
+                // Unable to create an event descriptor from the event string, do nothing, ignore the event
+                logger.error("Unable to create Event from {event}", sEvent);
+            }
+            else {
+                O2GEvent o2gEvent = eventDescriptor.event();
 
-	private void readChunks(InputStream eventStream) {
-		logger.trace("Event channel is established.");
+                if (o2gEvent instanceof OnChannelInformationEvent) {
+                    // Signal the channel has been established
+                    signalReady.release();
+                }
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(eventStream));
+                // Push event for dispatching
+                add(eventDescriptor);
+            }
+        }
+    }
+    
+    
+    @Override
+    protected boolean run() throws InterruptedException {
+        
+        HttpResponse<InputStream> streamResponse = null;
+        try {
+            logger.debug("Start eventing channel on {}", uri);
+            HttpRequest request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.noBody()).build();
+            streamResponse = httpClient.send(request, BodyHandlers.ofInputStream());
+        }
+        catch (IOException e) {
+            logger.error("Unable to open event channel. Maybe the O2G server is not reacheable", e);
+            
+            Behavior behavior = sessionMonitoringHandler.getPolicy().getBehaviorOnChunkChannelFailure(sessionMonitoringHandler.getSession(), e);
+            if (behavior.isRetry()) {
+                
+                TimeUnit timeUnit = behavior.getUnit();
+                timeUnit.sleep(behavior.getPeriod());
+            }
+            else if (behavior.isAbort()) {
+                // We abort the task on this situation
+                return false;
+            }
+        }
+        
+        if (streamResponse != null) {
+            
+            if ((streamResponse.statusCode() >= 200) && (streamResponse.statusCode() <= 299)) {
+                
+                chunkEstablished = true;
+                sessionMonitoringHandler.getPolicy().chunkChannelEstablished(sessionMonitoringHandler.getSession());
+                
+                logger.info("Event channel has been opened.");
+                
+                // Start reading chunks
+                readChunks(streamResponse.body());                
+            }
+            else {
+                
+                // We receive a negative HTTP response, 
+                // If the chunk has never been established, this is abnormal, so signal the error an exit the thread
+                // If the chunk has been already establish, do not report the error
+                if (!chunkEstablished) {
+                    sessionMonitoringHandler.getPolicy().chunkChannelFatalError(sessionMonitoringHandler.getSession(), streamResponse.statusCode());
+                }
 
-		try {
-			while (true) {
-				String sEvent = reader.readLine();
-				if (sEvent != null) {
-					O2GEventDescriptor eventDescriptor = EventBuilder.get(sEvent);
-					if (eventDescriptor == null) {
-						logger.error("Unable to create Event from {event}", sEvent);
-					}
-					else {
-						O2GEvent o2gEvent = eventDescriptor.event();
+                // In all cases, exit the thread, this is an abnormal situation
+                return false;
+            }
+        }
+        
+        return true;
+    }
 
-						if (o2gEvent instanceof OnChannelInformationEvent) {
-							// Signal the channel has been established
-							signalReady.release();
-						}
 
-						// Push event for dispatching
-						add(eventDescriptor);
-					}
-				}
-			}
-		}
-		catch (Exception e) {
-			// Chunk is closed => exit and restart except if cancellation is requested
-			logger.trace("Event channel has been closed.");
-		}
-	}
 
-	@Override
-	protected void cancelableRun() throws Exception {
-		while (true) {
-			logger.trace("Start eventing channel on {}", uri);
+    @Override
+    protected void onThreadTermination() {
 
-			HttpRequest request = HttpRequest.newBuilder().uri(uri).POST(BodyPublishers.noBody()).build();
+        if (executorService != null) {
+            executorService.shutdown();
+        }
 
-			HttpResponse<InputStream> streamResponse = httpClient.send(request, BodyHandlers.ofInputStream());
-			boolean channelIsOpen = isSucceeded(streamResponse.statusCode());
-			if (!channelIsOpen) {
-				// We have a problem with the eventing
-				throw new O2GException("Fail to open chunk event channel");
-			}
-			else {
-				readChunks(streamResponse.body());
-				if (isShutdown()) {
-					break;
-				}
-			}
-		}
-		
-		if (executorService != null) {
-		    executorService.shutdown();
-		}
-	}
+        super.onThreadTermination();
+    }
 
-	protected boolean isSucceeded(int statusCode) {
-		return (statusCode >= 200) && (statusCode <= 299);
-	}
+    
 }

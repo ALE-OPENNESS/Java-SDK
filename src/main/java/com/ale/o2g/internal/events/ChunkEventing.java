@@ -26,6 +26,7 @@ import java.util.concurrent.Semaphore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ale.o2g.internal.SessionMonitoringHandler;
 import com.ale.o2g.internal.util.EventListenersMap;
 
 /**
@@ -41,11 +42,11 @@ public class ChunkEventing {
     private ChunkEventListener chunkEventListener = null;
     private ChunkEventDispatcher chunkEventDispatcher = null;
 
-    public ChunkEventing(URI chunkUri, EventListenersMap listeners) throws Exception {
+    public ChunkEventing(URI chunkUri, EventListenersMap listeners, SessionMonitoringHandler sessionMonitoringHandler) throws Exception {
         BlockingQueue<O2GEventDescriptor> eventQueue = new ArrayBlockingQueue<O2GEventDescriptor>(1000);
 
-        chunkEventDispatcher = new ChunkEventDispatcher(eventQueue, listeners);
-        chunkEventListener = new ChunkEventListener(eventQueue, chunkUri, signalReady);
+        chunkEventDispatcher = new ChunkEventDispatcher(eventQueue, listeners, sessionMonitoringHandler);
+        chunkEventListener = new ChunkEventListener(eventQueue, chunkUri, signalReady, sessionMonitoringHandler);
     }
 
     public void start() throws InterruptedException {
@@ -60,8 +61,4 @@ public class ChunkEventing {
         chunkEventListener.stop();
     }
 
-    public void awaitTermination() {
-        chunkEventDispatcher.awaitTermination();
-        chunkEventListener.awaitTermination();
-    }
 }

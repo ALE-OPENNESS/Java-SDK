@@ -99,7 +99,7 @@ public class OnCallModifiedEvent extends O2GEvent {
     /**
      * Returns the call associated data.
      * 
-     * @return the call data
+     * @return the call data or {@code null} if there is no change compared to the previous event.
      */
     public final CallData getCallData() {
         return callData;
@@ -108,7 +108,7 @@ public class OnCallModifiedEvent extends O2GEvent {
     /**
      * Returns a collection of modified legs.
      * 
-     * @return the modified legs or {@code null} if there is no change.
+     * @return the modified legs or {@code null} if there is no change compared to the previous event.
      */
     public final Collection<Leg> getModifiedLegs() {
         return modifiedLegs;
@@ -117,7 +117,7 @@ public class OnCallModifiedEvent extends O2GEvent {
     /**
      * Returns the added legs.
      * 
-     * @return the added legs or {@code null} if there is no new leg.
+     * @return the added legs or {@code null} if there is no new leg compared to the previous event.
      */
     public final Collection<Leg> getAddedLegs() {
         return addedLegs;
@@ -126,7 +126,7 @@ public class OnCallModifiedEvent extends O2GEvent {
     /**
      * Returns the removed legs.
      * 
-     * @return the removed legs or {@code null} if there is no removed leg.
+     * @return the removed legs or {@code null} if there is no removed leg compared to the previous event.
      */
     public final Collection<Leg> getRemovedLegs() {
         return removedLegs;
@@ -135,7 +135,7 @@ public class OnCallModifiedEvent extends O2GEvent {
     /**
      * Returns the modified participants.
      * 
-     * @return the modified participants or {@code null} if there is no change.
+     * @return the modified participants or {@code null} if there is no change compared to the previous event.
      */
     public final Collection<Participant> getModifiedParticipants() {
         return modifiedParticipants;
@@ -145,7 +145,7 @@ public class OnCallModifiedEvent extends O2GEvent {
      * Returns the added participants
      * 
      * @return the added participants or {@code null} if there is no new
-     *         participant.
+     *         participant compared to the previous event.
      */
     public final Collection<Participant> getAddedParticipants() {
         return addedParticipants;
@@ -155,7 +155,7 @@ public class OnCallModifiedEvent extends O2GEvent {
      * Returns the removed participant identifiers.
      * 
      * @return the removed participant identifier or {@code null} if there is no
-     *         removed participant.
+     *         removed participant compared to the previous event.
      */
     public final Collection<String> getRemovedParticipantIds() {
         return removedParticipantIds;

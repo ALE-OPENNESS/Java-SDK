@@ -1,5 +1,5 @@
 /*
-* Copyright 2021 ALE International
+* Copyright 2022 ALE International
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 * software and associated documentation files (the "Software"), to deal in the Software 
@@ -18,32 +18,94 @@
 */
 package com.ale.o2g.internal;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ale.o2g.SessionMonitoringPolicy.Behavior;
+import com.ale.o2g.internal.services.ISessions;
+import com.ale.o2g.internal.util.AbstractLoopingThread;
 
 /**
  *
  */
-public class KeepAlive {
+public class KeepAlive extends AbstractLoopingThread {
+    
+    class Period {
+        private TimeUnit unit;
+        private long value;
+        
+        public Period(TimeUnit unit, long value) {
+            this.unit = unit;
+            this.value = value;
+        }
+        
+        public void set(TimeUnit unit, long value) {
+            this.unit = unit;
+            this.value = value;
+        }
+        
+        public void await() throws InterruptedException {
+            this.unit.sleep(this.value);
+        }
+    }
+    
+    
+    
+    final static Logger logger = LoggerFactory.getLogger(KeepAlive.class);
 
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private int value;
-    private Runnable action;
-    private ScheduledFuture<?> future;
-	
-	public KeepAlive(int keepAliveValue, Runnable action) {
-		this.action = action;
-		this.value = keepAliveValue;
-	}
+    private Period period;
+    private long keepAliveValue;
+    private ISessions sessionService;
+    private SessionMonitoringHandler sessionMonitoringHandler;
 
-	public void start() {
-		future = scheduler.scheduleAtFixedRate(action, value, value, TimeUnit.SECONDS);
-	}
+    public KeepAlive(int keepAliveValue, ISessions sessionService, SessionMonitoringHandler sessionMonitoringHandler) {
+        super("Session KeepAlive");
+        
+        this.sessionService = sessionService;
+        this.keepAliveValue = keepAliveValue;
+        this.sessionMonitoringHandler = sessionMonitoringHandler;
+        
+        this.period = new Period(TimeUnit.SECONDS, this.keepAliveValue);
+    }
 
-	public void cancel() {
-		future.cancel(true);
-		scheduler.shutdown();
-	}
+
+    @Override
+    protected boolean run() throws InterruptedException {
+        
+        this.period.await();
+        logger.debug("do Keep Alive");
+
+        try {
+            logger.trace("Send Keep Alive");
+            boolean result = sessionService.sendKeepAlive();
+            if (result) {
+                period.set(TimeUnit.SECONDS, this.keepAliveValue);
+                sessionMonitoringHandler.getPolicy().sessionKeepAliveDone(sessionMonitoringHandler.getSession());
+            }
+            else {
+                logger.error("Send Keep Alive return false!!");
+                sessionMonitoringHandler.getPolicy().sessionKeepAliveFatalError(sessionMonitoringHandler.getSession());
+                return false;
+            }
+        }
+        catch (Exception e) {
+            logger.error("Send Keep Alive FAILED!!");
+
+            Behavior behavior = sessionMonitoringHandler.getPolicy().getBehaviorOnKeepAliveFailure(sessionMonitoringHandler.getSession(), e);
+            if (behavior.isRetry()) {
+                
+                // Change the period and try another keep alive
+                period.set(behavior.getUnit(), behavior.getPeriod());
+            }
+            else if (behavior.isAbort()) {
+                // We abort the task on this situation
+                return false;
+            }
+        }
+        
+        return true;
+    }
 }

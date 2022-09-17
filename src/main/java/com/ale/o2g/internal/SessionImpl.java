@@ -36,6 +36,7 @@ import com.ale.o2g.O2GException;
 import com.ale.o2g.RoutingService;
 import com.ale.o2g.RsiService;
 import com.ale.o2g.Session;
+import com.ale.o2g.SessionMonitoringPolicy;
 import com.ale.o2g.Subscription;
 import com.ale.o2g.TelephonyService;
 import com.ale.o2g.UsersService;
@@ -54,30 +55,51 @@ public class SessionImpl implements Session {
 	private final ServiceFactory serviceFactory;
     private ChunkEventing chunkEventing = null;
     private KeepAlive keepAlive = null;
+    private SessionMonitoringHandler sessionMonitoringHandler = null;
     
     private String subscriptionId = null;
 
 	private final String loginName;
 
-	public SessionImpl(ServiceFactory serviceFactory, SessionInfo sessionInfo, String loginName) {
+	public SessionImpl(ServiceFactory serviceFactory, SessionInfo sessionInfo, String loginName, SessionMonitoringPolicy sessionMonitoringPolicy) {
 		
 		this.serviceFactory = serviceFactory;
 		this.info = sessionInfo;
 		this.loginName = loginName;
+		this.sessionMonitoringHandler = new SessionMonitoringHandler(sessionMonitoringPolicy, this);
 		
 		startKeepAlive();
 	}
 
     private void startKeepAlive() {
-        keepAlive = new KeepAlive(info.getTimeToLive(), () ->
-        {
-            logger.trace("Send Keep Alive");
-            ISessions sessionService = serviceFactory.getSessionsService();
-            sessionService.sendKeepAlive();
-        });
+        keepAlive = new KeepAlive(info.getTimeToLive(), serviceFactory.getSessionsService(), sessionMonitoringHandler);
         keepAlive.start();
     }
 	
+/*
+    private void startKeepAlive(SessionMonitoringPolicy sessionMonitoringPolicy) {
+        keepAlive = new KeepAliveTask(info.getTimeToLive(), () ->
+        {
+            try {
+                logger.trace("Send Keep Alive");
+                ISessions sessionService = serviceFactory.getSessionsService();
+                boolean result = sessionService.sendKeepAlive();
+                if (!result) {
+                    logger.error("Send Keep Alive FAILED!!");
+                }
+            }
+            catch (Exception e) {
+                // Catch all exception in the task
+                logger.error("Send Keep Alive FAILED!!");
+                
+                if (sessionMonitoringPolicy.onKeepAliveFailed(e) == SessionMonitoringPolicy.EXIT) {
+                    
+                }
+            }
+        });
+        keepAlive.start();
+    }
+    */
 	
 	@Override
 	public UsersService getUsersService() {
@@ -159,7 +181,7 @@ public class SessionImpl implements Session {
         }
 		
         if (keepAlive != null) {
-            keepAlive.cancel();
+            keepAlive.stop();
         }
 
         // Close the session
@@ -199,7 +221,7 @@ public class SessionImpl implements Session {
 	                chunkUri = URI.create(subscriptionResult.getPublicPollingUrl());
 	            }
 	
-	            chunkEventing = new ChunkEventing(chunkUri, subscription.getListeners());
+	            chunkEventing = new ChunkEventing(chunkUri, subscription.getListeners(), sessionMonitoringHandler);
 	            chunkEventing.start();
 	
 	            logger.info("Eventing is started.");
@@ -230,8 +252,6 @@ public class SessionImpl implements Session {
 		        ISubscriptions subscriptionsService = serviceFactory.getSubscriptionsService();
 		        subscriptionsService.delete(subscriptionId);
 		        logger.trace("Subscription has been deleted");
-
-		        chunkEventing.awaitTermination();
 		        
 		        // Subscription is cancelled
 	            logger.info("Eventing is stopped.");

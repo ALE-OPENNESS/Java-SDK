@@ -46,7 +46,7 @@ import com.google.gson.GsonBuilder;
  */
 public class EventBuilder {
 
-	final static Logger logger = LoggerFactory.getLogger(ChunkEventListener.class);
+	final static Logger logger = LoggerFactory.getLogger(EventBuilder.class);
 
 	private static EventRegistrar eventRegistrar;
 

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.ale.o2g.O2GAuthenticationException;
 import com.ale.o2g.ServiceEndPoint;
 import com.ale.o2g.Session;
+import com.ale.o2g.SessionMonitoringPolicy;
 import com.ale.o2g.internal.services.IAuthentication;
 import com.ale.o2g.internal.services.ISessions;
 import com.ale.o2g.internal.types.AuthenticateResult;
@@ -40,6 +41,7 @@ public class ServiceEndPointImpl implements ServiceEndPoint {
 
 	private ServiceFactory serviceFactory;
 	private ServerInfo serverInfo;
+	private SessionMonitoringPolicy sessionMonitoringPolicy = null;
 
 	public ServiceEndPointImpl(ServiceFactory serviceFactory, ServerInfo serverInfo) {
 		this.serviceFactory = serviceFactory;
@@ -74,11 +76,20 @@ public class ServiceEndPointImpl implements ServiceEndPoint {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Session opened: TimeToLive = {}", sessionInfo.getTimeToLive());
 		}
-
+		
+		if (sessionMonitoringPolicy == null) {
+		    sessionMonitoringPolicy = new DefaultSessionMonitoringPolicy();
+		}
+		
 		// Create the session
-		Session session = new SessionImpl(serviceFactory, sessionInfo, credential.getLogin());
+		Session session = new SessionImpl(serviceFactory, sessionInfo, credential.getLogin(), sessionMonitoringPolicy);
 
 		// OK, create the session
 		return session;
 	}
+
+    @Override
+    public void setSessionMonitoringPolicy(SessionMonitoringPolicy sessionMonitoringPolicy) {
+        this.sessionMonitoringPolicy = sessionMonitoringPolicy;
+    }
 }

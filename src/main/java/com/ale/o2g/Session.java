@@ -108,7 +108,6 @@ public interface Session {
      */
     RsiService getRsiService();
 
-
     /**
      * Listen to event notification from the O2G server.
      * <p>
