@@ -47,6 +47,7 @@ public interface SessionMonitoringPolicy {
         }
 
         /**
+         * Returns the action associated to this behavior.
          * @return the action
          */
         public final int getAction() {
@@ -54,6 +55,7 @@ public interface SessionMonitoringPolicy {
         }
 
         /**
+         * Returns a period associated to this behavior.
          * @return the period
          */
         public final long getPeriod() {
@@ -61,16 +63,23 @@ public interface SessionMonitoringPolicy {
         }
 
         /**
+         * Returns a time unit associated to this behavior.
          * @return the unit
          */
         public final TimeUnit getUnit() {
             return unit;
         }
 
+        /**
+         * @return {@code true} if this behavior is a Retry action
+         */
         public boolean isRetry() {
             return action == RETRY;
         }
 
+        /**
+         * @return {@code true} if this behavior is an Abort action
+         */
         public boolean isAbort() {
             return action == ABORT;
         }
