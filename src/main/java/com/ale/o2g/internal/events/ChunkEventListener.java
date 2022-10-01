@@ -84,7 +84,7 @@ public class ChunkEventListener extends AbstractQueuedThread<O2GEventDescriptor>
             }
             catch (IOException e) {
                 // The connexion has been broken, we have to exit from the reading loop
-                logger.error("Unable to read event from channel", e);
+                logger.error("Event channel has been closed.");
                 break;
             }
             

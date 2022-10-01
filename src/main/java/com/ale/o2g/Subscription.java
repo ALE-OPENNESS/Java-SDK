@@ -374,7 +374,7 @@ public abstract class Subscription {
          * by the server.
          * <p>
          * By default, there is no timeout configured by the builder. in this case, the
-         * chunk evenitng channel is never closed by the server in case of no activity.
+         * chunk eventing channel is never closed by the server in case of no activity.
          * 
          * @param timeout the timeout value in minutes.
          * @return this builder
