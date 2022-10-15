@@ -57,6 +57,7 @@ public class ChunkEventListener extends AbstractQueuedThread<O2GEventDescriptor>
     private Semaphore signalReady;
     private SessionMonitoringHandler sessionMonitoringHandler;
     private boolean chunkEstablished = false;
+    private InputStream currentEventStream = null;
 
     public ChunkEventListener(BlockingQueue<O2GEventDescriptor> queue, URI uri, Semaphore signalReady, SessionMonitoringHandler sessionMonitoringHandler)
             throws Exception {
@@ -72,6 +73,7 @@ public class ChunkEventListener extends AbstractQueuedThread<O2GEventDescriptor>
     
     private void readChunks(InputStream eventStream) throws InterruptedException {
         
+        currentEventStream = eventStream;
         BufferedReader reader = new BufferedReader(new InputStreamReader(eventStream));
         
         // Loop forever
@@ -112,6 +114,8 @@ public class ChunkEventListener extends AbstractQueuedThread<O2GEventDescriptor>
                 add(eventDescriptor);
             }
         }
+        
+        currentEventStream = null;
     }
     
     
@@ -171,14 +175,28 @@ public class ChunkEventListener extends AbstractQueuedThread<O2GEventDescriptor>
 
 
     @Override
+    public void stop() {
+        if (currentEventStream != null) {
+            try {
+                currentEventStream.close();
+            }
+            catch (IOException e) {
+            }
+        }
+        
+        super.stop();
+    }
+
+
+
+    @Override
     protected void onThreadTermination() {
 
+        super.onThreadTermination();
+        
         if (executorService != null) {
             executorService.shutdown();
         }
 
-        super.onThreadTermination();
-    }
-
-    
+    }    
 }

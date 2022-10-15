@@ -76,31 +76,6 @@ public class SessionImpl implements Session {
         keepAlive.start();
     }
 	
-/*
-    private void startKeepAlive(SessionMonitoringPolicy sessionMonitoringPolicy) {
-        keepAlive = new KeepAliveTask(info.getTimeToLive(), () ->
-        {
-            try {
-                logger.trace("Send Keep Alive");
-                ISessions sessionService = serviceFactory.getSessionsService();
-                boolean result = sessionService.sendKeepAlive();
-                if (!result) {
-                    logger.error("Send Keep Alive FAILED!!");
-                }
-            }
-            catch (Exception e) {
-                // Catch all exception in the task
-                logger.error("Send Keep Alive FAILED!!");
-                
-                if (sessionMonitoringPolicy.onKeepAliveFailed(e) == SessionMonitoringPolicy.EXIT) {
-                    
-                }
-            }
-        });
-        keepAlive.start();
-    }
-    */
-	
 	@Override
 	public UsersService getUsersService() {
 		return this.serviceFactory.getUsersService();
@@ -175,7 +150,7 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public void close() throws O2GException {
+	public void close() {
 		if (subscriptionId != null) {
             stopEventing();
         }
@@ -185,8 +160,13 @@ public class SessionImpl implements Session {
         }
 
         // Close the session
-        ISessions sessionService = serviceFactory.getSessionsService();
-        sessionService.close();
+        try {
+            ISessions sessionService = serviceFactory.getSessionsService();
+            sessionService.close();
+        }
+        catch (Exception e) {
+            logger.error("Error while closing session on server", e);
+        }
         
         serviceFactory.shutdown();
 
@@ -241,24 +221,22 @@ public class SessionImpl implements Session {
     	}
     }
     
-    
-    private void stopEventing() throws O2GException {
+    private void stopEventing() {
         
-    	try {
-	        
-	        if (subscriptionId != null) {
-	            chunkEventing.stop();
-	
-		        ISubscriptions subscriptionsService = serviceFactory.getSubscriptionsService();
-		        subscriptionsService.delete(subscriptionId);
-		        logger.trace("Subscription has been deleted");
-		        
-		        // Subscription is cancelled
-	            logger.info("Eventing is stopped.");
-	        }
-    	}
-    	catch (Exception e) {
-    		throw new O2GException(e);
-    	}
+        if (subscriptionId != null) {
+            chunkEventing.stop();
+
+            try {
+                ISubscriptions subscriptionsService = serviceFactory.getSubscriptionsService();
+                subscriptionsService.delete(subscriptionId);
+                logger.trace("Subscription has been deleted");
+            }
+            catch (Exception e) {
+                logger.error("Error while deleting subscription", e);
+            }
+            
+            // Subscription is cancelled
+            logger.info("Eventing is stopped.");
+        }
     }
 }

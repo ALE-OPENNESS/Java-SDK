@@ -19,91 +19,107 @@
 package com.ale.o2g;
 
 /**
- * The {@code Session} object represents an opened session on the O2G server. The session gives access to the different services.
+ * The {@code Session} object represents an opened session on the O2G server.
+ * The session gives access to the different services.
  * 
  */
 public interface Session {
 
-	/**
-	 * Get the login name of the user who has opened this session.
-	 * @return the user login name
-	 */
+    /**
+     * Get the login name of the user who has opened this session.
+     * 
+     * @return the user login name
+     */
     String getLoginName();
 
     /**
      * Returns whether this session is opened by an administrator.
-     * @return {@code true} if the session is opened by an administrator; {@code false} otherwise.
+     * 
+     * @return {@code true} if the session is opened by an administrator;
+     *         {@code false} otherwise.
      */
-	boolean isAdmin();
-    
-	/**
-	 * Return the UsersService.
-	 * @return the {@link UsersService UsersService } object.
-	 */
-    UsersService getUsersService();
-    
+    boolean isAdmin();
+
     /**
-	 * Return the MaintenanceService.
-	 * @return the {@link MaintenanceService MaintenanceService } object.
+     * Return the UsersService.
+     * 
+     * @return the {@link UsersService UsersService } object.
+     */
+    UsersService getUsersService();
+
+    /**
+     * Return the MaintenanceService.
+     * 
+     * @return the {@link MaintenanceService MaintenanceService } object.
      */
     MaintenanceService getMaintenanceService();
-    
+
     /**
      * Return the ManagementService.
+     * 
      * @return the {@link ManagementService ManagementService } object.
      */
     ManagementService getManagementService();
-    
+
     /**
-	 * Return the DirectoryService.
-	 * @return the {@link DirectoryService DirectoryService } object.
+     * Return the DirectoryService.
+     * 
+     * @return the {@link DirectoryService DirectoryService } object.
      */
     DirectoryService getDirectoryService();
 
     /**
-	 * Return the TelephonyService.
-	 * @return the {@link TelephonyService TelephonyService } object.
+     * Return the TelephonyService.
+     * 
+     * @return the {@link TelephonyService TelephonyService } object.
      */
     TelephonyService getTelephonyService();
-    
+
     /**
-	 * Return the EventSummaryService.
-	 * @return the {@link EventSummaryService EventSummaryService } object.
+     * Return the EventSummaryService.
+     * 
+     * @return the {@link EventSummaryService EventSummaryService } object.
      */
     EventSummaryService getEventSummaryService();
-        
+
     /**
      * Return the MessagingService.
+     * 
      * @return the {@link MessagingService MessagingService } object.
      */
     MessagingService getMessagingService();
-    
+
     /**
      * Return the CommunicationLogService.
+     * 
      * @return the {@link CommunicationLogService CommunicationLogService } object.
      */
     CommunicationLogService getCommunicationLogService();
-        
+
     /**
      * Return the AnalyticsService.
+     * 
      * @return the {@link AnalyticsService AnalyticsService } object.
      */
     AnalyticsService getAnalyticsService();
-    
+
     /**
-	 * Return the RoutingService.
-	 * @return the {@link RoutingService RoutingService } object.
+     * Return the RoutingService.
+     * 
+     * @return the {@link RoutingService RoutingService } object.
      */
     RoutingService getRoutingService();
-    
+
     /**
      * Return the CallCenterAgentService.
+     * 
      * @return the {@link CallCenterAgentService CallCenterAgentService } object.
      */
     CallCenterAgentService getCallCenterAgentService();
-    
+
     /**
      * Return the RsiService.
+     * 
      * @return the {@link RsiService RsiService } object.
      */
     RsiService getRsiService();
@@ -112,14 +128,16 @@ public interface Session {
      * Listen to event notification from the O2G server.
      * <p>
      * The application needs to subscribe to the desired event.
+     * 
      * @param subscription The {@link Subscription} Subscription object.
      * @throws O2GException - When the subscription fail.
      */
     void listenEvents(Subscription subscription) throws O2GException;
 
     /**
-     * Close an open session.
-     * @throws O2GException in case of error (if the session is not opened).
+     * Close an open session. This method closes the session on server, stop the
+     * keep alive and the eventing if any. If the communication with the server is
+     * broken, the session is closed locally and the ressources are released.
      */
-    void close() throws O2GException;
+    void close();
 }
