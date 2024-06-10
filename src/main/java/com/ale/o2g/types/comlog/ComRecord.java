@@ -36,8 +36,9 @@ public class ComRecord {
     private String callRef;
     private boolean acknowledged;
     private Collection<ComRecordParticipant> participants;
-    private Date begin;
-    private Date end;
+    private Date beginDate;
+    private Date endDate;
+    private Date convDate;
 
     /**
      * Returns this communication record identifier.
@@ -84,7 +85,7 @@ public class ComRecord {
      * @return the begin date.
      */
     public final Date getBegin() {
-        return begin;
+        return beginDate;
     }
 
     /**
@@ -93,7 +94,17 @@ public class ComRecord {
      * @return the end date.
      */
     public final Date getEnd() {
-        return end;
+        return endDate;
+    }
+
+    /**
+     * Returns the date when the call has been answered.
+     * 
+     * @return the conversation date.
+     * @since 2.6
+     */
+    public final Date getAnswered() {
+        return convDate;
     }
 
     protected ComRecord() {

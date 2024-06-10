@@ -34,6 +34,7 @@ import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.RestErrorInfo;
 import com.ale.o2g.types.cca.IntrusionMode;
+import com.ale.o2g.types.cca.MultiMediaState;
 import com.ale.o2g.types.cca.OperatorConfiguration;
 import com.ale.o2g.types.cca.OperatorState;
 import com.ale.o2g.types.cca.WithdrawReason;
@@ -200,7 +201,7 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     }
 
     private boolean doAgentAction(String action, String loginName) {
-        URI uriPost = URIBuilder.appendPath(uri, "exitPG");
+        URI uriPost = URIBuilder.appendPath(uri, action);
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
@@ -458,5 +459,24 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     @Override
     public boolean deactivateSkills(List<Integer> skills) {
         return this.deactivateSkills(skills, null);
+    }
+
+    @Override
+    public boolean setMultiMediaWrapup(MultiMediaState state, String loginName) {
+        URI uriPost = URIBuilder.appendPath(uri, "wrapUpMM");
+        if (loginName != null) {
+            uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
+        }
+        
+        uriPost = URIBuilder.appendQuery(uriPost, "multimedia", state.toString());
+
+        HttpRequest request = HttpUtil.POST(uriPost);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
+    @Override
+    public boolean setMultiMediaWrapup(MultiMediaState state) {
+        return this.setMultiMediaWrapup(state, null);
     }
 }

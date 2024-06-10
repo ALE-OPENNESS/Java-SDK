@@ -20,6 +20,7 @@ package com.ale.o2g.types.rsi;
 
 /**
  * {@code RouteRequest} represents a routing request done from a RSI point to the listening application.
+ * @hidden
  */
 public class RouteRequest {
 

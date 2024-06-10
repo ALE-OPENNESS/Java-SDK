@@ -20,6 +20,7 @@ package com.ale.o2g.types.telephony.call;
 
 import java.util.Collection;
 
+import com.ale.o2g.internal.util.HexaString;
 import com.ale.o2g.types.common.PartyInfo;
 import com.ale.o2g.types.telephony.Call;
 import com.ale.o2g.types.telephony.call.acd.AcdData;
@@ -37,6 +38,7 @@ public class CallData {
     private Collection<Tag> tags;
     private Call.Capabilities capabilities;
     private String associateData;
+    private String hexaBinaryAssociatedData;
     private String accountInfo;
     private AcdData acdCallData;
 
@@ -116,11 +118,29 @@ public class CallData {
      * Returns the call associated data.
      * 
      * @return the associate data.
+     * @deprecated use {@link #getCorrelatorData()} instead.
      */
     public final String getAssociateData() {
         return associateData;
     }
 
+    /**
+     * Return the attached corelator data.
+     * @return the correlator data or {@code null} if there is no attached data.
+     */
+    public final CorrelatorData getCorrelatorData() {
+        if (associateData != null) {
+            return new CorrelatorData(associateData);
+        }
+        else if (hexaBinaryAssociatedData != null) {
+            return new CorrelatorData(HexaString.toByteArray(hexaBinaryAssociatedData));
+        }
+        else {
+            return null;
+        }
+    }
+    
+    
     /**
      * Return this call account info.
      * 

@@ -26,6 +26,7 @@ import java.util.Map;
 /**
  * {@code AdditionalDigitCollectionCriteria} is used to define a digit
  * collection strategy.
+ * @hidden
  */
 public class AdditionalDigitCollectionCriteria {
 

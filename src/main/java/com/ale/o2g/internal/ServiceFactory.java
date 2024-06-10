@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import com.ale.o2g.AnalyticsService;
 import com.ale.o2g.CallCenterAgentService;
+import com.ale.o2g.CallCenterManagementService;
+import com.ale.o2g.CallCenterPilotService;
 import com.ale.o2g.CommunicationLogService;
 import com.ale.o2g.DirectoryService;
 import com.ale.o2g.EventSummaryService;
@@ -38,12 +40,13 @@ import com.ale.o2g.ManagementService;
 import com.ale.o2g.MessagingService;
 import com.ale.o2g.O2GException;
 import com.ale.o2g.RoutingService;
-import com.ale.o2g.RsiService;
 import com.ale.o2g.TelephonyService;
 import com.ale.o2g.UsersService;
 import com.ale.o2g.internal.rest.AnalyticsRest;
 import com.ale.o2g.internal.rest.AuthenticationRest;
 import com.ale.o2g.internal.rest.CallCenterAgentRest;
+import com.ale.o2g.internal.rest.CallCenterManagementRest;
+import com.ale.o2g.internal.rest.CallCenterPilotRest;
 import com.ale.o2g.internal.rest.CommunicationLogRest;
 import com.ale.o2g.internal.rest.DirectoryRest;
 import com.ale.o2g.internal.rest.EventSummaryRest;
@@ -52,7 +55,6 @@ import com.ale.o2g.internal.rest.ManagementRest;
 import com.ale.o2g.internal.rest.MessagingRest;
 import com.ale.o2g.internal.rest.O2GRest;
 import com.ale.o2g.internal.rest.RoutingRest;
-import com.ale.o2g.internal.rest.RsiRest;
 import com.ale.o2g.internal.rest.SessionsRest;
 import com.ale.o2g.internal.rest.SubscriptionsRest;
 import com.ale.o2g.internal.rest.TelephonyRest;
@@ -278,10 +280,19 @@ public class ServiceFactory {
         return getOrCreate(Service.Management, ManagementRest.class);
     }
     
+    /*
     public RsiService getRsiService() {
         return getOrCreate(Service.Rsi, RsiRest.class);
     }
+    */
 
+    public CallCenterPilotService getCallCenterPilotService() {
+        return getOrCreate(Service.CallCenterPilot, CallCenterPilotRest.class);
+    }
+
+    public CallCenterManagementService getCallCenterManagementService() {
+        return getOrCreate(Service.CallCenterManagement, CallCenterManagementRest.class);
+    }
 
 	@SuppressWarnings("unchecked")
 	private <T extends IService> T getOrCreate(Service serviceName, Class<T> restClass) {

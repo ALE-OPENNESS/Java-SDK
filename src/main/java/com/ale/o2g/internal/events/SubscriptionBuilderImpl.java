@@ -23,12 +23,12 @@ import com.ale.o2g.Subscription.Builder;
 import com.ale.o2g.Subscription.Filter;
 import com.ale.o2g.events.EventPackage;
 import com.ale.o2g.events.cca.CallCenterAgentEventListener;
+import com.ale.o2g.events.ccp.CallCenterPilotEventListener;
 import com.ale.o2g.events.comlog.CommunicationLogEventListener;
 import com.ale.o2g.events.eventsummary.EventSummaryEventListener;
 import com.ale.o2g.events.maintenance.MaintenanceEventListener;
 import com.ale.o2g.events.management.ManagementEventListener;
 import com.ale.o2g.events.routing.RoutingEventListener;
-import com.ale.o2g.events.rsi.RsiEventListener;
 import com.ale.o2g.events.telephony.TelephonyEventListener;
 import com.ale.o2g.events.users.UsersEventListener;
 import com.ale.o2g.internal.util.EventListenersMap;
@@ -52,7 +52,7 @@ public class SubscriptionBuilderImpl implements Subscription.Builder {
 		return this;
 	}
 	
-
+/*
     @Override
     public Builder addRsiEventListener(RsiEventListener listener, String[] ids) {
         
@@ -65,7 +65,8 @@ public class SubscriptionBuilderImpl implements Subscription.Builder {
         listeners.add(RsiEventListener.class, listener);
         return this;
     }
-
+*/
+	
     @Override
     public Builder addCallCenterAgentEventListener(CallCenterAgentEventListener listener, String[] ids) {
         
@@ -79,6 +80,20 @@ public class SubscriptionBuilderImpl implements Subscription.Builder {
         return this;
     }
 
+    @Override
+    public Builder addCallCenterPilotEventListener(CallCenterPilotEventListener listener, String[] ids) {
+        
+        if (ids == null) {
+            filter.addPackages(EventPackage.PILOT);
+        }
+        else {
+            filter.addPackages(ids, EventPackage.PILOT);
+        }
+        listeners.add(CallCenterPilotEventListener.class, listener);
+        return this;
+    }
+    
+    
 	@Override
 	public Builder addEventSummaryEventListener(EventSummaryEventListener listener, String[] ids) {
 	    
@@ -187,18 +202,22 @@ public class SubscriptionBuilderImpl implements Subscription.Builder {
         return this.addRoutingEventListener(listener, null);
     }
 
-
+/*
     @Override
     public Builder addRsiEventListener(RsiEventListener listener) {
         return this.addRsiEventListener(listener, null);
     }
-
+*/
 
     @Override
     public Builder addCallCenterAgentEventListener(CallCenterAgentEventListener listener) {
         return this.addCallCenterAgentEventListener(listener, null);
     }
 
+    @Override
+    public Builder addCallCenterPilotEventListener(CallCenterPilotEventListener listener) {
+        return this.addCallCenterPilotEventListener(listener, null);
+    }
 
     @Override
     public Builder addCommunicationLogEventListener(CommunicationLogEventListener listener) {

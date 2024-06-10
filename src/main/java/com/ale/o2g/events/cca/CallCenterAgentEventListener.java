@@ -28,7 +28,7 @@ import java.util.EventListener;
  * (overriding only the methods of interest). The listener object created from
  * that class is then registered with the session, using the
  * {@linkplain com.ale.o2g.Session#listenEvents(com.ale.o2g.Subscription)
- * Session.listenEvents} method. When a call center event occurs the relevant
+ * Session.listenEvents} method. When a call center agent event occurs the relevant
  * method in the listener object is invoked.
  * 
  */
@@ -56,4 +56,12 @@ public interface CallCenterAgentEventListener extends EventListener {
      * @param e the associated event object
      */
     void onSupervisorHelpRequested(OnSupervisorHelpRequestedEvent e);
+    
+    
+    /**
+     * Invoked when an agent activate or deactivate skills.
+     * 
+     * @param e the associated event object
+     */
+    void onAgentSkillChanged(OnAgentSkillChangedEvent e);
 }

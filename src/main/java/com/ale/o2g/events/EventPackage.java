@@ -74,9 +74,14 @@ public class EventPackage {
     public final static EventPackage AGENT = new EventPackage("agent");
     
     /**
+     * The call center pilot event package.
+     */
+    public final static EventPackage PILOT = new EventPackage("pilot");
+    
+    /**
      * The rsi event package.
      */
-    public final static EventPackage RSI = new EventPackage("rsi");
+//    public final static EventPackage RSI = new EventPackage("rsi");
     
     /**
      * The maintenance event package.

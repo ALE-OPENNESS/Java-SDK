@@ -28,8 +28,10 @@ import com.ale.o2g.types.telephony.HuntingGroups;
 import com.ale.o2g.types.telephony.MiniMessage;
 import com.ale.o2g.types.telephony.RecordingAction;
 import com.ale.o2g.types.telephony.TelephonicState;
+import com.ale.o2g.types.telephony.call.CorrelatorData;
 import com.ale.o2g.types.telephony.call.Leg;
 import com.ale.o2g.types.telephony.call.Participant;
+import com.ale.o2g.types.telephony.call.acd.PilotInfo;
 import com.ale.o2g.types.telephony.device.DeviceState;
 
 /**
@@ -181,7 +183,7 @@ public interface TelephonyService extends IService {
      * @param correlatorData the correlator data to add
      * @return {@code true} in case of success; {@code false} otherwise.
      */
-//    boolean attachData(String callRef, String deviceId, CorrelatorData correlatorData);
+    boolean attachData(String callRef, String deviceId, CorrelatorData correlatorData);
 
     /**
      * Initiates a call from the specified device to the specified called number for
@@ -413,6 +415,7 @@ public interface TelephonyService extends IService {
      * @param deviceId       the device phone number for which the operation is done
      * @param associatedData the associated data
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @deprecated use {@link #attachData(String, String, CorrelatorData)}
      */
     boolean attachData(String callRef, String deviceId, String associatedData);
 
@@ -1152,6 +1155,26 @@ public interface TelephonyService extends IService {
     DeviceState getDeviceState(String deviceId);
 
     /**
+     * Activate or deactivate the interphony by simulating pressing the key on the
+     * specified device.
+     * <ul>
+     * <li>it activates or deactivates the microphone if the device has an outgoing
+     * or established call
+     * <li>it activates or deactivates the interphony if the device is idle
+     * <li>it has no effect if the device is ringing on incoming call
+     * </ul>
+     * <p>
+     * This operation is done in blind mode: no state event is provided on the push
+     * but when the device returns to idle after a call, the microphone comes back
+     * in the active state.
+     * 
+     * @param deviceId the device phone number for which the operation is done
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @since 2.6
+     */
+    boolean toggleInterphony(String deviceId);
+
+    /**
      * Picks up the specified incoming call for another user.
      * 
      * @param deviceId         the device phone number for which the operation is
@@ -1528,6 +1551,36 @@ public interface TelephonyService extends IService {
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean requestCallback(String callee);
+
+    /**
+     * Query the specified CCD pilot information. This method is used to get various
+     * information on teh CCD pilot routing capabiities.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * 
+     * @param nodeId      the PCX Enterprise node id
+     * @param pilotNumber the pilot number
+     * @param loginName   the login name
+     * @return The CCD pilot information on success; {@code null} otherwise.
+     * @since 2.7
+     */
+    PilotInfo getPilotInfo(int nodeId, String pilotNumber, String loginName);
+
+    /**
+     * Query the specified CCD pilot information. This method is used to get various
+     * information on teh CCD pilot routing capabiities.
+     * <p>
+     * This method with return {@code null} if it is invoked from a session opened
+     * by an administrator.
+     * 
+     * @param nodeId      the PCX Enterprise node id
+     * @param pilotNumber the pilot number
+     * @return The CCD pilot information on success; {@code null} otherwise.
+     * @since 2.7
+     */
+    PilotInfo getPilotInfo(int nodeId, String pilotNumber);
 
     /**
      * Asks a snapshot event on the specified user.

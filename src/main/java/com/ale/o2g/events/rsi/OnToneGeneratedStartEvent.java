@@ -23,6 +23,7 @@ import com.ale.o2g.types.rsi.Tones;
 
 /**
  * This event is sent from a RSI point when a tone generation is started.
+ * @hidden
  */
 public class OnToneGeneratedStartEvent extends O2GEvent {
 

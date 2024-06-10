@@ -122,8 +122,22 @@ public interface Session {
      * 
      * @return the {@link RsiService RsiService } object.
      */
-    RsiService getRsiService();
-
+//    RsiService getRsiService();
+    
+    /**
+     * Return the CallCenterPilotService.
+     * 
+     * @return the {@link CallCenterPilotService CallCenterPilotService } object.
+     */
+    CallCenterPilotService getCallCenterPilotService();
+    
+    /**
+     * Return the CallCenterManagementService.
+     * 
+     * @return the {@link CallCenterManagementService CallCenterManagementService } object.
+     */
+    CallCenterManagementService getCallCenterManagementService();
+    
     /**
      * Listen to event notification from the O2G server.
      * <p>

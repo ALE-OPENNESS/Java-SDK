@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.ale.o2g.internal.services.IService;
 import com.ale.o2g.types.cca.IntrusionMode;
+import com.ale.o2g.types.cca.MultiMediaState;
 import com.ale.o2g.types.cca.OperatorConfiguration;
 import com.ale.o2g.types.cca.OperatorState;
 import com.ale.o2g.types.cca.WithdrawReason;
@@ -204,6 +205,32 @@ public interface CallCenterAgentService extends IService {
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean setWrapup();
+
+    /**
+     * Put the specified agent in multi-media wrapup with the specified multi-media
+     * state.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * 
+     * @param state     the multi-media state
+     * @param loginName the agent login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean setMultiMediaWrapup(MultiMediaState state, String loginName);
+
+    /**
+     * Put the specified agent in multi-media wrapup with the specified multi-media
+     * state.
+     * <p>
+     * This method will fail return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     * 
+     * @param state the multi-media state
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean setMultiMediaWrapup(MultiMediaState state);
 
     /**
      * Puts the specified agent in ready state.
@@ -528,11 +555,10 @@ public interface CallCenterAgentService extends IService {
      * (not assigned to the operator), it is ignored and the method returns
      * {@code true}.
      * 
-     * @param skills    the list of skills to activate.
+     * @param skills the list of skills to activate.
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean activateSkills(List<Integer> skills);
-
 
     /**
      * Deactivates the specified skills.
@@ -561,7 +587,7 @@ public interface CallCenterAgentService extends IService {
      * (not assigned to the operator), it is ignored and the method returns
      * {@code true}.
      * 
-     * @param skills    the list of skills to activate.
+     * @param skills the list of skills to activate.
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean deactivateSkills(List<Integer> skills);

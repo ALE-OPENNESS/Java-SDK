@@ -48,6 +48,7 @@ public interface SessionMonitoringPolicy {
 
         /**
          * Returns the action associated to this behavior.
+         * 
          * @return the action
          */
         public final int getAction() {
@@ -56,6 +57,7 @@ public interface SessionMonitoringPolicy {
 
         /**
          * Returns a period associated to this behavior.
+         * 
          * @return the period
          */
         public final long getPeriod() {
@@ -64,6 +66,7 @@ public interface SessionMonitoringPolicy {
 
         /**
          * Returns a time unit associated to this behavior.
+         * 
          * @return the unit
          */
         public final TimeUnit getUnit() {
@@ -178,17 +181,21 @@ public interface SessionMonitoringPolicy {
     void sessionKeepAliveFatalError(Session session);
 
     /**
-     * This method is called by the keep alive thread when an exception is
-     * throwned. For exemple, on a network failure an IOException will be thrown.
+     * This method is called by the keep alive thread when an exception is throwned.
+     * For exemple, on a network failure an IOException will be thrown.
+     * 
      * @param session the session
-     * @param e the exception raised
-     * @return the behavior in reaction to the failure. If an ABORT behavior is returned, the thread is ended.
+     * @param e       the exception raised
+     * @return the behavior in reaction to the failure. If an ABORT behavior is
+     *         returned, the thread is ended.
      */
     Behavior getBehaviorOnKeepAliveFailure(Session session, Exception e);
 
     /**
-     * Called when an exception has been thrown during the treatment of an event by the application
-     * @param e
+     * Called when an exception has been thrown during the treatment of an event by
+     * the application
+     * 
+     * @param e the exception that lead to this specific treatment
      */
     void eventTreatmentException(Exception e);
 }

@@ -22,6 +22,7 @@ package com.ale.o2g.events.rsi;
  * An empty implementation of the RsiEventListener interface, provided as a
  * convenience to simplify the task of creating listeners, by extending and
  * implementing only the methods of interest.
+ * @hidden
  */
 public class RsiEventAdapter implements RsiEventListener {
 

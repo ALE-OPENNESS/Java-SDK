@@ -37,7 +37,11 @@ public class CallCenterAgentEventAdapter implements CallCenterAgentEventListener
     public void onSupervisorHelpRequested(OnSupervisorHelpRequestedEvent e) {
     }
 
-    protected CallCenterAgentEventAdapter() {
+    @Override
+    public void onAgentSkillChanged(OnAgentSkillChangedEvent e) {
     }
     
+    protected CallCenterAgentEventAdapter() {
+    }
+
 }

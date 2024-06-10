@@ -49,6 +49,8 @@ public class Service {
     public static Service CommunicationLog = new Service("comlog");
     public static Service Analytics = new Service("analytics");
     public static Service CallCenterAgent = new Service("acdagent");
+    public static Service CallCenterPilot = new Service("acdpilotmonitoring");
+    public static Service CallCenterManagement = new Service("acdmanagement");
     public static Service Rsi = new Service("acdrsi");
     public static Service Management = new Service("pbxmanagement");
 

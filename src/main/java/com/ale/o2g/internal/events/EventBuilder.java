@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ale.o2g.events.O2GEvent;
 import com.ale.o2g.events.cca.CallCenterAgentEventListener;
+import com.ale.o2g.events.ccp.CallCenterPilotEventListener;
 import com.ale.o2g.events.comlog.CommunicationLogEventListener;
 import com.ale.o2g.events.common.ChannelInformationEventListener;
 import com.ale.o2g.events.maintenance.MaintenanceEventListener;
@@ -32,6 +33,7 @@ import com.ale.o2g.events.rsi.RsiEventListener;
 import com.ale.o2g.events.telephony.TelephonyEventListener;
 import com.ale.o2g.events.users.UsersEventListener;
 import com.ale.o2g.internal.events.EventRegistrar.EventTranslator;
+import com.ale.o2g.internal.events.cca.OnInternalSkillChanged;
 import com.ale.o2g.internal.events.maintenance.OnInternalNodeIdEvent;
 import com.ale.o2g.internal.events.management.OnInternalPbxObjectEvent;
 import com.ale.o2g.internal.events.routing.OnInternalRoutingStateChangedEvent;
@@ -74,7 +76,10 @@ public class EventBuilder {
         eventRegistrar.registerEventListener(TelephonyEventListener.class);
 		eventRegistrar.registerEventListener(UsersEventListener.class);
         eventRegistrar.registerEventListener(CallCenterAgentEventListener.class);
+        eventRegistrar.registerAdapter("OnAgentSkillChangedEvent", OnInternalSkillChanged::adaptSkillChanged, OnInternalSkillChanged.class);
+        
         eventRegistrar.registerEventListener(RsiEventListener.class);
+        eventRegistrar.registerEventListener(CallCenterPilotEventListener.class);
 
 	}
 

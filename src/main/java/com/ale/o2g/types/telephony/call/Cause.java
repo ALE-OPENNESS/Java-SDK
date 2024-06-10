@@ -65,21 +65,41 @@ public enum Cause {
      * The destination cannot be reached.
      */
     DESTINATION_NOT_OBTAINABLE,
+    
+    /**
+     * The device is in DND stats.
+     */
+    DO_NOT_DISTURB,
 
     /**
      * The call has been forwarded.
      */
     FORWARDED, 
+    
+    /**
+     * The call has been released before being answered
+     */
+    NOT_ANSWERED,
 
     /**
      * The call has been picked up.
      */
     PICKED_UP, 
+    
+    /**
+     * The call has been parked.
+     */
+    PARKED, 
 
     /**
      * The call has been redirected.
      */
     REDIRECTED, 
+    
+    /**
+     * The call goes on an overflow destination.
+     */
+    OVERFLOWN,
 
     /**
      * This is a transferred call.
@@ -107,12 +127,22 @@ public enum Cause {
     RECALL, 
 
     /**
-     * CCD context: call distribution
+     * CCD context: call distribution.
      */
     DISTRIBUTED,
+    
+    /**
+     * CCD context: the call enter in distribution.
+     */
+    ACD_ENTER_DISTRIBUTION,
+    
+    /**
+     * CCD context: The pilot is closed or blocked.
+     */
+    RESOURCES_NOT_AVAILABLE,
 
     /**
-     * CCD context: supervisor is listening the agent conversation
+     * CCD context: supervisor is listening the agent conversation.
      */
     SUPERVISOR_LISTENING, 
 

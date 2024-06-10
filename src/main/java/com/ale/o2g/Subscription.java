@@ -25,12 +25,12 @@ import java.util.stream.Collectors;
 
 import com.ale.o2g.events.EventPackage;
 import com.ale.o2g.events.cca.CallCenterAgentEventListener;
+import com.ale.o2g.events.ccp.CallCenterPilotEventListener;
 import com.ale.o2g.events.comlog.CommunicationLogEventListener;
 import com.ale.o2g.events.eventsummary.EventSummaryEventListener;
 import com.ale.o2g.events.maintenance.MaintenanceEventListener;
 import com.ale.o2g.events.management.ManagementEventListener;
 import com.ale.o2g.events.routing.RoutingEventListener;
-import com.ale.o2g.events.rsi.RsiEventListener;
 import com.ale.o2g.events.telephony.TelephonyEventListener;
 import com.ale.o2g.events.users.UsersEventListener;
 import com.ale.o2g.internal.events.SubscriptionBuilderImpl;
@@ -299,7 +299,7 @@ public abstract class Subscription {
          * @param listener the event listener to receive the RSI events.
          * @return this builder
          */
-        Builder addRsiEventListener(RsiEventListener listener);
+//        Builder addRsiEventListener(RsiEventListener listener);
 
         /**
          * Adds RSI events to the subscription.
@@ -308,7 +308,7 @@ public abstract class Subscription {
          * @param ids the ids to filter events on.
          * @return this builder
          */
-        Builder addRsiEventListener(RsiEventListener listener, String[] ids);
+//        Builder addRsiEventListener(RsiEventListener listener, String[] ids);
 
         /**
          * Adds Call center agent events to the subscription.
@@ -360,6 +360,26 @@ public abstract class Subscription {
          */
         Builder addMaintenanceEventListener(MaintenanceEventListener listener);
 
+        
+        /**
+         * Adds Call center pilot events to the subscription.
+         * 
+         * @param listener the event listener to receive the Call center pilot events.
+         * @return this builder
+         */
+        Builder addCallCenterPilotEventListener(CallCenterPilotEventListener listener);
+
+        /**
+         * Adds Call center pilot events to the subscription.
+         * 
+         * @param listener the event listener to receive the Call center pilot events.
+         * @param ids the ids to filter events on.
+         * @return this builder
+         */
+        Builder addCallCenterPilotEventListener(CallCenterPilotEventListener listener, String[] ids);
+
+        
+        
         /**
          * Specifies the required event version. by default version 1.0 is configured in
          * the builder.

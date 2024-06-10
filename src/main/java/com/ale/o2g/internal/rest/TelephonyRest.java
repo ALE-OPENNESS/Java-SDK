@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.ale.o2g.TelephonyService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HexaString;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.telephony.Call;
@@ -37,8 +38,10 @@ import com.ale.o2g.types.telephony.HuntingGroups;
 import com.ale.o2g.types.telephony.MiniMessage;
 import com.ale.o2g.types.telephony.RecordingAction;
 import com.ale.o2g.types.telephony.TelephonicState;
+import com.ale.o2g.types.telephony.call.CorrelatorData;
 import com.ale.o2g.types.telephony.call.Leg;
 import com.ale.o2g.types.telephony.call.Participant;
+import com.ale.o2g.types.telephony.call.acd.PilotInfo;
 import com.ale.o2g.types.telephony.device.DeviceState;
 
 /**
@@ -62,12 +65,39 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
         private Collection<Callback> callbacks;
     }
 	
+	private static class SendAssociatedDataRequest {
+	    @SuppressWarnings("unused")
+        private String deviceId;
+	    @SuppressWarnings("unused")
+        private String associatedData;
+	    @SuppressWarnings("unused")
+        private String hexaBinaryAssociatedData;
+	    
+	    public SendAssociatedDataRequest(String deviceId, String associatedData) {
+	        this.deviceId = deviceId;
+	        this.associatedData = associatedData;
+	        this.hexaBinaryAssociatedData = null;
+	    }
+	    
+	    public SendAssociatedDataRequest(String deviceId, CorrelatorData correlatorData) {
+            this.deviceId = deviceId;
+            this.associatedData = null;
+            
+            byte[] byteValue = correlatorData.asByteArray();
+            if (byteValue == null) {
+                this.hexaBinaryAssociatedData = null;
+            }
+            else {
+                this.hexaBinaryAssociatedData = HexaString.toHexaString(byteValue);   
+            }            
+	    }
+	}
+	
 	private static record MakeBasicCallRequest(String deviceId, String callee, boolean autoAnswer) {}
 	private static record DeviceIdRequest(String deviceId) {}
 	private static record MakeCallRequest(String deviceId, String callee, boolean autoAnswer, 
 	        boolean inhibitProgressTone, String associatedData, String pin, String secretCode, String businessCode, String callingNumber) {}
 	
-	private static record SendAssociatedDataRequest(String deviceId, String associatedData) {}
 	private static record BlindTransferRequest(String transferTo, boolean anonymous) {}
 	private static record HeldCallRequest(String heldCallRef) {}
 	private static record ParkRequest(String parkTo) {}
@@ -309,6 +339,21 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 		return isSucceeded(response);
 	}
+	
+    @Override
+    public boolean attachData(String callRef, String deviceId, CorrelatorData correlatorData) {
+        
+        URI uriPost = URIBuilder.appendPath(uri, "calls", AssertUtil.requireNotEmpty(callRef, "callRef"), "attachdata");
+        
+        String json = gson.toJson(new SendAssociatedDataRequest(
+                AssertUtil.requireNotEmpty(deviceId, "deviceId"),
+                correlatorData));
+
+        HttpRequest request = HttpUtil.POST(uriPost, json);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
 
 	@Override
 	public boolean blindTransfer(String callRef, String transferTo, boolean anonymous, String loginName) {
@@ -844,6 +889,16 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
         return isSucceeded(response);
     }
 	
+    @Override
+    public boolean toggleInterphony(String deviceId) {
+        
+        URI uriPost = URIBuilder.appendPath(uri, "devices", AssertUtil.requireNotEmpty(deviceId, "deviceId"), "ithmicro");
+
+        HttpRequest request = HttpUtil.POST(uriPost);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+    
 	
 	@Override
 	public boolean unPark(String heldCallRef, String deviceId) {
@@ -1123,5 +1178,28 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
     @Override
     public boolean release(String callRef) {
         return this.release(callRef, null);
+    }
+
+    @Override
+    public PilotInfo getPilotInfo(int nodeId, String pilotNumber, String loginName) {
+
+        URI uriPost = URIBuilder.appendPath(uri, 
+                "pilots", 
+                String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")),
+                AssertUtil.requireNotEmpty(pilotNumber, "pilotNumber"),
+                "transferInfo");
+        
+        if (loginName != null) {
+            uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
+        }
+
+        HttpRequest request = HttpUtil.POST(uriPost);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return getResult(response, PilotInfo.class);
+    }
+
+    @Override
+    public PilotInfo getPilotInfo(int nodeId, String pilotNumber) {
+        return this.getPilotInfo(nodeId, pilotNumber, null);
     }
 }

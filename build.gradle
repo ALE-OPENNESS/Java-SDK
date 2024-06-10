@@ -13,8 +13,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.slf4j:slf4j-api:2.0.13'
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_16
@@ -24,6 +24,8 @@ javadoc {
     source = sourceSets.main.allJava
 	exclude( "**/internal/**" )
 	exclude( "com/ale/o2g/util/**" )
+	exclude( "**/rsi/**" )
+	exclude( "com/ale/o2g/RsiService")
 	options.memberLevel = JavadocMemberLevel.PUBLIC
 }
 
@@ -51,7 +53,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'io.github.ale-openness.o2g'
             artifactId = 'o2g-sdk'
-            version = '1.5.2'
+            version = '1.6.1'
 
             from components.java
 

@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import com.ale.o2g.AnalyticsService;
 import com.ale.o2g.CallCenterAgentService;
+import com.ale.o2g.CallCenterManagementService;
+import com.ale.o2g.CallCenterPilotService;
 import com.ale.o2g.CommunicationLogService;
 import com.ale.o2g.DirectoryService;
 import com.ale.o2g.EventSummaryService;
@@ -34,7 +36,6 @@ import com.ale.o2g.ManagementService;
 import com.ale.o2g.MessagingService;
 import com.ale.o2g.O2GException;
 import com.ale.o2g.RoutingService;
-import com.ale.o2g.RsiService;
 import com.ale.o2g.Session;
 import com.ale.o2g.SessionMonitoringPolicy;
 import com.ale.o2g.Subscription;
@@ -131,9 +132,22 @@ public class SessionImpl implements Session {
         return this.serviceFactory.getManagementService();
     }
 
+    /*
     @Override
     public RsiService getRsiService() {
         return this.serviceFactory.getRsiService();
+    }
+    */
+
+
+    @Override
+    public CallCenterPilotService getCallCenterPilotService() {
+        return this.serviceFactory.getCallCenterPilotService();
+    }
+
+    @Override
+    public CallCenterManagementService getCallCenterManagementService() {
+        return this.serviceFactory.getCallCenterManagementService();
     }
 
 
