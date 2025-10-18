@@ -22,6 +22,7 @@ package com.ale.o2g.types.rsi;
  * {@code RsiPoint} represents a RSI point. When a call is receive by a RSI
  * routing point, a {@linkplain com.ale.o2g.events.rsi.OnRouteRequestEvent
  * OnRouteRequestEvent} is send to the application.
+ * @hidden
  */
 public class RsiPoint {
 

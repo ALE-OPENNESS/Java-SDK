@@ -21,105 +21,91 @@ package com.ale.o2g.types.comlog;
 import com.ale.o2g.types.common.PartyInfo;
 
 /**
- * {@code ComRecordParticipant} represents a participant referenced in a com
- * record.
- * <p><b><u>Record content</u></b>: For a <b>simple call</b> (user A calls user B), the
- * call record on each party will contain <u>both the participant A and the
- * participant B</u>: (no guaranty on the order of the participants on 2
- * successive responses).
- * <table>
- * <caption>Simple call</caption>
+ * {@code ComRecordParticipant} represents a participant referenced in a communication
+ * record (com record).
+ * <p>
+ * <b>Record Content:</b>
+ * <p>
+ * <b>Simple call</b> (user A calls user B): the call record on each participant's side
+ * will include both participants, though the order is not guaranteed between successive responses.
+ * <table style="border: 1px solid black; border-collapse: collapse; padding: 4px;">
+ * <caption>Simple call participants</caption>
  * <tr>
  * <th>Side</th>
- * <th>Com record content</th>
+ * <th>Participants</th>
  * </tr>
  * <tr>
- * <td>On A side</td>
+ * <td>A side (caller)</td>
  * <td>
- * <ul>
- * <li>Participant A (the owner of the record) with {@code role=Caller} and the
- * answered status (whether the call has been answered or not).</li>
- * <li>Participant B : neither the role nor the state is provided.</li>
- * </ul>
+ * <pre>
+ * Participant A (owner): role=Caller, answered status
+ * Participant B: role and answered status not provided
+ * </pre>
  * </td>
  * </tr>
  * <tr>
- * <td>On B side</td>
+ * <td>B side (callee)</td>
  * <td>
- * <ul>
- * <li>Participant A : neither the role nor the state is provided.</li>
- * <li>Participant B (the owner of the record) with {@code role=Callee} and the
- * answered status (whether the call has been answered or not)</li>
- * </ul>
+ * <pre>
+ * Participant A: role and answered status not provided
+ * Participant B (owner): role=Callee, answered status
+ * </pre>
  * </td>
  * </tr>
  * </table>
  * <p>
- * For a <b>re-routed call</b> (user A calls user B, the call is re-routed on
- * user C, caused by overflow, redirection or pickup), the record generated on
- * each side including the user B side (the "victim" of the re-routing) will not
- * contain as participant the user B itself because he was not the last
- * destination of the call:
- * <table>
- * <caption>Re-routed call</caption>
+ * <b>Re-routed call</b> (user A -> B, rerouted to C due to overflow, redirection, or pickup):
+ * <table style="border: 1px solid black; border-collapse: collapse; padding: 4px;">
+ * <caption>Re-routed call participants</caption>
  * <tr>
  * <th>Side</th>
- * <th>Com record content</th>
+ * <th>Participants</th>
  * </tr>
  * <tr>
- * <td>On A side</td>
+ * <td>A side</td>
  * <td>
- * <ul>
- * <li>Participant A : with {@code role=Caller}, the answered status,
- * initialCalled=B.</li>
- * <li>Participant C.</li>
- * </ul>
+ * <pre>
+ * Participant A: role=Caller, answered status, initialCalled=B
+ * Participant C
+ * </pre>
  * </td>
  * </tr>
  * <tr>
- * <td>On B side</td>
+ * <td>B side</td>
  * <td>
- * <ul>
- * <li>Participant A : neither the role nor the state is provided.</li>
- * <li>Participant C with {@code role=Callee}, the answered status (whether the
- * call has been answered or not) and initialCalled=B which tells B that he was
- * called by A but the call has been rerouted to C(with a reason) which answered
- * or not to the call</li>
- * </ul>
+ * <pre>
+ * Participant A: role and answered status not provided
+ * Participant C: role=Callee, answered status, initialCalled=B
+ * </pre>
  * </td>
  * </tr>
  * <tr>
- * <td>On C side</td>
+ * <td>C side</td>
  * <td>
- * <ul>
- * <li>Participant A : neither the role nor the state is provided.</li>
- * <li>Participant C with {@code role=Callee}, the answered status (whether the
- * call has been answered or not) and initialCalled=B.</li>
- * </ul>
+ * <pre>
+ * Participant A: role and answered status not provided
+ * Participant C (owner): role=Callee, answered status, initialCalled=B
+ * </pre>
  * </td>
  * </tr>
  * </table>
  * <p>
- * Furthermore, for a multi-parties call using addParticipant, the already
- * connected users in the call will also received a call record which will
- * contain the answered status of the added participant: this information is
- * provided to distinguish the added participants which have really answered and
- * the other which decline the call.
- * <p><b><u>Identification of the participant</u></b>: In the comlog notification events,
- * the participant owner is identified only by its loginName (in order to reduce
- * the event call flow), the other participants are identified with their full
- * identity (loginName, phoneNumber).
+ * <b>Multi-party calls:</b> Participants added using {@code addParticipant} will appear in records of
+ * already connected users. Their answered status indicates whether they accepted or declined the call.
  * <p>
- * In a {@linkplain QueryResult QueryResult} result:
+ * <b>Participant Identification:</b>
  * <ul>
- * <li>if no optimization is asked, all the participants are identified with
- * their full identity.</li>
- * <li>If the {@code optimized} parameter is set to {@code true}, only the first
- * occurence of a participant (owner or other) is identified with its full
- * identity. The following occurences are identified only with the
- * phonenumber.</li>
+ *   <li>In comlog notification events, the participant owner is identified by {@code loginName} only.
+ *       Other participants include full identity ({@code loginName}, {@code phoneNumber}).</li>
+ *   <li>In a {@linkplain QueryResult QueryResult}:
+ *     <ul>
+ *       <li>If no optimization is requested, all participants use full identity.</li>
+ *       <li>If {@code optimized=true}, only the first occurrence of each participant uses full identity;
+ *           subsequent occurrences use only phone numbers.</li>
+ *     </ul>
+ *   </li>
  * </ul>
- * 
+ *
  */
 public class ComRecordParticipant {
 
@@ -131,62 +117,60 @@ public class ComRecordParticipant {
     private Reason reason;
 
     /**
-     * Returns this participant's role
+     * Returns this participant's role in the communication.
      * 
-     * @return the role.
+     * @return the role of the participant.
      */
     public final Role getRole() {
         return role;
     }
 
     /**
-     * Returns whether this participant has answered the call.
+     * Returns whether this participant answered the call.
      * 
-     * @return {@code true} if the participant has answered the call; {@code false}
-     *         otherwise. If the information can not be provided, a {@code null}
-     *         value is returned.
+     * @return {@code true} if answered, {@code false} if not, or {@code null} if unknown.
      */
     public final Boolean getAnswered() {
         return answered;
     }
 
     /**
-     * Returns this participant's identity.
+     * Returns the participant's identity.
      * 
-     * @return the identity.
+     * @return the participant's {@link PartyInfo}.
      */
     public final PartyInfo getIdentity() {
         return identity;
     }
 
     /**
-     * Returns whether this participant is anonymous.
+     * Indicates if the participant is anonymous.
      * 
-     * @return {@code true} if the participant is anonymous; {@code false} otherwise.
+     * @return {@code true} if anonymous; {@code false} otherwise.
      */
     public final boolean isAnonymous() {
         return anonymous;
     }
 
     /**
-     * Returns the number that has been initially called when this participant has
-     * been entered in the call.
+     * Returns the number that was initially called when this participant joined the call.
      * 
-     * @return the initial number called.
+     * @return the initial called number, or {@code null} if not applicable.
      */
     public final PartyInfo getInitialCalled() {
         return initialCalled;
     }
 
     /**
-     * Returns the reason why the call has been established, rerouted, terminated ...
-     * @return the reason
+     * Returns the reason for the call being established, rerouted, or terminated.
+     * 
+     * @return the call {@link Reason}.
      */
     public final Reason getReason() {
         return reason;
     }
 
+    /** Protected default constructor for deserialization. */
     protected ComRecordParticipant() {
     }
-
 }

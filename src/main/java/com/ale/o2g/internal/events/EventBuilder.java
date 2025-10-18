@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import com.ale.o2g.events.O2GEvent;
 import com.ale.o2g.events.cca.CallCenterAgentEventListener;
+import com.ale.o2g.events.ccp.CallCenterPilotEventListener;
+import com.ale.o2g.events.ccrt.CallCenterRealtimeEventListener;
 import com.ale.o2g.events.comlog.CommunicationLogEventListener;
 import com.ale.o2g.events.common.ChannelInformationEventListener;
 import com.ale.o2g.events.maintenance.MaintenanceEventListener;
@@ -32,6 +34,8 @@ import com.ale.o2g.events.rsi.RsiEventListener;
 import com.ale.o2g.events.telephony.TelephonyEventListener;
 import com.ale.o2g.events.users.UsersEventListener;
 import com.ale.o2g.internal.events.EventRegistrar.EventTranslator;
+import com.ale.o2g.internal.events.cca.OnInternalSkillChanged;
+import com.ale.o2g.internal.events.ccstats.CallCenterStatisticsEventListener;
 import com.ale.o2g.internal.events.maintenance.OnInternalNodeIdEvent;
 import com.ale.o2g.internal.events.management.OnInternalPbxObjectEvent;
 import com.ale.o2g.internal.events.routing.OnInternalRoutingStateChangedEvent;
@@ -74,8 +78,13 @@ public class EventBuilder {
         eventRegistrar.registerEventListener(TelephonyEventListener.class);
 		eventRegistrar.registerEventListener(UsersEventListener.class);
         eventRegistrar.registerEventListener(CallCenterAgentEventListener.class);
+        eventRegistrar.registerAdapter("OnAgentSkillChangedEvent", OnInternalSkillChanged::adaptSkillChanged, OnInternalSkillChanged.class);
+        
         eventRegistrar.registerEventListener(RsiEventListener.class);
+        eventRegistrar.registerEventListener(CallCenterPilotEventListener.class);
 
+        eventRegistrar.registerEventListener(CallCenterRealtimeEventListener.class);
+        eventRegistrar.registerEventListener(CallCenterStatisticsEventListener.class);
 	}
 
 	protected static Gson gson = new GsonBuilder().
@@ -86,10 +95,13 @@ public class EventBuilder {
 	public static O2GEventDescriptor get(String evJson) {
 
 		// retrieve the short event name
-		String eventName = String.format("%sEvent", gson.fromJson(evJson, O2GEvent.class).getName());
-		
+	    String eventName = String.format("%sEvent", gson.fromJson(evJson, O2GEvent.class).getName());
+	    
 		String qualifiedEventName = eventRegistrar.getQualifiedName(eventName);
-
+		if (qualifiedEventName == null) {
+		    return null;
+		}
+		
 		Class<? extends O2GEvent> typeEvent = null;
 
 		// We have the name of the event, check if there is a translator for this event

@@ -18,11 +18,12 @@
 */
 package com.ale.o2g.types.cca;
 
-
 /**
- * {@code IntrusionMode} represents the possible intrusion mode.
+ * {@code IntrusionMode} defines the possible modes of call intrusion available
+ * to a CCD supervisor.
  * <p>
- * A supervisor can intrude in an established CCD call. The intrusion depends on the {@code IntrusionMode}.
+ * A supervisor may intrude into an active CCD call in different ways depending
+ * on the selected mode.
  */
 public enum IntrusionMode {
 
@@ -32,12 +33,12 @@ public enum IntrusionMode {
     NORMAL,
 
     /**
-     * The supervisor can only talk to the agent but listen to the remote customer.
+     * The supervisor can talk only to the agent, while listening to the remote customer.
      */
     RESTRICTED,
 
     /**
-     * The supervisor only listens to the conversation between agent and customer.
+     * The supervisor silently listens to the conversation between the agent and the customer.
      */
     DISCRETE
 }

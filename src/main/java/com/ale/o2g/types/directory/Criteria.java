@@ -21,194 +21,177 @@ package com.ale.o2g.types.directory;
 import java.util.Arrays;
 
 /**
- * {@code Criteria} allows to specifiy a filter to apply on a directory search.
+ * {@code Criteria} allows specifying a filter to apply when searching the
+ * directory using {@link com.ale.o2g.DirectoryService}.
  * <p>
- * A simple criteria is a tuple of the form: {@code [Attribute, Operation, Value]}. For example : {@code [LAST_NAME, BEGINS_WITH, "fr"]}.
- * <br>A {@code Criteria} can also be the logical OR or AND combination of the set of other {@code Criteria's}.
+ * A simple criteria is a tuple of the form: {@code [Attribute, Operation, Value]}.
+ * For example: {@code [LAST_NAME, BEGINS_WITH, "fr"]}.
  * <p>
- * The acceptable values for the Attributes are:<br>
+ * A {@code Criteria} can also be a logical combination (AND/OR) of multiple other
+ * {@code Criteria} instances.
+ * 
+ * <p><b>Attributes:</b>
  * <table>
- * <caption>Attributes values</caption>
+ * <caption>Available attribute filters</caption>
  * <thead>
  * <tr><th>Value</th><th>Description</th></tr>
  * </thead>
- * <tr><td>LAST_NAME</td><td>The last name.</td></tr>
- * <tr><td>FIRST_NAME</td><td>The first name.</td></tr>
- * <tr><td>LOGIN_NAME</td><td>The login name.</td></tr>
- * <tr><td>PHONE_NUMBER</td><td>The phone number.</td></tr>
+ * <tbody>
+ * <tr><td>LASTNAME</td><td>The last name of the user.</td></tr>
+ * <tr><td>FIRSTNAME</td><td>The first name of the user.</td></tr>
+ * <tr><td>LOGIN_NAME</td><td>The login name of the user.</td></tr>
+ * <tr><td>PHONE_NUMBER</td><td>The phone number of the user.</td></tr>
+ * </tbody>
  * </table>
- * <p>
- * The acceptable values for the Operands are<br>
+ * 
+ * <p><b>Operations:</b>
  * <table>
- * <caption>Operands values</caption>
+ * <caption>Available operation filters</caption>
  * <thead>
  * <tr><th>Value</th><th>Description</th></tr>
  * </thead>
- * <tr><td>BEGINS_WITH</td><td>The attribute must begin with the given value.</td></tr>
- * <tr><td>ENDS_WITH</td><td>The attribute must end with the given value.</td></tr>
- * <tr><td>CONTAINS</td><td>The attribute must contain with the given value.</td></tr>
- * <tr><td>EQUAL_IGNORE_CASE</td><td>The attribute is equal to the given value (case insensitive comparison).</td></tr>
+ * <tbody>
+ * <tr><td>EQUAL_IGNORE_CASE</td><td>Attribute is equal to the given value (case-insensitive).</td></tr>
+ * <tr><td>BEGINS_WITH</td><td>Attribute starts with the given value.</td></tr>
+ * <tr><td>CONTAINS</td><td>Attribute contains the given value.</td></tr>
+ * <tr><td>ENDS_WITH</td><td>Attribute ends with the given value.</td></tr>
+ * </tbody>
  * </table>
- * <p><b><u>exemples</u></b>:
+ * 
+ * <p><b>Examples:</b>
  * <pre>{@code
- *     // Search users whom last name begins with "b"
- *     Criteria criteria = Criteria.create(
- *                               Criteria.AttributeFilter.LASTNAME, 
- *                               Criteria.OperationFilter.BEGINS_WITH, 
- *                               "b");
- *                               
- *     // Search users whom last name begins with "b" and first name contains "ja"
- *     Criteria criteria = Criteria.AND(
- *                               Criteria.create(
- *                                   Criteria.AttributeFilter.LASTNAME,
- *                                   Criteria.OperationFilter.BEGINS_WITH,
- *                                   "b"
- *                               ),
- *                               Criteria.create(
- *                                   Criteria.AttributeFilter.FIRSTNAME,
- *                                   Criteria.OperationFilter.CONTAINS,
- *                                   "ja"
- *                               )
- *                          );
+ * // Search users whose last name begins with "b"
+ * Criteria criteria = Criteria.create(
+ *     Criteria.AttributeFilter.LASTNAME, 
+ *     Criteria.OperationFilter.BEGINS_WITH, 
+ *     "b"
+ * );
+ * 
+ * // Search users whose last name begins with "b" AND first name contains "ja"
+ * Criteria criteria = Criteria.AND(
+ *     Criteria.create(
+ *         Criteria.AttributeFilter.LASTNAME,
+ *         Criteria.OperationFilter.BEGINS_WITH,
+ *         "b"
+ *     ),
+ *     Criteria.create(
+ *         Criteria.AttributeFilter.FIRSTNAME,
+ *         Criteria.OperationFilter.CONTAINS,
+ *         "ja"
+ *     )
+ * );
  * }</pre>
- *
  */
 public class Criteria {
 
     /**
-     * {@code AttributeFilter} represents the attributes that can be used to filter a directory search.
+     * {@code AttributeFilter} represents the attributes that can be used to filter
+     * a directory search.
      */
     public static enum AttributeFilter {
-
-        /**
-         * The last name.
-         */
+        /** The last name of the user. */
         LASTNAME,
-
-        /**
-         * The first name.
-         */
-        FIRSTNAME, 
-
-        /**
-         * The phone number.
-         */
-        PHONE_NUMBER, 
-
-        /**
-         * The login name.
-         */
+        /** The first name of the user. */
+        FIRSTNAME,
+        /** The phone number of the user. */
+        PHONE_NUMBER,
+        /** The login name of the user. */
         LOGIN_NAME
     }
     
     /**
-     * {@code OperationFilter} represents the operation that can be used to filter a directory search. 
+     * {@code OperationFilter} represents the operation applied to an attribute when
+     * filtering a directory search.
      */
     public static enum OperationFilter {
-
-        /**
-         * The attribute and the given value are equals (case insensitive).
-         */
-        EQUAL_IGNORE_CASE, 
-
-        /**
-         * The attribute begins with the value.
-         */
-        BEGINS_WITH, 
-
-        /**
-         * The attribute contains the value.
-         */
-        CONTAINS, 
-
-        /**
-         * The attribute ends with the value.
-         */
+        /** The attribute is equal to the given value (case-insensitive). */
+        EQUAL_IGNORE_CASE,
+        /** The attribute starts with the given value. */
+        BEGINS_WITH,
+        /** The attribute contains the given value. */
+        CONTAINS,
+        /** The attribute ends with the given value. */
         ENDS_WITH
     }
 
-    
-	private String operation;
-	private String field;
-	@SuppressWarnings("unused")
+    private String operation;
+    private String field;
+    @SuppressWarnings("unused")
     private Object operand;
 
-	protected Criteria(String field, String operation, Object operand) {
-		this.operation = operation;
-		this.field = field;
-		this.operand = operand;
-	}
+    protected Criteria(String field, String operation, Object operand) {
+        this.operation = operation;
+        this.field = field;
+        this.operand = operand;
+    }
 
-	private static String toField(AttributeFilter attr) {
-		if (attr == AttributeFilter.LASTNAME)
-			return "lastName";
-		else if (attr == AttributeFilter.FIRSTNAME)
-			return "firstName";
-		else if (attr == AttributeFilter.PHONE_NUMBER)
-			return "id.phoneNumber";
-		else
-			return "id.loginName";
-	}
+    private static String toField(AttributeFilter attr) {
+        switch (attr) {
+            case LASTNAME: return "lastName";
+            case FIRSTNAME: return "firstName";
+            case PHONE_NUMBER: return "id.phoneNumber";
+            case LOGIN_NAME: 
+            default: return "id.loginName";
+        }
+    }
 
-	private static String toOperation(OperationFilter operation) {
-		if (operation == OperationFilter.BEGINS_WITH)
-			return "BEGIN_WITH";
-		else if (operation == OperationFilter.EQUAL_IGNORE_CASE)
-			return "EQUAL_IGNORE_CASE";
-		else if (operation == OperationFilter.CONTAINS)
-			return "CONTAIN";
-		else
-			return "END_WITH";
-	}
-
-	/**
-	 * Create a new search Criteria with the specified attribute filter, operation
-	 * filter and value.
-	 * 
-	 * @param field     the attribute filter
-	 * @param operation the operation
-	 * @param operand   the value associated to this critera
-	 * @return the create {@code Criteria}.
-	 */
-	public static Criteria Create(AttributeFilter field, OperationFilter operation, String operand) {
-		return new Criteria(toField(field), toOperation(operation), operand);
-	}
-
-	/**
-	 * Create a search {@code Criteria} that is the AND combination of the given
-	 * list of Criterias.
-	 * 
-	 * @param criterias a list of {@code Criteria} objects.
-	 * @return the create {@code Criteria}.
-	 */
-	public static Criteria AND(Criteria... criterias) {
-		return new Criteria(null, "AND", Arrays.asList(criterias));
-	}
-
-	/**
-	 * Create a search {@code Criteria} that is the OR combination of the given list
-	 * of Criterias.
-	 * 
-	 * @param criterias a list of {@code Criteria} objects.
-	 * @return the create {@code Criteria}.
-	 */
-	public static Criteria OR(Criteria... criterias) {
-		return new Criteria(null, "OR", Arrays.asList(criterias));
-	}
+    private static String toOperation(OperationFilter operation) {
+        switch (operation) {
+            case BEGINS_WITH: return "BEGIN_WITH";
+            case EQUAL_IGNORE_CASE: return "EQUAL_IGNORE_CASE";
+            case CONTAINS: return "CONTAIN";
+            case ENDS_WITH: 
+            default: return "END_WITH";
+        }
+    }
 
     /**
-     * Returns this filter operation.
-     * @return the operation
+     * Creates a new {@code Criteria} with the specified attribute filter, operation, and value.
+     *
+     * @param field     the attribute to filter
+     * @param operation the operation to apply
+     * @param operand   the value to match
+     * @return a new {@code Criteria} instance
+     */
+    public static Criteria create(AttributeFilter field, OperationFilter operation, String operand) {
+        return new Criteria(toField(field), toOperation(operation), operand);
+    }
+
+    /**
+     * Creates a {@code Criteria} that is the logical AND of multiple other criteria.
+     *
+     * @param criterias one or more {@code Criteria} objects
+     * @return a new {@code Criteria} representing the AND combination
+     */
+    public static Criteria AND(Criteria... criterias) {
+        return new Criteria(null, "AND", Arrays.asList(criterias));
+    }
+
+    /**
+     * Creates a {@code Criteria} that is the logical OR of multiple other criteria.
+     *
+     * @param criterias one or more {@code Criteria} objects
+     * @return a new {@code Criteria} representing the OR combination
+     */
+    public static Criteria OR(Criteria... criterias) {
+        return new Criteria(null, "OR", Arrays.asList(criterias));
+    }
+
+    /** 
+     * Returns this filter's operation.
+     * 
+     * @return the operation of the filter as a {@link String}
      */
     public final String getOperation() {
         return operation;
     }
 
-    /**
-     * Returns this filter field.
-     * @return the field
+    /** 
+     * Returns this filter's field.
+     * 
+     * @return the field of the filter as a {@link String}
      */
     public final String getField() {
         return field;
-    }	
+    }
 }

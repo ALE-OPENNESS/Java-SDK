@@ -19,11 +19,27 @@
 package com.ale.o2g.events.cca;
 
 /**
- * An empty implementation of the CallCenterAgentEventListener interface, provided as a
- * convenience to simplify the task of creating listeners, by extending and
- * implementing only the methods of interest.
+ * A convenience adapter class that provides empty implementations of the 
+ * {@link CallCenterAgentEventListener} interface. 
+ * <p>
+ * This class can be extended by applications that only need to handle a subset of 
+ * call center agent events. By overriding only the methods of interest, developers 
+ * can avoid implementing all interface methods.
+ * <p>
+ * Typical usage:
+ * <pre><code>
+ * {@literal @}Override
+ * public class MyAgentListener extends CallCenterAgentEventAdapter {
+ *     {@literal @}Override
+ *     public void onAgentStateChanged(OnAgentStateChangedEvent e) {
+ *         // handle agent state changes
+ *     }
+ * }
+ * </code></pre>
+ *
+ * @see CallCenterAgentEventListener
  */
-public class CallCenterAgentEventAdapter implements CallCenterAgentEventListener {
+public abstract class CallCenterAgentEventAdapter implements CallCenterAgentEventListener {
 
     @Override
     public void onAgentStateChanged(OnAgentStateChangedEvent e) {
@@ -37,7 +53,11 @@ public class CallCenterAgentEventAdapter implements CallCenterAgentEventListener
     public void onSupervisorHelpRequested(OnSupervisorHelpRequestedEvent e) {
     }
 
-    protected CallCenterAgentEventAdapter() {
+    @Override
+    public void onAgentSkillChanged(OnAgentSkillChangedEvent e) {
     }
     
+    protected CallCenterAgentEventAdapter() {
+    }
+
 }

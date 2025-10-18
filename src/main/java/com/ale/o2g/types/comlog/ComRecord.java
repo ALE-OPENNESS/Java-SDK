@@ -24,8 +24,15 @@ import java.util.Date;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * {@code ComRecord} class represents a communication record, that is an history
- * call ticket stored by the O2G server for each conversation.
+ * {@code ComRecord} represents a communication record, which is a call history entry
+ * stored by the O2G server for each conversation.
+ * <p>
+ * Each record contains information about the call, including its unique identifier,
+ * reference, participants, timestamps, and acknowledgment status.
+ * <p>
+ * A {@code ComRecord} may represent an incoming or outgoing call, and includes details
+ * such as the start and end times, as well as the conversation time when the call was answered.
+ * 
  */
 public class ComRecord {
 
@@ -34,69 +41,86 @@ public class ComRecord {
 
     @SerializedName(value = "comRef")
     private String callRef;
+    
     private boolean acknowledged;
     private Collection<ComRecordParticipant> participants;
-    private Date begin;
-    private Date end;
+    private Date beginDate;
+    private Date endDate;
+    private Date convDate;
 
     /**
-     * Returns this communication record identifier.
+     * Returns the unique identifier of this communication record.
      * 
-     * @return the unique identifier for this communication record.
+     * @return the record ID.
      */
     public final long getId() {
         return id;
     }
 
     /**
-     * Returns the reference of the call that has created this communication record.
+     * Returns the reference of the call that created this communication record.
      * 
-     * @return the callRef the call reference
-     * @see com.ale.o2g.types.telephony.Call#getCallRef() Call.getCallRef
+     * @return the call reference.
+     * @see com.ale.o2g.types.telephony.Call#getCallRef() 
      */
     public final String getCallRef() {
         return callRef;
     }
 
     /**
-     * Returns whether this communication record has been acknowledged. This
-     * parameter can only be {@code true} for a missed incoming call.
+     * Indicates whether this communication record has been acknowledged.
+     * <p>
+     * Only missed incoming calls can have this flag set to {@code true}.
      * 
-     * @return {@code true} if the call has been acknowledged; {@code false}
-     *         otherwise.
+     * @return {@code true} if the call has been acknowledged; {@code false} otherwise.
      */
     public final boolean isAcknowledged() {
         return acknowledged;
     }
 
     /**
-     * Returns the participant to the call.
+     * Returns the collection of participants in this communication record.
      * 
-     * @return the participants.
+     * @return a collection of {@link ComRecordParticipant} objects representing
+     *         all participants in the call.
      */
     public final Collection<ComRecordParticipant> getParticipants() {
         return participants;
     }
 
     /**
-     * Returns the start date of this call.
+     * Returns the start date and time of this call.
      * 
-     * @return the begin date.
+     * @return the call start date.
      */
     public final Date getBegin() {
-        return begin;
+        return beginDate;
     }
 
     /**
-     * Returns the end date of this call.
+     * Returns the end date and time of this call.
      * 
-     * @return the end date.
+     * @return the call end date.
      */
     public final Date getEnd() {
-        return end;
+        return endDate;
     }
 
+    /**
+     * Returns the date and time when the call was answered.
+     * <p>
+     * For missed calls, this value may be {@code null}.
+     * 
+     * @return the conversation date.
+     * @since 2.6
+     */
+    public final Date getAnswered() {
+        return convDate;
+    }
+
+    /**
+     * Protected constructor for deserialization purposes.
+     */
     protected ComRecord() {
     }
-
 }

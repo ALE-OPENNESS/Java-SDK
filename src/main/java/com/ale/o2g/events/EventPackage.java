@@ -74,9 +74,14 @@ public class EventPackage {
     public final static EventPackage AGENT = new EventPackage("agent");
     
     /**
+     * The call center pilot event package.
+     */
+    public final static EventPackage PILOT = new EventPackage("pilot");
+    
+    /**
      * The rsi event package.
      */
-    public final static EventPackage RSI = new EventPackage("rsi");
+//    public final static EventPackage RSI = new EventPackage("rsi");
     
     /**
      * The maintenance event package.
@@ -87,4 +92,14 @@ public class EventPackage {
      * The management event package.
      */
     public final static EventPackage MANAGEMENT = new EventPackage("pbxManagement");
+
+    /**
+     * The RTI event package.
+     */
+    public final static EventPackage RTI = new EventPackage("rti");
+
+    /**
+     * The RTI event package.
+     */
+    public final static EventPackage STATS = new EventPackage("acdstats");
 }

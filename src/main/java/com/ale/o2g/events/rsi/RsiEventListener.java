@@ -30,6 +30,7 @@ import java.util.EventListener;
  * {@linkplain com.ale.o2g.Session#listenEvents(com.ale.o2g.Subscription)
  * Session.listenEvents} method. When a rsi event occurs the relevant method in
  * the listener object is invoked.
+ * @hidden
  */
 public interface RsiEventListener extends EventListener {
 

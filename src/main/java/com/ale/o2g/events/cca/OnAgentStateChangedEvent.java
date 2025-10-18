@@ -22,7 +22,24 @@ import com.ale.o2g.events.O2GEvent;
 import com.ale.o2g.types.cca.OperatorState;
 
 /**
- * This event is raised when the state of a CCD operator has changed.
+ * Event delivered when the state of a CCD operator (agent or supervisor) changes.
+ * <p>
+ * This event contains the operator's login name and their updated state. It is typically
+ * received by classes implementing {@link CallCenterAgentEventListener} or extending
+ * {@link CallCenterAgentEventAdapter}.
+ * <p>
+ * Typical usage:
+ * <pre><code>
+ * {@literal @}Override
+ * public void onAgentStateChanged(OnAgentStateChangedEvent e) {
+ *     OperatorState state = e.getState();
+ *     // handle the operator's new state
+ * }
+ * </code></pre>
+ *
+ * @see CallCenterAgentEventListener#onAgentStateChanged(OnAgentStateChangedEvent)
+ * @see CallCenterAgentEventAdapter
+ * @see OperatorState
  */
 public class OnAgentStateChangedEvent extends O2GEvent {
 
@@ -30,18 +47,18 @@ public class OnAgentStateChangedEvent extends O2GEvent {
     private OperatorState state;
 
     /**
-     * Returns the operator login name
+     * Returns the login name of the operator whose state has changed.
      * 
-     * @return the loginName
+     * @return the operator's login name
      */
     public final String getLoginName() {
         return loginName;
     }
 
     /**
-     * Returns the operator state.
+     * Returns the current state of the operator.
      * 
-     * @return the state
+     * @return the operator's state
      */
     public final OperatorState getState() {
         return state;

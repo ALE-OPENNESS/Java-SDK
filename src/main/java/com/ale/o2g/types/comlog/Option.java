@@ -19,28 +19,31 @@
 package com.ale.o2g.types.comlog;
 
 /**
- * {@code Option} enum defines the possible filter option when querying a communication log.
- * It's possible to combine the options
- * <pre>{@code 
- *     // define an option to filter unanswered outgoing calls
- *     EnumSet<Options> options = EnumSet.of(Options.UNANSWERED, Options.UNACKNOWLEDGED);
+ * {@code Option} defines the available filter options when querying a communication log.
+ * Multiple options can be combined using an {@link java.util.EnumSet}.
+ * <p>
+ * Example usage:
+ * <pre>{@code
+ * // Define options to filter for unanswered and unacknowledged outgoing calls
+ * EnumSet<Option> options = EnumSet.of(Option.UNANSWERED, Option.UNACKNOWLEDGED);
  * }</pre>
- * @see QueryFilter QueryFilter
+ *
+ * @see QueryFilter
  */
 public enum Option {
 
     /**
-     * The default value that represents no filtering.
+     * Default value indicating no filtering.
      */
     NONE,
-    
+
     /**
-     * Use this value to filter unanswered calls.
+     * Filter for calls that were not answered.
      */
     UNANSWERED,
-    
+
     /**
-     * Use this value to filter unacknowledged calls.
+     * Filter for calls that were not acknowledged.
      */
     UNACKNOWLEDGED
 }

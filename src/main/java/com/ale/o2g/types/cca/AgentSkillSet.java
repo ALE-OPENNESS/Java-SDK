@@ -23,7 +23,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * {@code AgentSkillSet} class represents a set of skills for a CCD operator.
+ * {@code AgentSkillSet} represents the collection of skills assigned to a CCD operator.
+ * <p>
+ * This class provides convenient access to individual skills by their identifier,
+ * checks for existence, and exposes all available skills or their identifiers.
  */
 public class AgentSkillSet {
 
@@ -31,41 +34,49 @@ public class AgentSkillSet {
 
     /**
      * Returns the skill with the specified number.
-     * 
-     * @param number The skill number
-     * @return The agent skill with the specified number or {@code null} if there is
-     *         no skill with such number.
+     *
+     * @param number the skill number (identifier)
+     * @return the {@link AgentSkill} with the given number, or {@code null} if no such skill exists
      */
     public AgentSkill get(int number) {
         return skills.get(number);
     }
 
     /**
-     * Determines whether the the specified skill exist in this skill set.
-     * @param number the skill number to search
-     * @return {@code true} if the specified skill is present; {@code false} otherwise. 
+     * Determines whether a skill with the specified number exists in this set.
+     *
+     * @param number the skill number to search for
+     * @return {@code true} if the specified skill is present; {@code false} otherwise
      */
     public boolean contains(int number) {
         return skills.containsKey(number);
     }
         
     /**
-     * Return the set of skill numbers contained in this skills set.
-     * @return A set object containing the skills number.
+     * Returns the set of skill numbers contained in this skill set.
+     *
+     * @return a set of skill identifiers
      */
     public Set<Integer> getSkillNumbers() {
         return skills.keySet();
     }
     
     /**
-     * Returns the skills in this skill set.
-     * @return A collection of AgentSkill.
+     * Returns all skills contained in this skill set.
+     *
+     * @return a collection of {@link AgentSkill} instances
      */
     public Collection<AgentSkill> getSkills() {
         return skills.values();
     }
 
-    
+    /**
+     * Creates an {@code AgentSkillSet} with the given skills.
+     * <p>
+     * This constructor is intended for internal or deserialization use only.
+     *
+     * @param skills the map of skill numbers to {@link AgentSkill} instances
+     */
     protected AgentSkillSet(Map<Integer, AgentSkill> skills) {
         this.skills = skills;
     }

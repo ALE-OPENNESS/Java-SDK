@@ -20,6 +20,8 @@ package com.ale.o2g.types.analytics;
 
 import java.util.List;
 
+import com.ale.o2g.types.common.DateRange;
+
 /**
  * {@code ChargingResult} class represents the result of a query to the OmniPCX
  * Enterprise.
@@ -27,7 +29,7 @@ import java.util.List;
 public class ChargingResult {
 
     private List<Charging> chargings;
-    private TimeRange range;
+    private DateRange range;
     private int chargingFileCount;
     private int totalTicketCount;
     private int valuableTicketCount;
@@ -44,10 +46,10 @@ public class ChargingResult {
      * Returns the range that has been specified to query this result.
      * @return the range
      */
-    public final TimeRange getRange() {
+    public final DateRange getRange() {
         return range;
     }
-
+    
     /**
      * Returns the number of analysed charging files in the OmniPCX Enterprise.
      * @return the chargingFileCount
@@ -72,7 +74,7 @@ public class ChargingResult {
         return valuableTicketCount;
     }
 
-    protected ChargingResult(List<Charging> chargings, TimeRange range, int chargingFileCount, int totalTicketCount,
+    protected ChargingResult(List<Charging> chargings, DateRange range, int chargingFileCount, int totalTicketCount,
             int valuableTicketCount) {
         this.chargings = chargings;
         this.range = range;

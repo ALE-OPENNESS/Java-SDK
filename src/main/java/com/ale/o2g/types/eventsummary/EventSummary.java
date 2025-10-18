@@ -19,11 +19,16 @@
 package com.ale.o2g.types.eventsummary;
 
 /**
- * {@code EventSummary} represents event counters associated to the user. It
- * allows a user to get its new message indicators (missed call, voice mails,
- * callback request, fax).
+ * {@code EventSummary} represents a summary of event counters associated with a user.
+ * <p>
+ * This class allows a user to retrieve new message indicators such as missed calls,
+ * voice mails, callback requests, faxes, and text messages.
+ * <p>
+ * Note: Some counters may return {@code null} if the server is unable to provide the
+ * corresponding information.
  */
 public class EventSummary {
+
     private Integer missedCallsNb;
     private Integer voiceMessagesNb;
     private Integer callBackRequestsNb;
@@ -35,16 +40,18 @@ public class EventSummary {
     /**
      * Returns the number of missed calls.
      * <p>
-     * <b>Caution</b>: This attribute doesn't reflect the missed call number managed
-     * by the call server itself but is related to the unanswered and non
-     * acknowledged incoming calls in the history call. Therefore, either only the
-     * explicit acknowledgment of these history com records through the
-     * communication log API service, or a new answered call with the same user will
-     * decrease this counter. Moreover, the counter is incremented for each non
-     * answered incoming call, including successive attempts from the same caller.
+     * <b>Important:</b> This counter does not reflect the total missed calls managed
+     * by the call server. It only counts unanswered and unacknowledged incoming calls
+     * in the communication history. The counter decreases either when:
+     * <ul>
+     *   <li>The corresponding communication log records are explicitly acknowledged via the API</li>
+     *   <li>The user receives a new answered call from the same caller</li>
+     * </ul>
+     * <p>
+     * Each non-answered incoming call increments the counter, including successive attempts
+     * from the same caller.
      * 
-     * @return the number of missed call or {@code null} if the server is unable to
-     *         provide that information.
+     * @return the number of missed calls, or {@code null} if unavailable
      */
     public final Integer getMissedCallsNb() {
         return missedCallsNb;
@@ -52,12 +59,8 @@ public class EventSummary {
 
     /**
      * Returns the number of new voice messages.
-     * <p>
-     * This method returns {@code null} if the server is not able to provide that
-     * information.
      * 
-     * @return the number of new voice messages or {@code null} if the server is
-     *         unable to provide that information.
+     * @return the number of new voice messages, or {@code null} if unavailable
      */
     public final Integer getVoiceMessagesNb() {
         return voiceMessagesNb;
@@ -65,38 +68,26 @@ public class EventSummary {
 
     /**
      * Returns the number of callback requests.
-     * <p>
-     * This method returns {@code null} if the server is not able to provide that
-     * information.
      * 
-     * @return the number of callback request or {@code null} if the server is
-     *         unable to provide that information.
+     * @return the number of callback requests, or {@code null} if unavailable
      */
     public final Integer getCallBackRequestsNb() {
         return callBackRequestsNb;
     }
 
     /**
-     * Returns the number of new Faxes.
-     * <p>
-     * This method returns {@code null} if the server is not able to provide that
-     * information.
+     * Returns the number of new faxes.
      * 
-     * @return the number of faxes or {@code null} if the server is unable to
-     *         provide that information.
+     * @return the number of faxes, or {@code null} if unavailable
      */
     public final Integer getFaxNb() {
         return faxNb;
     }
 
     /**
-     * Return the number of new text messages.
-     * <p>
-     * This method returns {@code null} if the server is not able to provide that
-     * information.
+     * Returns the number of new text messages.
      * 
-     * @return the number of new text messages or {@code null} if the server is
-     *         unable to provide that information.
+     * @return the number of new text messages, or {@code null} if unavailable
      */
     public final Integer getNewTextNb() {
         return newTextNb;
@@ -104,24 +95,19 @@ public class EventSummary {
 
     /**
      * Returns the number of old text messages.
-     * <p>
-     * This method returns {@code null} if the server is not able to provide that
-     * information.
      * 
-     * @return the number of old text messages or {@code null} if the server is
-     *         unable to provide that information.
+     * @return the number of old text messages, or {@code null} if unavailable
      */
-    public final int getOldTextNb() {
+    public final Integer getOldTextNb() {
         return oldTextNb;
     }
 
     /**
-     * Return whether a new events is waiting.
+     * Indicates whether new events are waiting for the user.
      * <p>
-     * This flags can be used to notify the application that there are new events
-     * waiting.
+     * This flag can be used to notify applications that new events require attention.
      * 
-     * @return the eventWaiting
+     * @return {@code true} if new events are waiting, {@code false} otherwise
      */
     public final boolean isEventWaiting() {
         return eventWaiting;
@@ -129,5 +115,4 @@ public class EventSummary {
 
     protected EventSummary() {
     }
-
 }

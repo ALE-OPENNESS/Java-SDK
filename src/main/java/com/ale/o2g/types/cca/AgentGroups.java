@@ -23,8 +23,10 @@ import java.util.Collection;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * {@code AgentGroups} represents the group configuration of a CCD operator. The
- * list of groups the operator is attaching in and the preferred group.
+ * {@code AgentGroups} represents the group configuration of a CCD operator.
+ * <p>
+ * It defines the list of processing groups the operator is attached to,
+ * as well as the preferred group.
  */
 public final class AgentGroups {
 
@@ -34,18 +36,20 @@ public final class AgentGroups {
     private Collection<String> groups;
 
     /**
-     * Returns the preferred agent group.
-     * 
-     * @return the preferred agent group
+     * Returns the preferred processing group of the operator.
+     *
+     * @return the preferred group identifier (directory number), or {@code null}
+     *         if none is defined
      */
     public final String getPreferred() {
         return preferred;
     }
 
     /**
-     * Return the collection of agent groups the operator is attaching in.
-     * 
-     * @return the collection of group directory number.
+     * Returns the collection of processing groups the operator is attached to.
+     *
+     * @return a collection of group identifiers (directory numbers);
+     *         may be empty but never {@code null}
      */
     public final Collection<String> getGroups() {
         return groups;

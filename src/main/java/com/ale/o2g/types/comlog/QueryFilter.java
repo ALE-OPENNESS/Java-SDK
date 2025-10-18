@@ -21,93 +21,97 @@ package com.ale.o2g.types.comlog;
 import java.util.Date;
 import java.util.EnumSet;
 
-
 /**
- * {@code QueryFilter} class represents a communication log query filter. It is
- * used to filter records in a
- * {@linkplain com.ale.o2g.CommunicationLogService#getComRecords(QueryFilter, Page, boolean, String)
- * CommunicationLogService.getComRecords} query.
+ * {@code QueryFilter} represents a filter used to query communication log records.
+ * <p>
+ * This filter can be applied when retrieving records via
+ * {@link com.ale.o2g.CommunicationLogService#getComRecords(QueryFilter, Page, boolean, String)
+ * CommunicationLogService.getComRecords}.
+ * <p>
+ * The filter allows specifying a date range, call reference, participant role, remote party,
+ * and additional options such as unanswered or unacknowledged calls.
+ *
  */
 public final class QueryFilter {
 
     /**
-     * A builder of {@linkplain QueryFilter}.
-     *
+     * Builder for {@link QueryFilter}.
      * <p>
-     * Instances of {@code QueryFilter.Builder} are created by calling
-     * {@link QueryFilter#newBuilder()}.
-     *
-     * <p>
-     * The builder can be used to configure a query filter. Each methods modifies
-     * the state of the builder and returns the same instance. The {@link #build()
-     * build} method returns a new {@code QueryFilter} each time it is invoked.
+     * Instances are created via {@link QueryFilter#newBuilder()}.
+     * The builder allows chaining setter methods to configure the filter.
+     * Each call to {@link #build()} returns a new immutable {@code QueryFilter}.
      */
     public static interface Builder {
 
         /**
-         * Sets the start date.
-         * 
+         * Sets the start date of the query.
+         * <p>
+         * Only records not older than this date will be returned.
+         *
          * @param afterDate the start date
-         * @return this builder.
+         * @return this builder
          * @see QueryFilter#getAfter()
          */
         Builder setAfterDate(Date afterDate);
 
         /**
-         * Sets the end date.
-         * 
+         * Sets the end date of the query.
+         * <p>
+         * Only records not newer than this date will be returned.
+         *
          * @param beforeDate the end date
-         * @return beforeDatethis builder.
+         * @return this builder
          * @see QueryFilter#getBefore()
          */
         Builder setBeforeDate(Date beforeDate);
 
         /**
-         * Sets the options.
-         * 
+         * Sets the search options.
+         *
          * @param options the options
-         * @return this builder.
+         * @return this builder
          * @see QueryFilter#getOptions()
          */
         Builder setOptions(EnumSet<Option> options);
 
-
         /**
-         * Adds the specified option.
-         * 
+         * Adds a single search option.
+         *
          * @param option the option
-         * @return this builder.
+         * @return this builder
          * @see QueryFilter#getOptions()
          */
         Builder addOption(Option option);
 
         /**
-         * Sets the call reference.
+         * Sets the call reference to filter on.
+         *
          * @param callRef the call reference
-         * @return this builder.
+         * @return this builder
          * @see QueryFilter#getCallRef()
          */
         Builder setCallRef(String callRef);
 
-
         /**
-         * Sets the remote party id.
-         * @param remotePartyId the remote party id
-         * @return this builder.
+         * Sets the remote party identifier to filter on.
+         *
+         * @param remotePartyId the remote party ID
+         * @return this builder
          * @see QueryFilter#getRemotePartyId()
          */
         Builder setRemotePartyId(String remotePartyId);
 
         /**
-         * Sets the role.
-         * @param role the role
-         * @return this builder.
+         * Sets the user's role in the communication to filter on.
+         *
+         * @param role the participant role
+         * @return this builder
          * @see QueryFilter#getRole()
          */
         Builder setRole(Role role);
 
         /**
-         * Builds and returns a {@link QueryFilter}.
+         * Builds and returns a new {@link QueryFilter} instance with the configured settings.
          *
          * @return a new {@code QueryFilter}
          */
@@ -122,31 +126,26 @@ public final class QueryFilter {
     private Role role;
 
     /**
-     * Returns the start date from which the query searches for matching the
-     * records. When used, the query returns the records not older than this date.
-     * When omitted the query searches for matching records starting from the
-     * oldest.
-     * 
-     * @return the start date.
+     * Returns the start date of the query filter.
+     *
+     * @return the start date
      */
     public final Date getAfter() {
         return after;
     }
 
     /**
-     * Returns the end date from which the query stop searching the records. When
-     * used the query returns the records older than this date. When omitted the
-     * query searches for matching records until the newest.
-     * 
-     * @return the before date
+     * Returns the end date of the query filter.
+     *
+     * @return the end date
      */
     public final Date getBefore() {
         return before;
     }
 
     /**
-     * Returns the search options.
-     * 
+     * Returns the set of options applied to the query filter.
+     *
      * @return the options
      */
     public final EnumSet<Option> getOptions() {
@@ -154,29 +153,26 @@ public final class QueryFilter {
     }
 
     /**
-     * Returns the call reference used in this query filter. When used, the query
-     * will retrieve only the com record related to this call reference.
-     * 
-     * @return the call reference.
+     * Returns the call reference used for filtering.
+     *
+     * @return the call reference
      */
     public final String getCallRef() {
         return callRef;
     }
 
     /**
-     * Returns the remote party. When used, filters on the records in which the user
-     * is engaged with this remote party.
-     * 
-     * @return the remote party identifier.
+     * Returns the remote party identifier used for filtering.
+     *
+     * @return the remote party ID
      */
     public final String getRemotePartyId() {
         return remotePartyId;
     }
 
     /**
-     * Returns the user's role in the communication. Allows to filter on the user's
-     * role in the communication.
-     * 
+     * Returns the participant role used for filtering.
+     *
      * @return the role
      */
     public final Role getRole() {
@@ -184,7 +180,7 @@ public final class QueryFilter {
     }
 
     protected QueryFilter(Date after, Date before, EnumSet<Option> options, String callRef, String remotePartyId,
-            Role role) {
+                          Role role) {
         this.after = after;
         this.before = before;
         this.options = options;
@@ -194,15 +190,15 @@ public final class QueryFilter {
     }
 
     /**
-     * Creates a {@code Builder} builder.
+     * Creates a new {@link Builder} instance for constructing a {@link QueryFilter}.
      *
-     * @return a new QueryFilter builder.
+     * @return a new builder
      */
     public Builder newBuilder() {
         return new Builder() {
             private Date after;
             private Date before;
-            private EnumSet<Option> options;
+            private EnumSet<Option> options = EnumSet.noneOf(Option.class);
             private String callRef;
             private String remotePartyId;
             private Role role;
@@ -251,7 +247,7 @@ public final class QueryFilter {
 
             @Override
             public QueryFilter build() {
-                return new QueryFilter(before, after, options, callRef, remotePartyId, role);
+                return new QueryFilter(after, before, options, callRef, remotePartyId, role);
             }
         };
     }

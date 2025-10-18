@@ -18,7 +18,10 @@
 */
 package com.ale.o2g.internal.util;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -28,51 +31,76 @@ import java.util.stream.Collectors;
  */
 public class URIBuilder {
 
-	/**
-	 * Append a query to the specified uri.
-	 * @param uri the uri the query is added to.
-	 * @param queryName the query parameter name.
-	 * @param queryValue The query parameter value
-	 * @return
-	 */
-	public static URI appendQuery(URI uri, String queryName, String queryValue) {
-		
-		String uriValue = uri.toString();
-		
-        if (uriValue.indexOf('?') >= 0)
-        {
-            if (queryValue == null)
-            {
+    /**
+     * Append a query to the specified uri.
+     * 
+     * @param uri        the uri the query is added to.
+     * @param queryName  the query parameter name.
+     * @param queryValue The query parameter value
+     * @return
+     */
+    public static URI appendQuery(URI uri, String queryName, String queryValue) {
+
+        String uriValue = uri.toString();
+
+        if (uriValue.indexOf('?') >= 0) {
+            if (queryValue == null) {
                 return URI.create(String.format("%s&%s", uriValue, queryName));
             }
-            else
-            {
-            	return URI.create(String.format("%s&%s=%s", uriValue, queryName, queryValue));
+            else {
+                try {
+                    return URI.create(String.format("%s&%s=%s", uriValue, queryName,
+                            URLEncoder.encode(queryValue, StandardCharsets.UTF_8.toString())));
+                }
+                catch (UnsupportedEncodingException e) {
+                    throw new IllegalArgumentException(String.format("Unable to create a query string with value %s", queryValue), e);
+                }
             }
         }
-        else
-        {
-            if (queryValue == null)
-            {
+        else {
+            if (queryValue == null) {
                 return URI.create(String.format("%s?%s", uriValue, queryName));
             }
-            else
-            {
-            	return URI.create(String.format("%s?%s=%s", uriValue, queryName, queryValue));
+            else {
+                try {
+                    return URI.create(String.format("%s?%s=%s", uriValue, queryName,
+                            URLEncoder.encode(queryValue, StandardCharsets.UTF_8.toString())));
+                }
+                catch (UnsupportedEncodingException e) {
+                    throw new IllegalArgumentException(String.format("Unable to create a query string with value %s", queryValue), e);
+                }
             }
         }
-	}
-	
-	public static URI appendQuery(URI uri, String queryName) {
-		return appendQuery(uri, queryName, null);
-	}
+    }
 
-	public static URI appendPath(URI uri, String... paths) {
-		
-		return URI.create(String.format("%s%s", 
-				uri, 
-				Arrays.asList(paths).stream()
-			    	.map(s -> String.format("/%s", s.trim()))
-			    	.collect(Collectors.joining())));
-	}
+    public static URI appendQuery(URI uri, String queryName) {
+        return appendQuery(uri, queryName, null);
+    }
+
+    public static URI appendPath(URI uri, String... paths) {
+
+        String joined = Arrays.stream(paths)
+                .map(String::trim)
+                .map(s -> {
+                    if (s.startsWith("/")) return s;
+                    else return String.format("/%s", s);
+                })
+                .collect(Collectors.joining());
+        
+        String base = uri.toString();
+        if (!base.endsWith("/") && !joined.startsWith("/")) {
+            return URI.create(String.format("%s/%s", uri, joined));
+        }
+        else {
+            return URI.create(String.format("%s%s", uri, joined));   
+        }
+    }
+    
+    public static URI getBaseUri(URI uri) {
+        
+        int port = uri.getPort();
+        
+        String baseStr = uri.getScheme() + "://" + uri.getHost() + (port != -1 ? ":" + port : "");
+        return URI.create(baseStr);
+    }
 }

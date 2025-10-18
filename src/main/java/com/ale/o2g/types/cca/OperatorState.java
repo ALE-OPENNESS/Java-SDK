@@ -21,19 +21,27 @@ package com.ale.o2g.types.cca;
 import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 
 /**
- * {@code OperatorState} represents the state of a CCD operator.
+ * {@code OperatorState} represents the current state of a CCD operator.
+ * <p>
+ * A CCD operator can have a static (main) state that reflects login status
+ * and a dynamic (sub) state that reflects their current activity within the
+ * call distribution system.
+ * <p>
+ * This class provides information about the operator's main and dynamic states,
+ * the pro-ACD device they are logged on, the agent group (processing group) they
+ * are associated with, and whether they are in a withdraw state.
+ *
  */
 public class OperatorState {
 
     /**
-     * {@code OperatorMainState} represents the login, logoff status of a CCD
-     * operator.
+     * {@code OperatorMainState} represents the static login/logoff state of a CCD operator.
      */
     @JsonEnumDeserializerFallback(value = "UNKNOWN")
     public static enum OperatorMainState {
 
         /**
-         * The O2G server is unable to get the operator main state.
+         * The O2G server is unable to determine the operator's main state.
          */
         UNKNOWN,
 
@@ -54,77 +62,50 @@ public class OperatorState {
     }
 
     /**
-     * {@code OperatorDynamicState} represents the CCD operator dynamic state.
+     * {@code OperatorDynamicState} represents the dynamic state of a CCD operator.
+     * <p>
+     * Dynamic states indicate the operator's current activity or wrap-up phase.
      */
     @JsonEnumDeserializerFallback(value = "UNKNOWN")
     public static enum OperatorDynamicState {
 
-        /**
-         * The operator is ready.
-         */
+        /** The operator is ready to receive calls. */
         READY,
 
-        /**
-         * The operator is logged but out of an agent group.
-         */
+        /** The operator is logged on but not entered into any agent group. */
         OUT_OF_PG,
 
-        /**
-         * The operator is busy.
-         */
+        /** The operator is busy handling a call. */
         BUSY,
 
-        /**
-         * The operator is in the transaction code phase.
-         */
+        /** The operator is entering a transaction code. */
         TRANSACTION_CODE_INPUT,
 
-        /**
-         * The operator is in the automatic wrapup phase.
-         */
+        /** The operator is in automatic wrap-up phase. */
         WRAPUP,
 
-        /**
-         * The operator is in pause.
-         */
+        /** The operator is in a pause state. */
         PAUSE,
 
-        /**
-         * The operator is in withdraw from the call distribution.
-         */
+        /** The operator has withdrawn from call distribution. */
         WITHDRAW,
 
-        /**
-         * The operator is in withdraw from the call distribution because he is treating
-         * an IM.
-         */
+        /** The operator is in wrap-up due to handling an instant message (IM). */
         WRAPUP_IM,
 
-        /**
-         * The operator is in withdraw from the call distribution because he is treating
-         * an email.
-         */
+        /** The operator is in wrap-up due to handling an email. */
         WRAPUP_EMAIL,
 
-        /**
-         * The operator is in withdraw from the call distribution because he is treating
-         * an email, nevertheless, a CCD call can be distributed on this operator.
-         */
+        /** The operator is in wrap-up due to handling an email, but can still receive CCD calls. */
         WRAPUP_EMAIL_INTERRUPTIBLE,
 
-        /**
-         * The operator is in wrapup after an outbound call.
-         */
+        /** The operator is in wrap-up after an outbound call. */
         WRAPUP_OUTBOUND,
 
-        /**
-         * The operator is in wrapup after a callback call.
-         */
+        /** The operator is in wrap-up after a web callback call. */
         WRAPUP_CALLBACK,
         
-        /**
-         * The O2G server is unable to get the operator state.
-         */
+        /** The O2G server is unable to determine the operator's dynamic state. */
         UNKNOWN
     }
 
@@ -136,52 +117,56 @@ public class OperatorState {
     private boolean withdraw;
 
     /**
-     * Returns the operator static state.
-     * @return the mainState
+     * Returns the static (main) state of the operator, indicating login or error status.
+     *
+     * @return the operator's main state
      */
     public final OperatorMainState getMainState() {
         return mainState;
     }
 
     /**
-     * Returns the operator dynamic state.
-     * @return the operator dynamic state or {@code null} if the operator is logged off.
+     * Returns the dynamic (sub) state of the operator, indicating their current activity.
+     *
+     * @return the operator's dynamic state, or {@code null} if the operator is logged off
      */
     public final OperatorDynamicState getSubState() {
         return subState;
     }
 
     /**
-     * Returns the pro-acd this operator is logged on.
-     * @return the pro-acd extension number or {@code null} if the operator is logged off.
+     * Returns the pro-ACD device number the operator is logged on.
+     *
+     * @return the pro-ACD extension number, or {@code null} if the operator is logged off
      */
     public final String getProAcdDeviceNumber() {
         return proAcdDeviceNumber;
     }
 
     /**
-     * Returns the agent group this operator is logged in.
-     * @return the agent group number or {@code null} if the operator is not entered in an agent group.
+     * Returns the processing group (PG) the operator is logged in.
+     *
+     * @return the agent group number, or {@code null} if the operator is not entered in any agent group
      */
     public final String getPgNumber() {
         return pgNumber;
     }
 
     /**
-     * Returns the withdraw reason.
+     * Returns the withdraw reason index.
      * <p>
-     * An int value that represents the withdraw reason index in the withdraw reasons managed in an agent group, 
-     * or a {@code null} value if the operator in not in withdraw state.
-     * @return the withdrawReason
+     * This value corresponds to the index of withdraw reasons defined for the agent's processing group.
+     *
+     * @return the withdraw reason index, or {@code null} if the operator is not in withdraw state
      */
     public final Integer getWithdrawReason() {
         return withdrawReason;
     }
 
     /**
-     * Returns whether the operator is in withdraw state.
-     * @return {@code true} if the operator is in withdraw state;
-     *         {@code false} otherwise.
+     * Indicates whether the operator is currently in withdraw state.
+     *
+     * @return {@code true} if the operator is in withdraw state, {@code false} otherwise
      */
     public final boolean isWithdraw() {
         return withdraw;

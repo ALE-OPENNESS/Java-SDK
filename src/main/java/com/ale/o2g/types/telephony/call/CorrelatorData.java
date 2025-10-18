@@ -1,5 +1,5 @@
 /*
-* Copyright 2022 ALE International
+* Copyright 2024 ALE International
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 * software and associated documentation files (the "Software"), to deal in the Software 
@@ -19,15 +19,55 @@
 package com.ale.o2g.types.telephony.call;
 
 /**
- *
+ * This class describe a correlator data.
+ * <p>
+ * A correlator data is used by the application to provide application-related
+ * information (limited to 32 bytes).
+ * <p>
+ * Example: user B has receives an external call. Before he makes an enquiry
+ * call to user B, he associates data to this incoming call. If user A transfers
+ * the call to user B, user B is notified of the transfer with an event
+ * containing CallData with the associateData.
  */
 public class CorrelatorData {
 
-    public CorrelatorData(String value) {
-        
+    private byte[] value;
+
+    /**
+     * Construct a new Correlator data with the specified string.
+     * 
+     * @param strValue the string value to attach to the call
+     */
+    public CorrelatorData(String strValue) {
+        value = strValue.getBytes();
     }
-    
-    public CorrelatorData(byte[] value) {
-        
+
+    /**
+     * Construct a new Correlator data with a bytes array value.
+     * <p>
+     * Byte "00" is not authorized in a correlator data.
+     * 
+     * @param bytes the byte array value
+     */
+    public CorrelatorData(byte[] bytes) {
+        value = bytes;
+    }
+
+    /**
+     * Return the byte array corresponding to this correlator data.
+     * 
+     * @return the byte array value
+     */
+    public byte[] asByteArray() {
+        return this.value;
+    }
+
+    /**
+     * Return the string corresponding to this correlator data.
+     * 
+     * @return the string value.
+     */
+    public String asString() {
+        return new String(value);
     }
 }

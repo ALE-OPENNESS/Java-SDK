@@ -24,16 +24,16 @@ import java.util.Collection;
 import com.ale.o2g.internal.util.AssertUtil;
 
 /**
- * {@code Filter} class represents a filter that can be used to query OmniPCX Enterprise Object instances.
+ * {@code AbstractFilter} class represents a filter that can be used to query OmniPCX Enterprise Object instances.
  * <p>
- * The {@code Filter} class provides method to build logical combination of simple filters.
+ * The {@code AbstractFilter} class provides method to build logical combination of simple filters.
  * <pre>
- *   Filter complex = Filter.and(
- *                      Filter.or(
- *                        Filter.create("Station_Type", AttributeFilter.Equals, "ANALOG"),
- *                        Filter.create("Station_Type", AttributeFilter.Equals, "ALE-300")
+ *   AbstractFilter complex = AbstractFilter.and(
+ *                      AbstractFilter.or(
+ *                        AbstractFilter.create("Station_Type", AttributeFilter.Equals, "ANALOG"),
+ *                        AbstractFilter.create("Station_Type", AttributeFilter.Equals, "ALE-300")
  *                      ),
- *                      Filter.create("Directory_Name", OperationFilter.StartsWith, "f")
+ *                      AbstractFilter.create("Directory_Name", OperationFilter.StartsWith, "f")
  *                    );
  * 
  * </pre>

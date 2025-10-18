@@ -19,12 +19,14 @@
 package com.ale.o2g.internal.util;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -46,7 +48,20 @@ public class EnumAdapterFactory implements TypeAdapterFactory {
 
         final Map<String, T> enumValue = new HashMap<String, T>();
         for (T constant : rawType.getEnumConstants()) {
-            enumValue.put(constant.toString(), constant);
+            
+            try {
+                Field field = rawType.getField(((Enum<?>) constant).name());
+                SerializedName annotation = field.getAnnotation(SerializedName.class);
+                if (annotation != null) {
+                    enumValue.put(annotation.value(), constant);
+                }
+                else {
+                    enumValue.put(((Enum<?>) constant).name(), constant);
+                }
+            } 
+            catch (NoSuchFieldException e) {
+                // ignore
+            }            
         }
         
         final JsonEnumDeserializerFallback fallback = rawType.getAnnotation(JsonEnumDeserializerFallback.class);

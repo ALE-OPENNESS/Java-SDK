@@ -41,6 +41,7 @@ import com.ale.o2g.types.rsi.Tones;
  * point.
  * <p>
  * Using this service requires having a <b>CONTACTCENTER_RSI</b> license.
+ * @hidden
  */
 public interface RsiService extends IService {
 

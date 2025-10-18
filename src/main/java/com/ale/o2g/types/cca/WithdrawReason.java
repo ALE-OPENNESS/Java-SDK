@@ -19,8 +19,13 @@
 package com.ale.o2g.types.cca;
 
 /**
- * {@code WithdrawReason} represents a reason why an agent is in withdraw state.
- * This reason is uses by CCD for statistic purpose.
+ * /** {@code WithdrawReason} represents a reason why a CCD agent is in a
+ * withdraw state.
+ * <p>
+ * Withdraw reasons are used by the CCD system for reporting and statistical
+ * purposes, helping to understand why an agent is temporarily unavailable for
+ * call distribution. Each reason has a unique index within the processing group
+ * and a descriptive label.
  */
 public class WithdrawReason {
 
@@ -28,18 +33,18 @@ public class WithdrawReason {
     private String label;
 
     /**
-     * Return the index of this withdraw reason.
-     * 
-     * @return the index of this reason in the agent processing it is defined in.
+     * Returns the index of this withdraw reason within the agent's processing group.
+     *
+     * @return the index of the withdraw reason
      */
     public final int getIndex() {
         return index;
     }
 
     /**
-     * Return the label of this withdraw reason.
-     * 
-     * @return the string label that represents the withdraw reason.
+     * Returns the label describing this withdraw reason.
+     *
+     * @return the human-readable label of the withdraw reason
      */
     public final String getLabel() {
         return label;

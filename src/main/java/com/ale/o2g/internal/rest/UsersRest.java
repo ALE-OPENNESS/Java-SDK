@@ -50,6 +50,25 @@ public class UsersRest extends AbstractRESTService implements UsersService {
 		super(httpClient, uri);
 	}
 
+    @Override
+    public Collection<String> getLogins(int[] nodeIds, boolean onlyACD) {
+        URI uriGet = URI.create(uri.toString().replace("/users", "/logins"));
+        if (nodeIds != null) {
+            uriGet = URIBuilder.appendQuery(uriGet, "nodeIds", MakeNodeQuery(nodeIds));
+        }
+
+        if (onlyACD) {
+            uriGet = URIBuilder.appendQuery(uriGet, "onlyACD");
+        }
+        
+        HttpRequest request = HttpUtil.GET(uriGet);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return getOptionalResult(response, LoginsResponse.class)
+                .map(LoginsResponse::getLoginNames)
+                .orElse(null);
+    }
+	
+	
 	@Override
 	public Collection<String> getLogins(String[] nodeIds, boolean onlyACD) {
 		
@@ -68,6 +87,18 @@ public class UsersRest extends AbstractRESTService implements UsersService {
 				.map(LoginsResponse::getLoginNames)
 				.orElse(null);
 	}
+
+    private String MakeNodeQuery(int[] nodeIds) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < nodeIds.length; i++) {
+            if (i > 0) {
+                sb.append(';');
+            }
+            sb.append(nodeIds[i]);
+        }
+
+        return sb.toString();
+    }
 
     private String MakeNodeQuery(String[] nodeIds) {
         StringBuilder sb = new StringBuilder();

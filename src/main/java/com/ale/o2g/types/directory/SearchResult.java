@@ -25,77 +25,87 @@ import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 import com.ale.o2g.types.common.PartyInfo;
 
 /**
- * {@code SearchResult} represents the result of a directory search.
+ * {@code SearchResult} represents the outcome of a directory search performed
+ * via {@link com.ale.o2g.DirectoryService}.
+ * <p>
+ * A search may return multiple batches of results, and each batch contains a
+ * set of contacts along with a status code indicating the state of the search.
  */
 public class SearchResult {
 
     /**
-     * {@code Code} represents the status of a directory search. Each time a call to
-     * {@linkplain com.ale.o2g.DirectoryService#getResults()
-     * DirectoryService.getResults} is done, the returned result code must be
-     * tested.
+     * {@code Code} represents the status of a directory search. Each time
+     * {@linkplain com.ale.o2g.DirectoryService#getResults() DirectoryService.getResults()}
+     * is called, the returned code should be checked to determine the next action.
      */
     @JsonEnumDeserializerFallback(value = "TIMEOUT")
     public static enum Code {
 
         /**
-         * Responses are provided this time. Continue to invoking
-         * {@linkplain com.ale.o2g.DirectoryService#getResults()
-         * DirectoryService.getResults} periodically to get the next results.
+         * Results are available for this batch. Further calls to
+         * {@link com.ale.o2g.DirectoryService#getResults()} may retrieve more
+         * results.
          */
         OK,
 
         /**
-         * No responses receive. Continue to invoking
-         * {@linkplain com.ale.o2g.DirectoryService#getResults()
-         * DirectoryService.getResults} to get more results.
+         * No results were received in this batch. Further calls to
+         * {@link com.ale.o2g.DirectoryService#getResults()} may retrieve more
+         * results.
          */
         NOK,
 
         /**
-         * Search is finished. 
+         * The search has completed and no further results will be returned.
          */
         FINISH,
 
         /**
-         * Search is ended for timeout reason.
+         * The search ended due to a timeout.
          */
         TIMEOUT
     }
 
     /**
-     * {@code Results} represents a set of result from a directory search.
+     * {@code Results} represents a single batch of contacts returned from a
+     * directory search.
      */
     public static class Results {
         private Collection<PartyInfo> contacts;
 
         /**
-         * Returns the contacts found.
-         * @return the contacts.
+         * Returns the contacts found in this batch.
+         *
+         * @return an unmodifiable collection of {@link PartyInfo} contacts
          */
         public final Collection<PartyInfo> getContacts() {
             return contacts;
         }
 
         protected Results() {
-        }        
+        }
     }
 
     private Code resultCode;
     private Collection<Results> resultElements;
 
     /**
-     * Gets the result code of this search result.
-     * 
-     * @return the {@link Code} of the search result.
+     * Returns the status code of this search result.
+     *
+     * @return the {@link Code} of the search result, indicating whether more
+     *         results are available or if the search is complete.
      */
     public final Code getResultCode() {
         return resultCode;
     }
 
     /**
-     * Returns the results.
-     * @return the resultElements
+     * Returns the list of result batches from the search.
+     * <p>
+     * Each element in the collection corresponds to a {@link Results} object,
+     * which contains a collection of contacts.
+     *
+     * @return an unmodifiable collection of {@link Results} objects.
      */
     public final Collection<Results> getResultElements() {
         return Collections.unmodifiableCollection(resultElements);

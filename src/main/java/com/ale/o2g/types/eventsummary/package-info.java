@@ -18,8 +18,15 @@
 */
 
 /**
- * Contains class to retrieve a user main counters: number of missed calls, new
- * voice messages, callback requests, ....
- * 
+ * Provides classes related to user event summaries in the OmniPCX Enterprise system.
+ * <p>
+ * The {@link com.ale.o2g.EventSummaryService EventSummaryService} uses these classes 
+ * to retrieve the main event counters for a user, such as missed calls, voice mails, 
+ * callback requests, faxes, and text messages.
+ * <p>
+ * The primary class in this package is:
+ * <ul>
+ *   <li>{@link EventSummary} - Represents the user's event counters and new message indicators.</li>
+ * </ul>
  */
 package com.ale.o2g.types.eventsummary;

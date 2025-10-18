@@ -19,19 +19,30 @@
 package com.ale.o2g.types.comlog;
 
 /**
- * The {@code Page} class allows to define a paging mechanism to query the
- * communication log.
+ * The {@code Page} class represents a paging mechanism for querying communication logs.
+ * <p>
+ * It defines a starting offset and a maximum number of records per page (length). 
+ * The class provides methods to navigate forward and backward through pages.
+ * 
+ * <p>Example usage:
+ * <pre>{@code 
+ * Page page = new Page(0, 50); // first page, 50 records per page
+ * page.next();                 // move to the next page
+ * page.previous();             // move back to the previous page
+ * int offset = page.getOffset();
+ * int length = page.getLength();
+ * }</pre>
+ * 
  */
 public class Page {
     private int offset;
     private int limit;
 
     /**
-     * Constructs a new Page starting with the specified offset and with the
-     * specified length.
+     * Constructs a new page starting at the specified offset with the given length.
      * 
-     * @param offset the page offset
-     * @param length  the page length
+     * @param offset the index of the first record in the page (zero-based)
+     * @param length the maximum number of records in the page
      */
     public Page(int offset, int length) {
         this.offset = offset;
@@ -39,14 +50,15 @@ public class Page {
     }
 
     /**
-     * Moves to the next page.
+     * Moves to the next page by increasing the offset by the page length.
      */
     public void next() {
         offset += limit;
     }
 
     /**
-     * Moves to the previous page.
+     * Moves to the previous page by decreasing the offset by the page length.
+     * Ensures the offset does not become negative.
      */
     public void previous() {
         offset -= limit;
@@ -56,18 +68,18 @@ public class Page {
     }
 
     /**
-     * Returns the offset of the page that is the offset of the first com record.
+     * Returns the offset of the first record in the current page.
      * 
-     * @return the page offset.
+     * @return the page offset (zero-based)
      */
     public final int getOffset() {
         return offset;
     }
 
     /**
-     * Returns the maximum number of record in this page.
+     * Returns the maximum number of records in the current page.
      * 
-     * @return the page length.
+     * @return the page length
      */
     public final int getLength() {
         return limit;

@@ -43,24 +43,35 @@ import com.ale.o2g.types.cca.WithdrawReason;
  */
 public class CallCenterAgentRest extends AbstractRESTService implements CallCenterAgentService {
 
-    
-    private static record LogOnAgentRequest(String proAcdDeviceNumber, String pgGroupNumber, boolean headset) {} 
-    private static record PgRequest(String pgGroupNumber) {}
-    private static record WithdrawAgentRequest(int reasonIndex) {}
-    private static record PermanentListeningRequest(String agentNumber) {}
-    private static record IntrusionRequest(String agentNumber, IntrusionMode mode) {}
-    private static record ChangeIntrusionModeRequest(IntrusionMode mode) {}
-    private static record AgentSkillActivation(List<Integer> skills) {}
-    
+    private static record LogOnAgentRequest(String proAcdDeviceNumber, String pgGroupNumber, boolean headset) {
+    }
+
+    private static record PgRequest(String pgGroupNumber) {
+    }
+
+    private static record WithdrawAgentRequest(int reasonIndex) {
+    }
+
+    private static record PermanentListeningRequest(String agentNumber) {
+    }
+
+    private static record IntrusionRequest(String agentNumber, IntrusionMode mode) {
+    }
+
+    private static record ChangeIntrusionModeRequest(IntrusionMode mode) {
+    }
+
+    private static record AgentSkillActivation(List<Integer> skills) {
+    }
+
     static class WithdrawReasons {
         private List<WithdrawReason> reasons;
-        
+
         public final List<WithdrawReason> getReasons() {
             return reasons;
         }
     }
 
-    
     /**
      * @param httpClient
      * @param uri
@@ -78,14 +89,12 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
+
         O2GAgentConfig agentConfig = getResult(response, O2GAgentConfig.class);
-        if (agentConfig == null)
-        {
+        if (agentConfig == null) {
             return null;
         }
-        else
-        {
+        else {
             return agentConfig.toOperatorConfiguration();
         }
     }
@@ -99,10 +108,9 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
+
         return getResult(response, OperatorState.class);
     }
-
 
     @Override
     public OperatorState getOperatorState() {
@@ -116,10 +124,8 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
 
-        String json = gson.toJson(new LogOnAgentRequest(
-                AssertUtil.requireNotEmpty(proAcdNumber, "proAcdNumber"),
-                pgNumber,
-                headset));
+        String json = gson.toJson(
+                new LogOnAgentRequest(AssertUtil.requireNotEmpty(proAcdNumber, "proAcdNumber"), pgNumber, headset));
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -154,9 +160,8 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
-        String json = gson.toJson(new PgRequest(
-                AssertUtil.requireNotEmpty(pgNumber, "pgNumber")));
+
+        String json = gson.toJson(new PgRequest(AssertUtil.requireNotEmpty(pgNumber, "pgNumber")));
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -170,13 +175,14 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean exitAgentGroup(String loginName) {
-        
+
         // First get the operator state to get the processing group
         OperatorState operatorState = this.getOperatorState(loginName);
         if (operatorState.getPgNumber() == null) {
             // The supervisor is NOT in a group return an error
-            
-            lastError = Optional.ofNullable(new RestErrorInfo("Supervisor is not in a group", false) {});
+
+            lastError = Optional.ofNullable(new RestErrorInfo("Requester is not in a group", false) {
+            });
             return false;
         }
         else {
@@ -184,9 +190,9 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
             if (loginName != null) {
                 uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
             }
-            
-            String json = gson.toJson(new PgRequest(
-                    AssertUtil.requireNotEmpty(operatorState.getPgNumber(), "pgNumber")));
+
+            String json = gson
+                    .toJson(new PgRequest(AssertUtil.requireNotEmpty(operatorState.getPgNumber(), "pgNumber")));
 
             HttpRequest request = HttpUtil.POST(uriPost, json);
             CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -200,7 +206,7 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     }
 
     private boolean doAgentAction(String action, String loginName) {
-        URI uriPost = URIBuilder.appendPath(uri, "exitPG");
+        URI uriPost = URIBuilder.appendPath(uri, action);
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
@@ -209,9 +215,7 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);
     }
-    
-    
-    
+
     @Override
     public boolean setWrapup(String loginName) {
         return this.doAgentAction("wrapUp", loginName);
@@ -248,9 +252,8 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
-        String json = gson.toJson(new WithdrawAgentRequest(
-                AssertUtil.requireNotNull(reason.getIndex(), "reason")));
+
+        String json = gson.toJson(new WithdrawAgentRequest(AssertUtil.requireNotNull(reason.getIndex(), "reason")));
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -264,14 +267,14 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean requestPermanentListening(String agentNumber, String loginName) {
-        
+
         URI uriPost = URIBuilder.appendPath(uri, "permanentListening");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
-        String json = gson.toJson(new PermanentListeningRequest(
-                AssertUtil.requireNotEmpty(agentNumber, "agentNumber")));
+
+        String json = gson
+                .toJson(new PermanentListeningRequest(AssertUtil.requireNotEmpty(agentNumber, "agentNumber")));
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -285,15 +288,14 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean requestIntrusion(String agentNumber, IntrusionMode intrusionMode, String loginName) {
-        
+
         URI uriPost = URIBuilder.appendPath(uri, "intrusion");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
-        String json = gson.toJson(new IntrusionRequest(
-                AssertUtil.requireNotEmpty(agentNumber, "agentNumber"),
-                intrusionMode));
+
+        String json = gson
+                .toJson(new IntrusionRequest(AssertUtil.requireNotEmpty(agentNumber, "agentNumber"), intrusionMode));
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -307,12 +309,12 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean changeIntrusionMode(IntrusionMode newIntrusionMode, String loginName) {
-        
+
         URI uriPut = URIBuilder.appendPath(uri, "intrusion");
         if (loginName != null) {
             uriPut = URIBuilder.appendQuery(uriPut, "loginName", loginName);
         }
-        
+
         String json = gson.toJson(new ChangeIntrusionModeRequest(newIntrusionMode));
 
         HttpRequest request = HttpUtil.PUT(uriPut, json);
@@ -334,9 +336,9 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     public boolean requestSupervisorHelp() {
         return this.requestSupervisorHelp(null);
     }
-    
+
     private boolean doCancelSupervisorHelpRequest(String otherNumber, String loginName) {
-        
+
         URI uriDelete = URIBuilder.appendPath(uri, "intrusion");
         if (loginName != null) {
             uriDelete = URIBuilder.appendQuery(uriDelete, "loginName", loginName);
@@ -346,13 +348,10 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);
     }
-    
 
     @Override
     public boolean rejectAgentHelpRequest(String agentNumber, String loginName) {
-        return this.doCancelSupervisorHelpRequest(
-                AssertUtil.requireNotEmpty(agentNumber, "agentNumber"), 
-                loginName);
+        return this.doCancelSupervisorHelpRequest(AssertUtil.requireNotEmpty(agentNumber, "agentNumber"), loginName);
     }
 
     @Override
@@ -362,8 +361,7 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean cancelSupervisorHelpRequest(String supervisorNumber, String loginName) {
-        return this.doCancelSupervisorHelpRequest(
-                AssertUtil.requireNotEmpty(supervisorNumber, "supervisorNumber"), 
+        return this.doCancelSupervisorHelpRequest(AssertUtil.requireNotEmpty(supervisorNumber, "supervisorNumber"),
                 loginName);
     }
 
@@ -374,16 +372,16 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean requestSnaphot(String loginName) {
-        
+
         URI uriPost = URIBuilder.appendPath(uri, "state/snapshot");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
+
         HttpRequest request = HttpUtil.POST(uriPost);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);
-        
+
     }
 
     @Override
@@ -393,24 +391,22 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public List<WithdrawReason> getWithdrawReasons(String pgNumber, String loginName) {
-        
+
         URI uriGet = URIBuilder.appendPath(uri, "withdrawReasons");
         uriGet = URIBuilder.appendQuery(uriGet, "pgNumber", AssertUtil.requireNotEmpty(pgNumber, "pgNumber"));
-        
+
         if (loginName != null) {
             uriGet = URIBuilder.appendQuery(uriGet, "loginName", loginName);
         }
 
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
+
         WithdrawReasons reasons = getResult(response, WithdrawReasons.class);
-        if (reasons == null)
-        {
+        if (reasons == null) {
             return null;
         }
-        else
-        {
+        else {
             return reasons.getReasons();
         }
     }
@@ -422,12 +418,12 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean activateSkills(List<Integer> skills, String loginName) {
-        
+
         URI uriPost = URIBuilder.appendPath(uri, "config/skills/activate");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
+
         String json = gson.toJson(new AgentSkillActivation(skills));
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
@@ -442,12 +438,12 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean deactivateSkills(List<Integer> skills, String loginName) {
-        
+
         URI uriPost = URIBuilder.appendPath(uri, "config/skills/deactivate");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
+
         String json = gson.toJson(new AgentSkillActivation(skills));
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
@@ -459,4 +455,21 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     public boolean deactivateSkills(List<Integer> skills) {
         return this.deactivateSkills(skills, null);
     }
+
+    /*
+     * @Override public boolean setMultiMediaWrapup(MultiMediaState state, String
+     * loginName) { URI uriPost = URIBuilder.appendPath(uri, "wrapUpMM"); if
+     * (loginName != null) { uriPost = URIBuilder.appendQuery(uriPost, "loginName",
+     * loginName); }
+     * 
+     * uriPost = URIBuilder.appendQuery(uriPost, "multimedia", state.toString());
+     * 
+     * HttpRequest request = HttpUtil.POST(uriPost);
+     * CompletableFuture<HttpResponse<String>> response =
+     * httpClient.sendAsync(request, BodyHandlers.ofString()); return
+     * isSucceeded(response); }
+     * 
+     * @Override public boolean setMultiMediaWrapup(MultiMediaState state) { return
+     * this.setMultiMediaWrapup(state, null); }
+     */
 }

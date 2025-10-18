@@ -27,8 +27,27 @@ import com.ale.o2g.types.cca.OperatorState;
 import com.ale.o2g.types.cca.WithdrawReason;
 
 /**
- * {@code CallCenterAgent} provides services for CCD operators. Using this
- * service requires having a <b>CONTACTCENTER_AGENT</b> license.
+ * The {@code CallCenterAgentService} provides access to Contact Center features
+ * for CCD operators. A CCD operator can be either a CCD agent or a CCD supervisor.
+ * <p>
+ * Using this service requires a <b>CONTACTCENTER_AGENT</b> license.
+ * <p>
+ * This service exposes capabilities such as:
+ * <ul>
+ *   <li>Retrieving the agent configuration (type, Pro-ACD, processing groups, skills)</li>
+ *   <li>Activating or deactivating skills</li>
+ *   <li>Logging on or off a Pro-ACD set</li>
+ *   <li>Requesting withdrawal reasons for a processing group</li>
+ *   <li>Requesting withdrawal or returning to ready state</li>
+ *   <li>Requesting wrap-up after a call</li>
+ *   <li>Querying the agent state or requesting a snapshot event on agent state</li>
+ *   <li>Enabling or disabling PBX multimedia features</li>
+ *   <li>Requesting a pause</li>
+ *   <li>Requesting help from a supervisor</li>
+ *   <li>Cancelling (agent) or rejecting (supervisor) a help request</li>
+ *   <li>(Supervisor only) requesting intrusion into an agent's call</li>
+ *   <li>(Supervisor only) requesting permanent supervision of an agent</li>
+ * </ul>
  */
 public interface CallCenterAgentService extends IService {
 
@@ -66,7 +85,7 @@ public interface CallCenterAgentService extends IService {
     /**
      * Logon an agent or a supervisor.
      * <p>
-     * For a Supervisor, if the {@code pgNumber} is omitted, the supervisor is
+     * For a Requester, if the {@code pgNumber} is omitted, the supervisor is
      * logged on out off group.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
@@ -84,7 +103,7 @@ public interface CallCenterAgentService extends IService {
     /**
      * Logon an agent or a supervisor.
      * <p>
-     * For a Supervisor, if the {@code pgNumber} is omitted, the supervisor is
+     * For a Requester, if the {@code pgNumber} is omitted, the supervisor is
      * logged on out off group.
      * <p>
      * This method will fail return {@code false} if it is invoked from a session
@@ -204,6 +223,32 @@ public interface CallCenterAgentService extends IService {
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean setWrapup();
+
+    /**
+     * Put the specified agent in multi-media wrapup with the specified multi-media
+     * state.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * 
+     * @param state     the multi-media state
+     * @param loginName the agent login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+//    boolean setMultiMediaWrapup(MultiMediaState state, String loginName);
+
+    /**
+     * Put the specified agent in multi-media wrapup with the specified multi-media
+     * state.
+     * <p>
+     * This method will fail return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     * 
+     * @param state the multi-media state
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+//    boolean setMultiMediaWrapup(MultiMediaState state);
 
     /**
      * Puts the specified agent in ready state.
@@ -528,11 +573,10 @@ public interface CallCenterAgentService extends IService {
      * (not assigned to the operator), it is ignored and the method returns
      * {@code true}.
      * 
-     * @param skills    the list of skills to activate.
+     * @param skills the list of skills to activate.
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean activateSkills(List<Integer> skills);
-
 
     /**
      * Deactivates the specified skills.
@@ -561,7 +605,7 @@ public interface CallCenterAgentService extends IService {
      * (not assigned to the operator), it is ignored and the method returns
      * {@code true}.
      * 
-     * @param skills    the list of skills to activate.
+     * @param skills the list of skills to activate.
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean deactivateSkills(List<Integer> skills);

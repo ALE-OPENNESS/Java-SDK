@@ -26,6 +26,10 @@ import org.slf4j.LoggerFactory;
 
 import com.ale.o2g.AnalyticsService;
 import com.ale.o2g.CallCenterAgentService;
+import com.ale.o2g.CallCenterManagementService;
+import com.ale.o2g.CallCenterPilotService;
+import com.ale.o2g.CallCenterRealtimeService;
+import com.ale.o2g.CallCenterStatisticsService;
 import com.ale.o2g.CommunicationLogService;
 import com.ale.o2g.DirectoryService;
 import com.ale.o2g.EventSummaryService;
@@ -34,11 +38,11 @@ import com.ale.o2g.ManagementService;
 import com.ale.o2g.MessagingService;
 import com.ale.o2g.O2GException;
 import com.ale.o2g.RoutingService;
-import com.ale.o2g.RsiService;
 import com.ale.o2g.Session;
 import com.ale.o2g.SessionMonitoringPolicy;
 import com.ale.o2g.Subscription;
 import com.ale.o2g.TelephonyService;
+import com.ale.o2g.UserManagementService;
 import com.ale.o2g.UsersService;
 import com.ale.o2g.internal.events.ChunkEventing;
 import com.ale.o2g.internal.events.SubscriptionImpl;
@@ -46,9 +50,51 @@ import com.ale.o2g.internal.services.ISessions;
 import com.ale.o2g.internal.services.ISubscriptions;
 import com.ale.o2g.internal.types.SessionInfo;
 import com.ale.o2g.internal.types.SubscriptionResult;
+import com.ale.o2g.types.Account;
 
-public class SessionImpl implements Session {
+public class SessionImpl implements Session {    
+    
+    class ImplAccount implements Account {
 
+        private String loginName;
+        private String o2gLoginName;
+        private boolean isGoingToExpire;
+        
+        protected ImplAccount(String loginName, String o2gLoginName, boolean isGoingToExpire) {
+            this.loginName = loginName;
+            
+            if (this.o2gLoginName != null) {
+                this.o2gLoginName = o2gLoginName;
+            }
+            else {
+                this.o2gLoginName = loginName;
+            }
+            this.isGoingToExpire = isGoingToExpire;
+        }
+
+        @Override
+        public String getLoginName() {
+            return loginName;
+        }
+
+        @Override
+        public String getO2GUserLoginName() {
+            if (o2gLoginName == null) {
+                return loginName;
+            }
+            else {
+                return o2gLoginName;
+            }
+        }
+
+        @Override
+        public boolean isGoingToExpire() {
+            return isGoingToExpire;
+        }
+        
+    };
+    
+    
 	final static Logger logger = LoggerFactory.getLogger(SessionImpl.class);
 	
 	private SessionInfo info;
@@ -56,20 +102,35 @@ public class SessionImpl implements Session {
     private ChunkEventing chunkEventing = null;
     private KeepAlive keepAlive = null;
     private SessionMonitoringHandler sessionMonitoringHandler = null;
-    
+
     private String subscriptionId = null;
 
-	private final String loginName;
+	private Account account = null;
+	private String loginName;
 
-	public SessionImpl(ServiceFactory serviceFactory, SessionInfo sessionInfo, String loginName, SessionMonitoringPolicy sessionMonitoringPolicy) {
+	public SessionImpl(ServiceFactory serviceFactory, SessionInfo sessionInfo, final String loginName, final String o2gLoginName, final boolean expire, SessionMonitoringPolicy sessionMonitoringPolicy) {
 		
 		this.serviceFactory = serviceFactory;
 		this.info = sessionInfo;
-		this.loginName = loginName;
 		this.sessionMonitoringHandler = new SessionMonitoringHandler(sessionMonitoringPolicy, this);
+
+		this.loginName = loginName;
+		
+		this.account = new ImplAccount(loginName, o2gLoginName, expire);
 		
 		startKeepAlive();
 	}
+
+    @Override
+    public String getLoginName() {
+        return loginName;
+    }
+
+
+    @Override
+    public Account getAccount() {
+        return account;
+    }
 
     private void startKeepAlive() {
         keepAlive = new KeepAlive(info.getTimeToLive(), serviceFactory.getSessionsService(), sessionMonitoringHandler);
@@ -131,10 +192,45 @@ public class SessionImpl implements Session {
         return this.serviceFactory.getManagementService();
     }
 
+    /*
     @Override
     public RsiService getRsiService() {
         return this.serviceFactory.getRsiService();
     }
+    */
+
+
+    @Override
+    public CallCenterRealtimeService getCallCenterRealtimeService() {
+        return this.serviceFactory.getCallCenterRealtimeService();
+    }
+
+    @Override
+    public UserManagementService getUserManagementService() {
+        return this.serviceFactory.getUserManagementService();
+    }
+
+    @Override
+    public CallCenterPilotService getCallCenterPilotService() {
+        return this.serviceFactory.getCallCenterPilotService();
+    }
+
+    @Override
+    public CallCenterManagementService getCallCenterManagementService() {
+        return this.serviceFactory.getCallCenterManagementService();
+    }
+
+    @Override
+    public CallCenterStatisticsService getCallCenterStatisticsService() {        
+       return this.serviceFactory.getCallCenterStatisticsService();
+    }
+    
+    /*
+    @Override
+    public RecordingService getRecordingService() {
+        return this.serviceFactory.getRecordingService();
+    }
+    */
 
 
     @Override
@@ -142,11 +238,6 @@ public class SessionImpl implements Session {
 		Objects.requireNonNull(subscription);
 		
 		startEventing((SubscriptionImpl)subscription);
-	}
-
-	@Override
-	public String getLoginName() {
-		return loginName;
 	}
 
 	@Override
@@ -204,6 +295,9 @@ public class SessionImpl implements Session {
 	            chunkEventing = new ChunkEventing(chunkUri, subscription.getListeners(), sessionMonitoringHandler);
 	            chunkEventing.start();
 	
+	            // set the listener reference to sessionFactory
+	            this.serviceFactory.setEventListeners(subscription.getListeners());
+	            
 	            logger.info("Eventing is started.");
 	        }
 	        else {

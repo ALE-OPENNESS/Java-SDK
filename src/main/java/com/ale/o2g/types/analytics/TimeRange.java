@@ -1,5 +1,5 @@
 /*
-* Copyright 2021 ALE International
+* Copyright 2025 ALE International
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 * software and associated documentation files (the "Software"), to deal in the Software 
@@ -22,15 +22,19 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * {@code TimeRange} represents an interval between two dates. It is used to filter analytics requests
+ * {@code DateRange} represents an interval between two dates.
+ * It is used to query data within this range.
+ *
+ * @deprecated Use {@link com.ale.o2g.types.common.DateRange} instead.
  */
+@Deprecated
 public class TimeRange {
 
     private Date from;
     private Date to;
 
     /**
-     * Construct a new TimeRange, with the specified "from" date and "to" date.
+     * Construct a new DateRange, with the specified "from" date and "to" date.
      * @param from the begining of the range
      * @param to the end of the range
      */
@@ -40,7 +44,7 @@ public class TimeRange {
     }
 
     /**
-     * Construct a new TimeRange with the specified "from" date and a specified number of days.
+     * Construct a new DateRange with the specified "from" date and a specified number of days.
      * @param from the begining of the range
      * @param days the number of days in this range
      */

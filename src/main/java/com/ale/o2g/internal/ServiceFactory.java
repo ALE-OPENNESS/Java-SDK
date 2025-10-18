@@ -30,6 +30,10 @@ import org.slf4j.LoggerFactory;
 
 import com.ale.o2g.AnalyticsService;
 import com.ale.o2g.CallCenterAgentService;
+import com.ale.o2g.CallCenterManagementService;
+import com.ale.o2g.CallCenterPilotService;
+import com.ale.o2g.CallCenterRealtimeService;
+import com.ale.o2g.CallCenterStatisticsService;
 import com.ale.o2g.CommunicationLogService;
 import com.ale.o2g.DirectoryService;
 import com.ale.o2g.EventSummaryService;
@@ -38,12 +42,17 @@ import com.ale.o2g.ManagementService;
 import com.ale.o2g.MessagingService;
 import com.ale.o2g.O2GException;
 import com.ale.o2g.RoutingService;
-import com.ale.o2g.RsiService;
 import com.ale.o2g.TelephonyService;
+import com.ale.o2g.UserManagementService;
 import com.ale.o2g.UsersService;
+import com.ale.o2g.internal.events.ccstats.CallCenterStatisticsEventListener;
 import com.ale.o2g.internal.rest.AnalyticsRest;
 import com.ale.o2g.internal.rest.AuthenticationRest;
 import com.ale.o2g.internal.rest.CallCenterAgentRest;
+import com.ale.o2g.internal.rest.CallCenterManagementRest;
+import com.ale.o2g.internal.rest.CallCenterPilotRest;
+import com.ale.o2g.internal.rest.CallCenterRealtimeRest;
+import com.ale.o2g.internal.rest.CallCenterStatisticsRest;
 import com.ale.o2g.internal.rest.CommunicationLogRest;
 import com.ale.o2g.internal.rest.DirectoryRest;
 import com.ale.o2g.internal.rest.EventSummaryRest;
@@ -52,10 +61,10 @@ import com.ale.o2g.internal.rest.ManagementRest;
 import com.ale.o2g.internal.rest.MessagingRest;
 import com.ale.o2g.internal.rest.O2GRest;
 import com.ale.o2g.internal.rest.RoutingRest;
-import com.ale.o2g.internal.rest.RsiRest;
 import com.ale.o2g.internal.rest.SessionsRest;
 import com.ale.o2g.internal.rest.SubscriptionsRest;
 import com.ale.o2g.internal.rest.TelephonyRest;
+import com.ale.o2g.internal.rest.UserManagementRest;
 import com.ale.o2g.internal.rest.UsersRest;
 import com.ale.o2g.internal.services.IAuthentication;
 import com.ale.o2g.internal.services.IO2G;
@@ -65,6 +74,7 @@ import com.ale.o2g.internal.services.ISubscriptions;
 import com.ale.o2g.internal.types.RoxeRestApiDescriptor;
 import com.ale.o2g.internal.types.Service;
 import com.ale.o2g.internal.types.SessionInfo;
+import com.ale.o2g.internal.util.EventListenersMap;
 import com.ale.o2g.types.Host;
 import com.ale.o2g.types.ServerInfo;
 import com.ale.o2g.util.HttpClientBuilder;
@@ -85,6 +95,11 @@ public class ServiceFactory {
 	private final Map<Service, URI> servicesUri = new HashMap<Service, URI>();
 	private final Map<Service, IService> services = new HashMap<Service, IService>();
 
+    // Add a reference on the event listener. Use firt for CallCenterStatistic to implement a callback, but could be also
+    // use to add new listener after the subscription, or to delegate in the future this mechanism to the services.
+    // This field is null until the subscription is created.
+    private EventListenersMap listeners = null;
+	
 	private String apiVersion;
 	private AccessMode accessMode;
 	private ExecutorService executorService;
@@ -278,10 +293,46 @@ public class ServiceFactory {
         return getOrCreate(Service.Management, ManagementRest.class);
     }
     
+    /*
     public RsiService getRsiService() {
         return getOrCreate(Service.Rsi, RsiRest.class);
     }
+    */
 
+    
+    public UserManagementService getUserManagementService() {
+        return getOrCreate(Service.UserManagement, UserManagementRest.class);
+    }
+    
+    public CallCenterRealtimeService getCallCenterRealtimeService() {
+        return getOrCreate(Service.CallCenterRealtime, CallCenterRealtimeRest.class);
+    }
+
+    public CallCenterPilotService getCallCenterPilotService() {
+        return getOrCreate(Service.CallCenterPilot, CallCenterPilotRest.class);
+    }
+
+    public CallCenterManagementService getCallCenterManagementService() {
+        return getOrCreate(Service.CallCenterManagement, CallCenterManagementRest.class);
+    }
+
+    public CallCenterStatisticsService getCallCenterStatisticsService() {
+        
+        CallCenterStatisticsService service = getOrCreate(Service.CallCenterStatistics, CallCenterStatisticsRest.class);
+        if (this.listeners != null) {
+            
+            // Add the CallCenterService service to the listeners
+            this.listeners.add(CallCenterStatisticsEventListener.class, (CallCenterStatisticsRest)service);
+        }   
+        
+        return service;
+    }
+
+    /*
+    public RecordingService getRecordingService() {
+        return getOrCreate(Service.Recording, RecordingRest.class);
+    }
+    */
 
 	@SuppressWarnings("unchecked")
 	private <T extends IService> T getOrCreate(Service serviceName, Class<T> restClass) {
@@ -325,7 +376,7 @@ public class ServiceFactory {
 
 		for (SessionInfo.Service service : sessionInfo.getServices()) {
 			Service serviceName = Service.get(service.getServiceName());
-
+			
 			if (service.getRelativeUrl().startsWith("/telephony")) {
 				// Patch check the principle
 				serviceName = Service.Telephony;
@@ -348,4 +399,14 @@ public class ServiceFactory {
 	public void shutdown() {
 	    executorService.shutdown();
 	}
+
+    public void setEventListeners(EventListenersMap listeners) {
+        this.listeners = listeners;
+        
+        // We need to associate CallCenterService in the listener at this level
+        IService service = services.get(Service.CallCenterStatistics);
+        if (service != null) {
+            this.listeners.add(CallCenterStatisticsEventListener.class, (CallCenterStatisticsRest)service);
+        }
+    }
 }

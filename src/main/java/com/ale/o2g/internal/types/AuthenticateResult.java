@@ -28,6 +28,8 @@ public class AuthenticateResult {
 
 	private String credential;
 	private String publicUrl;
+	private String loginName;
+	private boolean expired;
 
 	@SerializedName(value = "internalUrl")
 	private String privateUrl;
@@ -50,4 +52,11 @@ public class AuthenticateResult {
 		return credential;
 	}
 
+	public String getLoginName() {
+	    return loginName;
+	}
+	
+	public boolean getExpired() {
+	    return expired;
+	}
 }

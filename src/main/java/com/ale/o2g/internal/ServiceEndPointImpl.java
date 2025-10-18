@@ -82,7 +82,13 @@ public class ServiceEndPointImpl implements ServiceEndPoint {
 		}
 		
 		// Create the session
-		Session session = new SessionImpl(serviceFactory, sessionInfo, credential.getLogin(), sessionMonitoringPolicy);
+		Session session = new SessionImpl(
+		        serviceFactory, 
+		        sessionInfo, 
+		        credential.getLogin(),
+		        authenticateResult.getLoginName(), 
+		        authenticateResult.getExpired(),
+		        sessionMonitoringPolicy);
 
 		// OK, create the session
 		return session;

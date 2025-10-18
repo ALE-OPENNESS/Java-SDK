@@ -19,8 +19,10 @@
 package com.ale.o2g.types.cca;
 
 /**
- * {@code AgentSkill} class represents a CCD operator skill. Skills are use by
- * the "Advanced Call Routing" call distribution strategy.
+ * {@code AgentSkill} represents a skill assigned to a CCD operator.
+ * <p>
+ * Skills are used by the <em>Advanced Call Routing</em> strategy to influence
+ * how calls are distributed among agents.
  */
 public final class AgentSkill {
 
@@ -29,24 +31,29 @@ public final class AgentSkill {
     private boolean active;
 
     /**
-     * Returns the skill number. A unique identifier of this skill.
-     * @return the number
+     * Returns the unique identifier of this skill.
+     *
+     * @return the skill number (identifier)
      */
     public final int getNumber() {
         return number;
     }
 
     /**
-     * Returns the skill level.
-     * @return the level
+     * Returns the proficiency level of this skill.
+     * <p>
+     * A higher level typically indicates greater expertise or priority in routing.
+     *
+     * @return the skill level
      */
     public final int getLevel() {
         return level;
     }
 
     /**
-     * Returns whether the skill is active.
-     * @return {@code true} if the skill is active; {@code false} otherwise.
+     * Indicates whether this skill is currently active.
+     *
+     * @return {@code true} if the skill is active; {@code false} otherwise
      */
     public final boolean isActive() {
         return active;

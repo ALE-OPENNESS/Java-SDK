@@ -23,6 +23,7 @@ import com.ale.o2g.types.rsi.RoutingReason;
 
 /**
  * This event is sent from a Routing point to close a route session (routing crid is no longer valid).
+ * @hidden
  */
 public class OnRouteEndEvent extends O2GEvent {
 

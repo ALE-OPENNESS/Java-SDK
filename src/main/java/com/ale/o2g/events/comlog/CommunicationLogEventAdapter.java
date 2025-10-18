@@ -19,32 +19,43 @@
 package com.ale.o2g.events.comlog;
 
 /**
- * An empty implementation of the CommunicationLogEventListener interface, provided as a
- * convenience to simplify the task of creating listeners, by extending and
- * implementing only the methods of interest.
+ * {@code CommunicationLogEventAdapter} provides empty implementations of the
+ * {@link CommunicationLogEventListener} interface.
+ * <p>
+ * Applications can extend this class and override only the methods they are
+ * interested in, instead of implementing all methods of the interface.
+ *
+ * @see CommunicationLogEventListener
  */
-public class CommunicationLogEventAdapter implements CommunicationLogEventListener {
+public abstract class CommunicationLogEventAdapter implements CommunicationLogEventListener {
 
+    /** {@inheritDoc} */
     @Override
     public void onComRecordCreated(OnComRecordCreatedEvent e) {
+        // Default implementation does nothing
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onComRecordModified(OnComRecordModifiedEvent e) {
+        // Default implementation does nothing
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onComRecordsDeleted(OnComRecordsDeletedEvent e) {
+        // Default implementation does nothing
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onComRecordsAck(OnComRecordsAckEvent e) {
+        // Default implementation does nothing
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onComRecordsUnAck(OnComRecordsUnAckEvent e) {
-    }
-
-    protected CommunicationLogEventAdapter() {
+        // Default implementation does nothing
     }
 }

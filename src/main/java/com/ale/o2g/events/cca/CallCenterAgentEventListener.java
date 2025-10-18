@@ -21,39 +21,49 @@ package com.ale.o2g.events.cca;
 import java.util.EventListener;
 
 /**
- * {@code CallCenterAgentEventListener} defines the interface for an object that
- * listens to call center agent notifications. The class that is interested in
- * processing call center agent events implements this interface(and all the
- * methods it contains) or extends the {@code CallCenterAgentEventAdapter}
- * (overriding only the methods of interest). The listener object created from
- * that class is then registered with the session, using the
- * {@linkplain com.ale.o2g.Session#listenEvents(com.ale.o2g.Subscription)
- * Session.listenEvents} method. When a call center event occurs the relevant
- * method in the listener object is invoked.
+ * Defines a listener for call center agent events.
+ * <p>
+ * Applications interested in processing call center agent events can implement
+ * this interface or extend the {@link com.ale.o2g.events.cca.CallCenterAgentEventAdapter
+ * CallCenterAgentEventAdapter}, which provides default (empty) implementations
+ * for all methods. This allows overriding only the methods of interest.
+ * <p>
+ * Once implemented, the listener should be registered with the session using
+ * {@linkplain com.ale.o2g.Session#listenEvents(com.ale.o2g.Subscription) Session.listenEvents}.
+ * When a relevant agent event occurs, the corresponding method on this listener
+ * will be invoked.
+ * @see com.ale.o2g.CallCenterAgentService
+ * @see com.ale.o2g.events.cca.CallCenterAgentEventAdapter
  * 
  */
 public interface CallCenterAgentEventListener extends EventListener {
 
     /**
-     * Invoked when the state of a CCD agent is changed.
-     * 
-     * @param e the associated event object
+     * Invoked when the state of a CCD agent changes.
+     *
+     * @param e the event object containing the updated agent state
      */
     void onAgentStateChanged(OnAgentStateChangedEvent e);
 
     /**
-     * Invoked when agent has requested the assistance of his supervisor and when
-     * the request is canceled by the agent or when the request is rejected by the
-     * supervisor.
-     * 
-     * @param e the associated event object
+     * Invoked when a supervisor help request is cancelled by the agent or 
+     * rejected by the supervisor.
+     *
+     * @param e the event object containing the cancellation details
      */
     void onSupervisorHelpCancelled(OnSupervisorHelpCancelledEvent e);
 
     /**
-     * Invoked when an agent requests the assistance of his supervisor.
-     * 
-     * @param e the associated event object
+     * Invoked when an agent requests supervisor assistance.
+     *
+     * @param e the event object containing the help request details
      */
     void onSupervisorHelpRequested(OnSupervisorHelpRequestedEvent e);
+    
+    /**
+     * Invoked when an agent activates or deactivates one of their skills.
+     *
+     * @param e the event object containing the updated skill information
+     */
+    void onAgentSkillChanged(OnAgentSkillChangedEvent e);
 }

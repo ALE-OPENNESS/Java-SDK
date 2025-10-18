@@ -19,12 +19,17 @@
 package com.ale.o2g.types.cca;
 
 /**
- * {@code OperatorConfiguration} class represents a CCD operator configuration.
+ * {@code OperatorConfiguration} represents the configuration of a CCD operator.
+ * <p>
+ * A CCD operator can be an {@link Type#AGENT agent} or a {@link Type#SUPERVISOR
+ * supervisor}, and this class provides access to the operator's type,
+ * associated pro-ACD station, group memberships, skills, and feature settings
+ * (such as headset usage, self-assignment, or multiline capability).
  */
 public class OperatorConfiguration {
 
     /**
-     * {@code OperatorType} represents the CCD operator, either Agent or Supervisor.
+     * {@code Type} represents the CCD operator type, either agent or supervisor.
      */
     public static enum Type {
 
@@ -32,13 +37,13 @@ public class OperatorConfiguration {
          * CCD Agent.
          */
         AGENT,
-        
+
         /**
          * CCD Supervisor
          */
         SUPERVISOR
     }
-    
+
     private Type type;
     private String proacd;
     private AgentGroups groups;
@@ -49,7 +54,7 @@ public class OperatorConfiguration {
     private boolean multiline;
 
     /**
-     * Returns the type of CCD operator, agent or supervisor.
+     * Returns the type of CCD operator (agent or supervisor).
      * 
      * @return the operator type
      */
@@ -58,71 +63,109 @@ public class OperatorConfiguration {
     }
 
     /**
-     * Returns the associated pro-acd station.
+     * Returns the associated pro-ACD station.
      * 
-     * @return the proacd station extension number, or null if this operator as no
-     *         associated pro-acd station.
+     * @return the pro-ACD station extension number, or {@code null} if this
+     *         operator has no associated pro-ACD station
      */
     public final String getProacd() {
         return proacd;
     }
 
     /**
-     * Returns the agents groups the operator is attached in and the preferred agent
-     * group if any.
+     * Returns the agent groups the operator is attached to, along with the
+     * preferred agent group if one is defined.
      * 
-     * @return the groups object that represents the agents groups the operator is
-     *         attached in and the preferred agent group if any.
+     * @return the {@link AgentGroups} object representing the operator's group
+     *         memberships and preferred group
      */
     public final AgentGroups getGroups() {
         return groups;
     }
 
     /**
-     * Returns the operator skills.
+     * Returns the operator's skills.
      * 
-     * @return the skills
+     * @return the {@link AgentSkillSet} of the operator
      */
     public final AgentSkillSet getSkills() {
         return skills;
     }
 
     /**
-     * Returns whether the operator can choose his agent group.
+     * Returns whether the operator can choose their own agent group.
      * 
-     * @return {@code true} if the operator can choose his agent group;
-     *         {@code false} otherwise.
+     * @return {@code true} if the operator can self-assign a group;
+     *         {@code false} otherwise
+     * @deprecated Use {@link #isSelfAssignable()} instead.
      */
+    @Deprecated
     public final boolean isSelfAssign() {
         return selfAssign;
     }
 
     /**
-     * Returns whether the operator has the headset feature configured.
+     * Returns whether the operator can choose their own agent group.
+     * 
+     * @return {@code true} if the operator can self-assign a group;
+     *         {@code false} otherwise
+     */
+    public final boolean isSelfAssignable() {
+        return selfAssign;
+    }
+
+    /**
+     * Returns whether the operator has the headset feature enabled.
      * <p>
      * The headset feature allows a CCD operator to answer calls using a headset.
      * 
      * @return {@code true} if the operator has the headset feature configured;
-     *         {@code false} otherwise.
+     *         {@code false} otherwise
+     * @deprecated Use {@link #isHeadsetEnabled()} instead.
      */
+    @Deprecated
     public final boolean isHeadset() {
         return headset;
     }
 
     /**
+     * Returns whether the operator has the headset feature enabled.
+     * <p>
+     * The headset feature allows a CCD operator to answer calls using a headset.
+     * 
+     * @return {@code true} if the operator has the headset feature configured;
+     *         {@code false} otherwise
+     */
+    public final boolean isHeadsetEnabled() {
+        return headset;
+    }
+    
+    /**
      * Returns whether the operator can request help from a supervisor.
      * 
-     * @return {@code true} if the operator can request help; {@code false}
-     *         otherwise.
+     * @return {@code true} if the operator can request help;
+     *         {@code false} otherwise
+     * @deprecated Use {@link #canRequestHelp()} instead.
      */
+    @Deprecated
     public final boolean isHelp() {
         return help;
     }
 
     /**
-     * Returns whether the operator is multiline.
+     * Returns whether the operator can request help from a supervisor.
      * 
-     * @return {@code true} if the operator is multiline; {@code false} otherwise.
+     * @return {@code true} if the operator can request help;
+     *         {@code false} otherwise
+     */
+    public final boolean canRequestHelp() {
+        return help;
+    }
+
+    /**
+     * Returns whether the operator is configured as multiline.
+     * 
+     * @return {@code true} if the operator is multiline; {@code false} otherwise
      */
     public final boolean isMultiline() {
         return multiline;
@@ -140,5 +183,4 @@ public class OperatorConfiguration {
         this.multiline = multiline;
     }
 
-    
 }

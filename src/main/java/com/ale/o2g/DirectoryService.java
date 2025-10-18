@@ -23,151 +23,135 @@ import com.ale.o2g.types.directory.Criteria;
 import com.ale.o2g.types.directory.SearchResult;
 
 /**
- * The {@code DirectoryService} is used to search contacts in the OmniPCX
- * Enterprise phone book. Using this service requires having a
- * <b>TELEPHONY_ADVANCED</b> license.
+ * The {@code DirectoryService} allows searching for contacts in the OmniPCX
+ * Enterprise phone book. Using this service requires a <b>TELEPHONY_ADVANCED</b> license.
  * <p>
- * A directory search is a set of 2 or more sequential operations:
+ * A directory search involves a sequence of operations:
  * <ol>
- * <li>The first operation initiate the search with a set of criteria</li>
- * <li>The second and next operations retrieve results</li>
+ *   <li>Initiate the search with a set of criteria.</li>
+ *   <li>Retrieve results using one or more subsequent operations.</li>
  * </ol>
  * <p>
- * Note: For each session (user or administrator), only 5 concurrent searches
- * are authorized. An unused search context is freed after 1 minute.
- * 
- * <p>search example:
+ * <b>Note:</b> For each session (user or administrator), only 5 concurrent searches
+ * are allowed. An unused search context is automatically freed after 1 minute.
+ * <p>
+ * <b>Example usage:</b>
  * <pre>{@code
- *   DirectoryService directoryService = session.getDirectoryService();
- *	
- *   directoryService.search(myCriteria);
- *   while (!finished) {
- *		
- *      SearchResult result = directoryService.getResults();
- *      if (result.getResultCode() == SearchResult.ResultCode.NOK) {
- *         // Wait the results
- *      }
- *      else if ((result.getResultCode() == SearchResult.ResultCode.FINISH) ||
- *               (result.getResultCode() == SearchResult.ResultCode.TIMEOUT)) {
- *          // Exit the loop
- *          finished = true;
- *      }
- *      else {
- *         // Process results
- *      }
- *   }
- *}</pre>
+ * DirectoryService directoryService = session.getDirectoryService();
+ * boolean finished = false;
+ * 
+ * // Start the search
+ * directoryService.search(myCriteria);
+ * 
+ * // Loop to retrieve results
+ * while (!finished) {
+ *     SearchResult result = directoryService.getResults();
+ *     
+ *     switch (result.getResultCode()) {
+ *         case NOK:
+ *             // Search in progress, no result available yet
+ *             Thread.sleep(500); // wait before next iteration
+ *             break;
+ *         case OK:
+ *             // Process available results
+ *             process(result.getResultElements());
+ *             break;
+ *         case FINISH:
+ *         case TIMEOUT:
+ *             // Search ended
+ *             finished = true;
+ *             break;
+ *     }
+ * }
+ * }</pre>
  */
 public interface DirectoryService extends IService {
 
-	/**
-	 * Initiates a search for the specified user with the specified filter. The
-	 * search will be limited to the specified number of results.
-	 * <p>
-	 * If the session has been opened for a user, the {@code loginName} parameter is
-	 * ignored, but it is mandatory if the session has been opened by an
-	 * administrator.
-	 * 
-	 * @param filter    the search filter
-	 * @param limit     maximum number of results. The range of supported values is
-	 *                  [1 .. 100]
-	 * @param loginName the user login name
-	 * @return {@code true} in case of success; {@code false} otherwise.
-	 */
-	boolean search(Criteria filter, int limit, String loginName);
+    /**
+     * Initiates a search for the specified user with the given filter and result limit.
+     * <p>
+     * If the session is opened for a user, the {@code loginName} parameter is ignored.
+     * It is mandatory only when the session is opened by an administrator.
+     * 
+     * @param filter    the search filter
+     * @param limit     maximum number of results (1..100)
+     * @param loginName the user login name
+     * @return {@code true} if the search was successfully initiated, {@code false} otherwise
+     */
+    boolean search(Criteria filter, int limit, String loginName);
 
-	/**
-	 * Initiates a search for the user who has opened the session with the specified
-	 * filter. The search will be limited to the specified number of results.
-	 * <p>
-	 * This method will fail and return {@code false} if it is invoked from a
-	 * session opened by an administrator.
-	 * 
-	 * @param filter the search filter
-	 * @param limit  maximum number of results. The range of supported values is [1
-	 *               .. 100]
-	 * @return {@code true} in case of success; {@code false} otherwise.
-	 * @see #search(Criteria, int, String)
-	 */
-	boolean search(Criteria filter, int limit);
+    /**
+     * Initiates a search for the user who has opened the session with the specified
+     * filter and result limit.
+     * <p>
+     * This method will return {@code false} if invoked from a session opened by an administrator.
+     * 
+     * @param filter the search filter
+     * @param limit  maximum number of results (1..100)
+     * @return {@code true} if the search was successfully initiated, {@code false} otherwise
+     * @see #search(Criteria, int, String)
+     */
+    boolean search(Criteria filter, int limit);
 
-	/**
-	 * Initiates a search for the user who has opened the session with the specified
-	 * filter. The search is limited to 100.
-	 * <p>
-	 * This method will fail and return {@code false} if it is invoked from a
-	 * session opened by an administrator.
-	 * 
-	 * @param filter the search filter
-	 * @return {@code true} in case of success; {@code false} otherwise.
-	 * @see #search(Criteria, int, String)
-	 */
-	boolean search(Criteria filter);
+    /**
+     * Initiates a search for the user who has opened the session with the specified
+     * filter. The search result limit defaults to 100.
+     * <p>
+     * This method will return {@code false} if invoked from a session opened by an administrator.
+     * 
+     * @param filter the search filter
+     * @return {@code true} if the search was successfully initiated, {@code false} otherwise
+     * @see #search(Criteria, int, String)
+     */
+    boolean search(Criteria filter);
 
-	/**
-	 * Cancel a search query for the specified user.
-	 * <p>
-	 * If the session has been opened for a user, the {@code loginName} parameter is
-	 * ignored, but it is mandatory if the session has been opened by an
-	 * administrator.
-	 * 
-	 * @param loginName the user login name
-	 * @return {@code true} in case of success; {@code false} otherwise.
-	 */
-	boolean cancel(String loginName);
+    /**
+     * Cancels the current search query for the specified user.
+     * <p>
+     * If the session is opened for a user, the {@code loginName} parameter is ignored.
+     * It is mandatory only when the session is opened by an administrator.
+     * 
+     * @param loginName the user login name
+     * @return {@code true} if the search was successfully cancelled, {@code false} otherwise
+     */
+    boolean cancel(String loginName);
 
-	/**
-	 * Cancel a search query for the user who has opened the session.
-	 * <p>
-	 * This method will fail and return {@code false} if it is invoked from a
-	 * session opened by an administrator.
-	 * 
-	 * @return {@code true} in case of success; {@code false} otherwise.
-	 */
-	boolean cancel();
+    /**
+     * Cancels the current search query for the user who has opened the session.
+     * <p>
+     * This method will return {@code false} if invoked from a session opened by an administrator.
+     * 
+     * @return {@code true} if the search was successfully cancelled, {@code false} otherwise
+     */
+    boolean cancel();
 
-	/**
-	 * Gets the next available results for the current search.
-	 * {@code #getResults(String) getResults} is generally called in a loop and for
-	 * each iteration
-	 * <ul>
-	 * <li>if the status result code is {@code NOK}, the search is in progress but no result is
-	 * available : it is recommended to wait before the next iteration (500ms for
-	 * example)</li>
-	 * <li>if the status result code is {@code OK}, results are available and can be processed</li>
-	 * <li>if the status result code is {@code FINISH} or {@code TIMEOUT}, search is ended, exit from the
-	 * loop</li>
-	 * </ul>
-	 * <p>
-	 * If the session has been opened for a user, the {@code loginName} parameter is
-	 * ignored, but it is mandatory if the session has been opened by an
-	 * administrator.
-	 * 
-	 * @param loginName the user login name
-	 * @return A {@link SearchResult SearchResult} object in case of success;
-	 *         {@code null} otherwise.
-	 */
-	SearchResult getResults(String loginName);
+    /**
+     * Retrieves the next available results for the current search for the specified user.
+     * <p>
+     * This method is generally called in a loop. Behavior for each result code:
+     * <ul>
+     *   <li>{@code NOK} - Search in progress, no results yet; wait before next iteration.</li>
+     *   <li>{@code OK} - Results are available and can be processed.</li>
+     *   <li>{@code FINISH} or {@code TIMEOUT} - Search has ended; exit the loop.</li>
+     * </ul>
+     * <p>
+     * If the session is opened for a user, the {@code loginName} parameter is ignored.
+     * It is mandatory only when the session is opened by an administrator.
+     * 
+     * @param loginName the user login name
+     * @return a {@link SearchResult} object if successful; {@code null} otherwise
+     */
+    SearchResult getResults(String loginName);
 
-	/**
-	 * Gets the next available results for the current search.
-	 * {@code #getResults(String) getResults} is generally called in a loop and for
-	 * each iteration
-	 * <ul>
-	 * <li>if the status is {@code NOK}, the search is in progress but no result is
-	 * available : it is recommended to wait before the next iteration (500ms for
-	 * example)</li>
-	 * <li>if the status result code is {@code OK}, you can process the results</li>
-	 * <li>if the status result code is {@code FINISH} or {@code TIMEOUT}, exit the
-	 * loop</li>
-	 * </ul>
-	 * <p>
-	 * This method will fail and return {@code null} if it is invoked from a
-	 * session opened by an administrator.
-	 * 
-	 * @return A {@link SearchResult SearchResult} object in case of success;
-	 *         {@code null} otherwise.
-	 */
-	SearchResult getResults();
+    /**
+     * Retrieves the next available results for the current search for the user
+     * who has opened the session.
+     * <p>
+     * This method will return {@code null} if invoked from a session opened by an administrator.
+     * <p>
+     * Typical usage is in a loop checking {@link SearchResult#getResultCode()} as explained in the class-level Javadoc.
+     * 
+     * @return a {@link SearchResult} object if successful; {@code null} otherwise
+     */
+    SearchResult getResults();
 }
-

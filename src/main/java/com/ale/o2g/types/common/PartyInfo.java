@@ -21,47 +21,43 @@ package com.ale.o2g.types.common;
 import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 
 /**
- * {@code PartyInfo} represents a party involved in a call.
+ * {@code PartyInfo} represents a participant involved in a call.
+ * <p>
+ * A participant can be a user, a device, a service, or an external entity.
+ * Each participant can be identified by unique identifiers such as a login name or phone number.
+ * Additional information like first name, last name, and display name may also be available.
  */
 public class PartyInfo {
 
     /**
-     * {@code Type} represents a type of participant to a call. A participant is
-     * identified by its {@code MainType} type, and by an optional {@code SubType}.
-     * {@code SubType} can be "pbx", "public", "pre-off-hook", telephony-services",
-     * "voicemail", "voice-homepage", "voice-it", "sip".
+     * {@code Type} represents the type of a participant in a call.
+     * <p>
+     * Each participant has a {@code MainType} and may have an optional {@code SubType}.
+     * The {@code SubType} provides more specific roles, for example:
+     * "pbx", "public", "pre-off-hook", "telephony-services", "voicemail", "voice-homepage",
+     * "voice-it", "sip", etc.
      */
     public static class Type {
 
         /**
-         * {@code MainType} represents the main type a participant can be.
+         * {@code MainType} represents the primary category of a participant.
          */
         @JsonEnumDeserializerFallback(value = "UNKNOWN")
         public static enum MainType {
 
-            /**
-             * The participant is a user of the system.
-             */
+            /** The participant is a user of the system. */
             USER,
 
-            /**
-             * The participant is a device of the system.
-             */
+            /** The participant is a device within the system. */
             DEVICE,
 
-            /**
-             * The participant is a service of the system. For exemple the voice mail.
-             */
+            /** The participant is a service, such as voicemail. */
             SERVICE,
 
-            /**
-             * The participant is not a user of the system.
-             */
+            /** The participant is external to the system. */
             EXTERNAL,
 
-            /**
-             * The participant type has not been identified.
-             */
+            /** The participant type is unknown or could not be identified. */
             UNKNOWN
         }
 
@@ -69,18 +65,18 @@ public class PartyInfo {
         private String subType;
 
         /**
-         * Return the main type.
-         * 
-         * @return the main
+         * Returns the main type of the participant.
+         *
+         * @return the {@link MainType main type} of the participant, never {@code null}
          */
         public final MainType getMain() {
             return main;
         }
 
         /**
-         * Returns the sub-type.
-         * 
-         * @return the sub type
+         * Returns the optional sub-type of the participant.
+         *
+         * @return the sub-type of the participant, or {@code null} if none is specified
          */
         public final String getSubType() {
             return subType;
@@ -88,29 +84,30 @@ public class PartyInfo {
 
         protected Type() {
         }
-
-        
     }
 
     /**
-     * {@code Identifier} represents the information used to uniquely identify a
-     * participant; either the login name or the phone number.
+     * {@code Identifier} represents the unique identification information for a participant.
+     * <p>
+     * It may include a login name and/or a phone number.
      */
     public static class Identifier {
         private String loginName;
         private String phoneNumber;
-        
+
         /**
-         * Returns the participant login name.
-         * @return the login name
+         * Returns the login name of the participant.
+         *
+         * @return the login name, or {@code null} if not available
          */
         public final String getLoginName() {
             return loginName;
         }
-        
+
         /**
-         * Returns the participant phone number.
-         * @return the phone number
+         * Returns the phone number of the participant.
+         *
+         * @return the phone number, or {@code null} if not available
          */
         public final String getPhoneNumber() {
             return phoneNumber;
@@ -118,8 +115,6 @@ public class PartyInfo {
 
         protected Identifier() {
         }
-        
-        
     }
 
     private Identifier id;
@@ -127,45 +122,49 @@ public class PartyInfo {
     private String lastName;
     private String displayName;
     private Type type;
-    
-    
+
     /**
-     * Returns this participant's identifier; Either the login name or the phone number.
-     * @return the id the identifier.
+     * Returns the participant's identifier, including login name and phone number.
+     *
+     * @return the {@link Identifier} object, never {@code null}
      */
     public final Identifier getId() {
         return id;
     }
-    
+
     /**
-     * Returns this participant's first name.
-     * @return the first name.
+     * Returns the participant's first name.
+     *
+     * @return the first name, or {@code null} if not provided
      */
     public final String getFirstName() {
         return firstName;
     }
-    
+
     /**
-     * Returns this participant's last name.
-     * @return the last name.
+     * Returns the participant's last name.
+     *
+     * @return the last name, or {@code null} if not provided
      */
     public final String getLastName() {
         return lastName;
     }
-    
+
     /**
-     * Return this participant's display name.
-     * If {@code firstName} and {@code lastName} are filled, the {@code displayName} is {@code null}.
-     * @return the display name.
-     * 
+     * Returns the display name of the participant.
+     * <p>
+     * This may be {@code null} if both {@link #getFirstName()} and {@link #getLastName()} are provided.
+     *
+     * @return the display name, or {@code null} if not set
      */
     public final String getDisplayName() {
         return displayName;
     }
-    
+
     /**
-     * Returns this participant's type.
-     * @return the type.
+     * Returns the type of the participant.
+     *
+     * @return the {@link Type type} of the participant, never {@code null}
      */
     public final Type getType() {
         return type;

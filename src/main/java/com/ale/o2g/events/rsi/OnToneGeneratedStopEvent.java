@@ -22,6 +22,7 @@ import com.ale.o2g.events.O2GEvent;
 
 /**
  * This event is sent from a RSI point when a tone generation is stoped.
+ * @hidden
  */
 public class OnToneGeneratedStopEvent extends O2GEvent {
 

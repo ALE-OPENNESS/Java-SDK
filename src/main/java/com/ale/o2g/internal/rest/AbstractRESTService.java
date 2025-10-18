@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -87,6 +88,61 @@ public abstract class AbstractRESTService {
                     lastError = Optional.empty();
                 }
                 return Optional.empty();
+            }
+        }
+        catch (InterruptedException | ExecutionException e) {
+            throw new O2GRuntimeException(e);
+        }
+    }
+    
+    
+    protected String asString(CompletableFuture<HttpResponse<String>> response) {
+        
+        HttpResponse<String> httpResponse;
+        try {
+            httpResponse = response.get();
+
+            if (isSucceeded(httpResponse.statusCode())) {
+                lastError = Optional.empty();
+                return httpResponse.body();
+            }
+            else {
+
+                try {
+                    lastError = Optional.of(gson.fromJson(httpResponse.body(), RestErrorInfo.class));
+                }
+                catch (JsonSyntaxException e) {
+                    lastError = Optional.empty();
+                }
+                return null;
+            }
+        }
+        catch (InterruptedException | ExecutionException e) {
+            throw new O2GRuntimeException(e);
+        }
+    }
+    
+
+    protected byte[] asByteArray(CompletableFuture<HttpResponse<byte[]>> response) {
+
+        HttpResponse<byte[]> httpResponse;
+        try {
+            httpResponse = response.get();
+
+            if (isSucceeded(httpResponse.statusCode())) {
+                lastError = Optional.empty();
+                return httpResponse.body();
+            }
+            else {
+
+                try {
+                    String error = new String(httpResponse.body(), StandardCharsets.UTF_8);
+                    lastError = Optional.of(gson.fromJson(error, RestErrorInfo.class));
+                }
+                catch (JsonSyntaxException e) {
+                    lastError = Optional.empty();
+                }
+                return null;
             }
         }
         catch (InterruptedException | ExecutionException e) {
