@@ -132,6 +132,23 @@ public class CallData {
     
     
     /**
+     * Return the attached corelator data.
+     * @return the correlator data or {@code null} if there is no attached data.
+     */
+    public final CorrelatorData getCorrelatorData() {
+        if (associateData != null) {
+            return new CorrelatorData(associateData);
+        }
+        else if (hexaBinaryAssociatedData != null) {
+            return new CorrelatorData(HexaString.toByteArray(hexaBinaryAssociatedData));
+        }
+        else {
+            return null;
+        }
+    }
+    
+    
+    /**
      * Return this call account info.
      * 
      * @return the account info.

@@ -34,6 +34,7 @@ import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.RestErrorInfo;
 import com.ale.o2g.types.cca.IntrusionMode;
+import com.ale.o2g.types.cca.MultiMediaState;
 import com.ale.o2g.types.cca.OperatorConfiguration;
 import com.ale.o2g.types.cca.OperatorState;
 import com.ale.o2g.types.cca.WithdrawReason;
