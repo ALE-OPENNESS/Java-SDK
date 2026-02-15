@@ -115,6 +115,7 @@ public class ComRecordParticipant {
     private boolean anonymous;
     private PartyInfo initialCalled;
     private Reason reason;
+    private String leg;
 
     /**
      * Returns this participant's role in the communication.
@@ -168,6 +169,23 @@ public class ComRecordParticipant {
      */
     public final Reason getReason() {
         return reason;
+    }
+
+    
+    /**
+     * Returns the device leg involved in the call.
+     * <p>
+     * This is typically set when the main device is not participant in the call. 
+     * </p>
+     * <p>
+     * This method may return {@code null} if the main device is present.
+     * </p>
+     *
+     * @return the device number, or {@code null} if none is present
+     * @since 2.7.4
+     */
+    public final String getLeg() {
+        return leg;
     }
 
     /** Protected default constructor for deserialization. */

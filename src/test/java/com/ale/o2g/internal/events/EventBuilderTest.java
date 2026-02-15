@@ -12,6 +12,7 @@ import com.ale.o2g.events.cca.OnAgentStateChangedEvent;
 import com.ale.o2g.events.ccp.OnPilotCallCreatedEvent;
 import com.ale.o2g.events.ccp.OnPilotCallQueuedEvent;
 import com.ale.o2g.events.ccp.OnPilotCallRemovedEvent;
+import com.ale.o2g.types.cca.AgentSkill;
 import com.ale.o2g.types.cca.AgentSkillSet;
 import com.ale.o2g.types.cca.OperatorState.OperatorMainState;
 import com.ale.o2g.types.telephony.call.Cause;
@@ -168,6 +169,56 @@ class EventBuilderTest {
         
         assertEquals(skills.get(10).getLevel(), 3);
         assertEquals(skills.get(10).isActive(), true);
+        
+        assertEquals(skills.get(12).getLevel(), 6);
+        assertEquals(skills.get(12).isActive(), false);
+    }
+
+    @Test
+    void testOnAgentSkillChangedEvent2() {
+        
+        String sEvent = "{\"eventName\": \"OnAgentSkillChanged\","
+                + "                \"loginName\": \"oxe123\","
+                + "                \"skills\":{"
+                + "                    \"skills\": ["
+                + "                        {"
+                + "                            \"number\":10,"
+                + "                            \"level\":3,"
+                + "                            \"active\":true,"
+                + "                            \"domain\":1,"
+                + "                            \"name\":\"Marketing\""
+                + "                        },"
+                + "                        {"
+                + "                            \"number\":12,"
+                + "                            \"level\":6,"
+                + "                            \"active\":false,"
+                + "                            \"domain\":2,"
+                + "                            \"name\":\"English\""
+                + "                        }"
+                + "                    ]"
+                + "                }"
+                + "            }";
+        
+
+        O2GEventDescriptor eventDescriptor = EventBuilder.get(sEvent);
+        assertNotNull(eventDescriptor);
+        
+        O2GEvent ev = eventDescriptor.event();
+        assertTrue(ev instanceof OnAgentSkillChangedEvent);
+        
+        OnAgentSkillChangedEvent e = (OnAgentSkillChangedEvent)ev;
+        
+        assertEquals(eventDescriptor.methodName(), "onAgentSkillChanged");
+        AgentSkillSet skills = e.getSkills();
+        assertNotNull(skills);
+        
+        assertEquals(skills.get(10).getLevel(), 3);
+        assertEquals(skills.get(10).isActive(), true);
+        
+        AgentSkill skill = skills.get(1, "Marketing");
+        assertNotNull(skill);
+        assertEquals(skill.getLevel(), 3);
+        assertEquals(skill.isActive(), true);
         
         assertEquals(skills.get(12).getLevel(), 6);
         assertEquals(skills.get(12).isActive(), false);

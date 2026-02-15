@@ -12,7 +12,7 @@ Add the following dependancy to your project pom.
   <dependency>
     <groupId>io.github.ale-openness.o2g</groupId>
     <artifactId>o2g-sdk</artifactId>
-    <version>3.4.1</version>
+    <version>3.4.2</version>
   </dependency>
 ```
 
@@ -40,7 +40,7 @@ catch (O2GException e) {
 The O2G java SDK uses jdk16 version.
 
 # Building o2g java SDK
-To build the O2G java SDK with Git, clone the repository by running `git clone https://github.com/ALE-OPENNESS/Java-SDK.git` from a command prompt. You can then navigate to the directory and open the project file with eclipse or any other java ide. Build can be done using maven or gradle.
+To build the O2G java SDK with Git, clone the repository by running `git clone https://github.com/ALE-OPENNESS/CSharp-SDK.git` from a command prompt. You can then navigate to the directory and open the project file with eclipse or any other java ide. Build can be done using maven or gradle.
 
 # Contributions
 We welcome your input on issues and suggestions. We encourage you to [file a new issue](https://github.com/ALE-OPENNESS/java-SDK/issues/new) for any feedback or questions!

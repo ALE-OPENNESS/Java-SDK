@@ -41,7 +41,9 @@ import com.ale.o2g.types.telephony.TelephonicState;
 import com.ale.o2g.types.telephony.call.CorrelatorData;
 import com.ale.o2g.types.telephony.call.Leg;
 import com.ale.o2g.types.telephony.call.Participant;
+import com.ale.o2g.types.telephony.call.acd.CallProfile;
 import com.ale.o2g.types.telephony.call.acd.PilotInfo;
+import com.ale.o2g.types.telephony.call.acd.PilotTransferQueryParameters;
 import com.ale.o2g.types.telephony.device.DeviceState;
 
 /**
@@ -112,6 +114,9 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
 	private static record PickupRequest(String otherCallRef, String otherPhoneNumber, boolean autoAnswer) {}
 	private static record MiniMessageRequest(String recipient, String message) {}
 	private static record CallbackRequest(String callee) {}
+	
+    private static record ACRSkills(Collection<CallProfile.Skill> skills) {}
+	private static record PilotQueryParam(String agentNumber, ACRSkills skills, Boolean priorityTransfer, Boolean supervisedTransfer) {}
 	
 	
 	public TelephonyRest(HttpClient httpClient, URI uri) {
@@ -1206,6 +1211,65 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
 
     @Override
     public PilotInfo getPilotInfo(int nodeId, String pilotNumber) {
-        return this.getPilotInfo(nodeId, pilotNumber, null);
+        return this.getPilotInfo(nodeId, pilotNumber, (String)null);
+    }
+
+    @Override
+    public PilotInfo getPilotInfo(int nodeId, String pilotNumber, PilotTransferQueryParameters pilotTransferQueryParam,
+            String loginName) {
+
+        URI uriPost = URIBuilder.appendPath(uri, 
+                "pilots", 
+                String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")),
+                AssertUtil.requireNotEmpty(pilotNumber, "pilotNumber"),
+                "transferInfo");
+        
+        if (loginName != null) {
+            uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
+        }
+
+        AssertUtil.requireNotNull(pilotTransferQueryParam, "pilotTransferQueryParam");
+        ACRSkills skills = null;
+        if (pilotTransferQueryParam.getCallProfile() != null) {
+            skills = new ACRSkills(pilotTransferQueryParam.getCallProfile().getSkills());
+        }
+        
+        String json = gson.toJson(new PilotQueryParam(
+                pilotTransferQueryParam.getAgentNumber(), 
+                skills, 
+                pilotTransferQueryParam.getPriorityTransfer(), 
+                pilotTransferQueryParam.getSupervisedTransfer()));        
+        
+        HttpRequest request = HttpUtil.POST(uriPost, json);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return getResult(response, PilotInfo.class);
+    }
+
+    @Override
+    public PilotInfo getPilotInfo(int nodeId, String pilotNumber,
+            PilotTransferQueryParameters pilotTransferQueryParam) {
+
+        URI uriPost = URIBuilder.appendPath(uri, 
+                "pilots", 
+                String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")),
+                AssertUtil.requireNotEmpty(pilotNumber, "pilotNumber"),
+                "transferInfo");
+        
+        AssertUtil.requireNotNull(pilotTransferQueryParam, "pilotTransferQueryParam");
+        AssertUtil.requireNotNull(pilotTransferQueryParam, "pilotTransferQueryParam");
+        ACRSkills skills = null;
+        if (pilotTransferQueryParam.getCallProfile() != null) {
+            skills = new ACRSkills(pilotTransferQueryParam.getCallProfile().getSkills());
+        }
+                
+        String json = gson.toJson(new PilotQueryParam(
+                pilotTransferQueryParam.getAgentNumber(), 
+                skills, 
+                pilotTransferQueryParam.getPriorityTransfer(), 
+                pilotTransferQueryParam.getSupervisedTransfer()));        
+        
+        HttpRequest request = HttpUtil.POST(uriPost, json);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return getResult(response, PilotInfo.class);
     }
 }

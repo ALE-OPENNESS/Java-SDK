@@ -63,8 +63,8 @@ import com.ale.o2g.types.ccrt.RtiObjects;
  *         .build();
  * session.listenEvents(subscription);
  * 
- * // Create a AbstractFilter and use it to build a Context
- * AbstractFilter filter = new AbstractFilter();
+ * // Create a Filter and use it to build a Context
+ * Filter filter = new Filter();
  * filter.setAgentAttributes(
  *      AgentAttributes.PrivateCallsTotalDuration,
  *      AgentAttributes.AssociatedSet,

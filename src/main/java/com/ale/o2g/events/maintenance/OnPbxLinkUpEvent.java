@@ -1,5 +1,5 @@
 /*
-* Copyright 2021 ALE International
+* Copyright 2026 ALE International
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 * software and associated documentation files (the "Software"), to deal in the Software 
@@ -18,34 +18,29 @@
 */
 package com.ale.o2g.events.maintenance;
 
+import com.ale.o2g.events.O2GEvent;
+
 /**
- * An empty implementation of the MaintenanceEventListener interface, provided as a
- * convenience to simplify the task of creating listeners, by extending and
- * implementing only the methods of interest.
+ * Send when the Pbx link is reestablished.
+ * @since 2.7.4
  */
-public abstract class MaintenanceEventAdapter implements MaintenanceEventListener {
+public class OnPbxLinkUpEvent extends O2GEvent {
+    private int nodeId;
 
-	@Override
-    public void onPbxLinkDown(OnPbxLinkDownEvent e) {
+    protected OnPbxLinkUpEvent(String eventName, int nodeId) {
+        super(eventName);
+        this.nodeId = nodeId;
     }
 
-    @Override
-    public void onPbxLinkUp(OnPbxLinkUpEvent e) {
+    /**
+     * Returns the OmniPCX Enterprise node id.
+     * 
+     * @return the node id.
+     */
+    public final int getNodeId() {
+        return nodeId;
     }
 
-    @Override
-	public void onCtiLinkDown(OnCtiLinkDownEvent ev) {
-	}
-
-	@Override
-	public void onCtiLinkUp(OnCtiLinkUpEvent ev) {
-	}
-
-	@Override
-	public void onPbxLoaded(OnPbxLoadedEvent ev) {
-	}
-
-    protected MaintenanceEventAdapter() {
+    protected OnPbxLinkUpEvent() {
     }
-
 }

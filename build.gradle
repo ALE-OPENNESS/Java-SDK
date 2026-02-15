@@ -34,7 +34,7 @@ group = 'io.github.ale-openness.o2g'
 // 3 = 2.7 incremented with each O2G version
 // 4 = minor O2G version
 // 1 = patch version SDK
-version = '3.4.1'
+version = '3.4.2'
 
 repositories {
     mavenLocal()

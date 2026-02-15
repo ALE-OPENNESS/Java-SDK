@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.ale.o2g.internal.services.IService;
 import com.ale.o2g.types.cca.IntrusionMode;
-import com.ale.o2g.types.cca.MultiMediaState;
 import com.ale.o2g.types.cca.OperatorConfiguration;
 import com.ale.o2g.types.cca.OperatorState;
 import com.ale.o2g.types.cca.WithdrawReason;

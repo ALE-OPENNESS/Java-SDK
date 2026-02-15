@@ -19,7 +19,7 @@
 package com.ale.o2g.types.telephony.call.acd;
 
 /**
- * {@code PilotTransferInfo} rovides possible transfer information on a CCD
+ * {@code PilotTransferInfo} provides possible transfer information on a CCD
  * pilot.
  */
 public class PilotTransferInfo {

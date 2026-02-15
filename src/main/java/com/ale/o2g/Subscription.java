@@ -369,26 +369,6 @@ public abstract class Subscription {
          */
         Builder addCallCenterPilotEventListener(CallCenterPilotEventListener listener);
 
-        
-        /**
-         * Adds Call center pilot events to the subscription.
-         * 
-         * @param listener the event listener to receive the Call center pilot events.
-         * @return this builder
-         */
-        Builder addCallCenterPilotEventListener(CallCenterPilotEventListener listener);
-
-        /**
-         * Adds Call center pilot events to the subscription.
-         * 
-         * @param listener the event listener to receive the Call center pilot events.
-         * @param ids the ids to filter events on.
-         * @return this builder
-         */
-        Builder addCallCenterPilotEventListener(CallCenterPilotEventListener listener, String[] ids);
-
-        
-        
         /**
          * Adds Call center pilot events to the subscription.
          * 

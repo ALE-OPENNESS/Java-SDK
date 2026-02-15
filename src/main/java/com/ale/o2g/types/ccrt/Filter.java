@@ -25,7 +25,7 @@ import java.util.Set;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * The {@code AbstractFilter} class specifies which CCD objects and their attributes
+ * The {@code Filter} class specifies which CCD objects and their attributes
  * should be included in real-time eventing.
  * <p>
  * For each category of CCD objects (agents, pilots, queues, agent processing groups,
@@ -37,7 +37,7 @@ import com.google.gson.annotations.SerializedName;
  * <p>
  * Typical usage:
  * <pre><code>
- * AbstractFilter filter = new AbstractFilter();
+ * Filter filter = new Filter();
  * 
  * // Monitor specific agents with selected attributes
  * filter.setAgentNumbers(new String[] { "60119", "60120" });
@@ -273,7 +273,7 @@ public class Filter {
      *
      * @param numbers the other processing group directory numbers to monitor
      */
-    public void setOtherProcessingGroupNumbers(String... numbers) {
+    public void setOtherProcessingGroupNumbers(String[] numbers) {
         getOtherProcessingGroupFilter().addNumbers(numbers);
     }
 }

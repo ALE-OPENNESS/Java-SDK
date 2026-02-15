@@ -33,6 +33,7 @@ public final class User {
     private Voicemail voicemail;
     private Collection<Device> devices;
     private String nodeId;
+    private String externalLogin;
 
     /**
      * Returns this user company phone. This company phone number is the phone
@@ -92,7 +93,7 @@ public final class User {
     /**
      * Return the OmniPCX Enterprise node this user is configured on.
      * 
-     * @return the the OmniPCX Enterprise node number.
+     * @return the OmniPCX Enterprise node number.
      */
     public int getNodeId() {
         try {
@@ -101,6 +102,15 @@ public final class User {
         catch (NumberFormatException e) {
             return -1;
         }
+    }
+    
+
+    /**
+     * Return this user's external login.
+     * @return the external login or {@code null} if the user do not have an external login.
+     */
+    public final String getExternalLogin() {
+        return externalLogin;
     }
 
     protected User() {

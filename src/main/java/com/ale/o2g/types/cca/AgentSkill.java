@@ -22,18 +22,53 @@ package com.ale.o2g.types.cca;
  * {@code AgentSkill} represents a skill assigned to a CCD operator.
  * <p>
  * Skills are used by the <em>Advanced Call Routing</em> strategy to influence
- * how calls are distributed among agents.
+ * how calls are distributed among agents. Each skill has a unique identifier,
+ * a proficiency level, and may belong to a specific domain.
+ * </p>
  */
 public final class AgentSkill {
 
     private int number;
     private int level;
     private boolean active;
+    private Integer domain;
+    private String name;
+    private String abvName;
+
+    /**
+     * Returns the domain identifier this skill belongs to.
+     *
+     * @return the domain ID of the skill
+     * @since 2.7.4
+     */
+    public final Integer getDomain() {
+        return domain;
+    }
+
+    /**
+     * Returns the full name of this skill.
+     *
+     * @return the skill name
+     * @since 2.7.4
+     */
+    public final String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the abbreviated name of this skill.
+     *
+     * @return the abbreviated skill name
+     * @since 2.7.4
+     */
+    public final String getAbvName() {
+        return abvName;
+    }
 
     /**
      * Returns the unique identifier of this skill.
      *
-     * @return the skill number (identifier)
+     * @return the skill number (unique ID)
      */
     public final int getNumber() {
         return number;
@@ -42,7 +77,9 @@ public final class AgentSkill {
     /**
      * Returns the proficiency level of this skill.
      * <p>
-     * A higher level typically indicates greater expertise or priority in routing.
+     * A higher level typically indicates greater expertise or priority
+     * when routing calls.
+     * </p>
      *
      * @return the skill level
      */
@@ -59,7 +96,9 @@ public final class AgentSkill {
         return active;
     }
 
+    /**
+     * Protected constructor to allow subclassing or framework use.
+     */
     protected AgentSkill() {
     }
-    
 }

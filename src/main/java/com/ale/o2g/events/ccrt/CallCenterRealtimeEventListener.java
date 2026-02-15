@@ -60,7 +60,7 @@ import java.util.EventListener;
  * <pre><code>
  * public class MyRealtimeListener implements CallCenterStatisticsEventListener {
  *     {@literal @}Override
- *     public void onAgentRtiChanged(OnAcdStatsProgressEvent e) {
+ *     public void onAgentRtiChanged(OnAgentRtiChangedEvent e) {
  *         // Process agent event
  *     }
  *

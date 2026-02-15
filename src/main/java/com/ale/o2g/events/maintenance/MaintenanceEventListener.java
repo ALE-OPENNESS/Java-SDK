@@ -21,35 +21,59 @@ package com.ale.o2g.events.maintenance;
 import java.util.EventListener;
 
 /**
- * {@code MaintenanceEventListener} defines the interface for an object that
- * listens to maintenance (system) notifications. The class that is interested
- * in processing maintenance events implements this interface(and all the
- * methods it contains) or extends the {@code MaintenanceAdpater} (overriding
- * only the methods of interest). The listener object created from that class is
- * then registered with the session, using the {@code listenEvents} method. When
- * a maintenance event occurs by a change in the connection state with the PBX
- * or a change on the license status, the relevant method in the listener object
- * is invoked.
- * 
+ * {@code MaintenanceEventListener} defines the interface for objects that
+ * listen to maintenance-related system notifications from the PBX.
+ * <p>
+ * Classes interested in processing maintenance events should either:
+ * <ul>
+ *     <li>Implement this interface (overriding all methods), or</li>
+ *     <li>Extend {@link MaintenanceEventAdapter} and override only the
+ *         methods of interest.</li>
+ * </ul>
+ * <p>
+ * A listener instance created from such a class should be registered with
+ * the session using the {@code listenEvents} method. When a maintenance
+ * event occurs - such as a change in the connection state with the PBX or
+ * a license status change - the corresponding method in the listener is invoked.
+ *
  * @see MaintenanceEventAdapter
  */
 public interface MaintenanceEventListener extends EventListener {
 
-	/**
-	 * Invoked when the CTI link is down.
-	 * @param e the event to be processed
-	 */
-	void onCtiLinkDown(OnCtiLinkDownEvent e);
+    /**
+     * Invoked when the CTI link is down.
+     *
+     * @param e the event containing details about the CTI link down
+     */
+    void onCtiLinkDown(OnCtiLinkDownEvent e);
 
-	/**
-	 * Invoked when the CTI link is reestablished.
-	 * @param e the event to be processed
-	 */
-	void onCtiLinkUp(OnCtiLinkUpEvent e);
+    /**
+     * Invoked when the CTI link is reestablished.
+     *
+     * @param e the event containing details about the CTI link restoration
+     */
+    void onCtiLinkUp(OnCtiLinkUpEvent e);
 
-	/**
-	 * Invoked when datas are fully loaded from an OmniPcx Enterprise.
-	 * @param e the event to be processed
-	 */
-	void onPbxLoaded(OnPbxLoadedEvent e);
+    /**
+     * Invoked when the PBX link (CMIS) is down.
+     *
+     * @param e the event containing details about the PBX link down
+     * @since 2.7.4
+     */
+    void onPbxLinkDown(OnPbxLinkDownEvent e);
+
+    /**
+     * Invoked when the PBX link (CMIS) is reestablished.
+     *
+     * @param e the event containing details about the PBX link restoration
+     * @since 2.7.4
+     */
+    void onPbxLinkUp(OnPbxLinkUpEvent e);
+
+    /**
+     * Invoked when all data have been fully loaded from an OmniPCX Enterprise system.
+     *
+     * @param e the event containing details about the completed data load
+     */
+    void onPbxLoaded(OnPbxLoadedEvent e);
 }

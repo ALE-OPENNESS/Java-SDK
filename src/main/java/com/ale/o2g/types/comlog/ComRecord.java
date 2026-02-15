@@ -21,17 +21,19 @@ package com.ale.o2g.types.comlog;
 import java.util.Collection;
 import java.util.Date;
 
+import com.ale.o2g.types.telephony.call.CorrelatorData;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * {@code ComRecord} represents a communication record, which is a call history entry
- * stored by the O2G server for each conversation.
+ * {@code ComRecord} represents a communication record, which is a call history
+ * entry stored by the O2G server for each conversation.
  * <p>
- * Each record contains information about the call, including its unique identifier,
- * reference, participants, timestamps, and acknowledgment status.
+ * Each record contains information about the call, including its unique
+ * identifier, reference, participants, timestamps, and acknowledgment status.
  * <p>
- * A {@code ComRecord} may represent an incoming or outgoing call, and includes details
- * such as the start and end times, as well as the conversation time when the call was answered.
+ * A {@code ComRecord} may represent an incoming or outgoing call, and includes
+ * details such as the start and end times, as well as the conversation time
+ * when the call was answered.
  * 
  */
 public class ComRecord {
@@ -41,12 +43,62 @@ public class ComRecord {
 
     @SerializedName(value = "comRef")
     private String callRef;
-    
+
     private boolean acknowledged;
     private Collection<ComRecordParticipant> participants;
     private Date beginDate;
     private Date endDate;
     private Date convDate;
+    private long holdDuration;
+    private String transferredBy;
+    private String associatedData;
+
+    /**
+     * Return the duration this call has been on hold.
+     * 
+     * @return the hold duration
+     * @since 2.7.4
+     */
+    public final long getHoldDuration() {
+        return holdDuration;
+    }
+
+    /**
+     * Returns the number of the userwho performed the transfer for this call, if
+     * the call has been transferred.
+     * <p>
+     * This value may be {@code null} if the call has not been transferred.
+     * </p>
+     *
+     * @return the number of the user who transferred the call, or {@code null} if
+     *         no transfer occurred
+     * @since 2.7.4
+     */
+    public final String getTransferredBy() {
+        return transferredBy;
+    }
+
+    
+    /**
+     * Returns the correlator data associated with this call, if present.
+     * <p>
+     * This method may return {@code null} if no correlator data is associated
+     * with the call.
+     * </p>
+     *
+     * @return the correlator data associated with this call,
+     *         or {@code null} if none is present
+     * @since 2.7.4
+     */
+    public final CorrelatorData getCorrelatorData() {
+        
+        if (this.associatedData == null) {
+            return null;
+        }
+        else {
+            return new CorrelatorData(associatedData);
+        }
+    }
 
     /**
      * Returns the unique identifier of this communication record.
@@ -61,7 +113,7 @@ public class ComRecord {
      * Returns the reference of the call that created this communication record.
      * 
      * @return the call reference.
-     * @see com.ale.o2g.types.telephony.Call#getCallRef() 
+     * @see com.ale.o2g.types.telephony.Call#getCallRef()
      */
     public final String getCallRef() {
         return callRef;
@@ -72,7 +124,8 @@ public class ComRecord {
      * <p>
      * Only missed incoming calls can have this flag set to {@code true}.
      * 
-     * @return {@code true} if the call has been acknowledged; {@code false} otherwise.
+     * @return {@code true} if the call has been acknowledged; {@code false}
+     *         otherwise.
      */
     public final boolean isAcknowledged() {
         return acknowledged;
@@ -81,8 +134,8 @@ public class ComRecord {
     /**
      * Returns the collection of participants in this communication record.
      * 
-     * @return a collection of {@link ComRecordParticipant} objects representing
-     *         all participants in the call.
+     * @return a collection of {@link ComRecordParticipant} objects representing all
+     *         participants in the call.
      */
     public final Collection<ComRecordParticipant> getParticipants() {
         return participants;

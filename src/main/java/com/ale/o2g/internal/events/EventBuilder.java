@@ -73,6 +73,8 @@ public class EventBuilder {
         eventRegistrar.registerEventListener(MaintenanceEventListener.class);
         eventRegistrar.registerAdapter("OnCtiLinkDownEvent", OnInternalNodeIdEvent::adaptLinkDown, OnInternalNodeIdEvent.class);
         eventRegistrar.registerAdapter("OnCtiLinkUpEvent", OnInternalNodeIdEvent::adaptLinkUp, OnInternalNodeIdEvent.class);
+        eventRegistrar.registerAdapter("OnPbxLinkDownEvent", OnInternalNodeIdEvent::adaptLinkDown, OnInternalNodeIdEvent.class);
+        eventRegistrar.registerAdapter("OnPbxLinkUpEvent", OnInternalNodeIdEvent::adaptLinkUp, OnInternalNodeIdEvent.class);
         eventRegistrar.registerAdapter("OnPbxLoadedEvent", OnInternalNodeIdEvent::adaptPbxLoaded, OnInternalNodeIdEvent.class);
 
         eventRegistrar.registerEventListener(TelephonyEventListener.class);

@@ -32,6 +32,7 @@ import com.ale.o2g.types.telephony.call.CorrelatorData;
 import com.ale.o2g.types.telephony.call.Leg;
 import com.ale.o2g.types.telephony.call.Participant;
 import com.ale.o2g.types.telephony.call.acd.PilotInfo;
+import com.ale.o2g.types.telephony.call.acd.PilotTransferQueryParameters;
 import com.ale.o2g.types.telephony.device.DeviceState;
 
 /**
@@ -1539,30 +1540,96 @@ public interface TelephonyService extends IService {
     boolean requestCallback(String callee);
 
     /**
-     * Query the specified CCD pilot information. This method is used to get various
-     * information on teh CCD pilot routing capabilities.
+     * Queries the specified CCD pilot information using the given transfer
+     * criteria.
+     * <p>
+     * The {@code pilotTransferQueryParam} defines the optional filtering criteria
+     * such as agent number, priority transfer, supervised transfer, or call
+     * profile.
+     * </p>
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
-     * ignored, but it is mandatory if the session has been opened by an
+     * ignored. It is required only when the session has been opened by an
      * administrator.
-     * 
-     * @param nodeId      the PCX Enterprise node id
-     * @param pilotNumber the pilot number
-     * @param loginName   the login name
-     * @return The CCD pilot information on success; {@code null} otherwise.
+     * </p>
+     *
+     * @param nodeId                  the PCX Enterprise node ID
+     * @param pilotNumber             the pilot number to query
+     * @param pilotTransferQueryParam the transfer criteria; must not be
+     *                                {@code null}
+     * @param loginName               the login name; required if session opened by
+     *                                administrator
+     * @return the {@link PilotInfo} for the CCD pilot on success, or {@code null}
+     *         otherwise
+     * @throws IllegalArgumentException if {@code pilotTransferQueryParam} is
+     *                                  {@code null}
+     * @since 2.7.4
+     */
+    PilotInfo getPilotInfo(int nodeId, String pilotNumber, PilotTransferQueryParameters pilotTransferQueryParam,
+            String loginName);
+
+    /**
+     * Queries the specified CCD pilot information without any transfer criteria.
+     * <p>
+     * This is a convenience overload for cases where no filtering is required. It
+     * internally calls
+     * {@link #getPilotInfo(int, String, PilotTransferQueryParameters, String)} with
+     * an empty {@link PilotTransferQueryParameters} object.
+     * </p>
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored. It is required only when the session has been opened by an
+     * administrator.
+     * </p>
+     *
+     * @param nodeId      the PCX Enterprise node ID
+     * @param pilotNumber the pilot number to query
+     * @param loginName   the login name; required if session opened by
+     *                    administrator
+     * @return the {@link PilotInfo} for the CCD pilot on success, or {@code null}
+     *         otherwise
      * @since 2.7
      */
     PilotInfo getPilotInfo(int nodeId, String pilotNumber, String loginName);
 
     /**
-     * Query the specified CCD pilot information. This method is used to get various
-     * information on teh CCD pilot routing capabiities.
+     * Queries the specified CCD pilot information using the given transfer
+     * criteria.
+     * <p>
+     * The {@code pilotTransferQueryParam} defines the optional filtering criteria
+     * such as agent number, priority transfer, supervised transfer, or call
+     * profile.
+     * </p>
      * <p>
      * This method will return {@code null} if it is invoked from a session opened
      * by an administrator.
+     * </p>
      * 
-     * @param nodeId      the PCX Enterprise node id
-     * @param pilotNumber the pilot number
+     * @param nodeId                  the PCX Enterprise node id
+     * @param pilotNumber             the pilot number
+     * @param pilotTransferQueryParam the transfer criteria; must not be
+     *                                {@code null}
+     * @return The CCD pilot information on success; {@code null} otherwise.
+     * @since 2.7.4
+     */
+    PilotInfo getPilotInfo(int nodeId, String pilotNumber, PilotTransferQueryParameters pilotTransferQueryParam);
+
+
+    /**
+     * Queries the specified CCD pilot information without any transfer criteria.
+     * <p>
+     * This is a convenience overload for cases where no filtering is required. It
+     * internally calls
+     * {@link #getPilotInfo(int, String, PilotTransferQueryParameters)} with
+     * an empty {@link PilotTransferQueryParameters} object.
+     * </p>
+     * <p>
+     * This method will return {@code null} if it is invoked from a session opened
+     * by an administrator.
+     * </p>
+     * 
+     * @param nodeId                  the PCX Enterprise node id
+     * @param pilotNumber             the pilot number
      * @return The CCD pilot information on success; {@code null} otherwise.
      * @since 2.7
      */

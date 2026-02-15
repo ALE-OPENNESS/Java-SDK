@@ -36,7 +36,7 @@ import com.ale.o2g.types.cca.AgentSkillSet;
  * <code>
  * {@literal @}Override
  * public void onAgentSkillChanged(OnAgentSkillChangedEvent e) {
- *     AgentSkillSet updatedSkills = e.getSkills();
+ *     CallProfile updatedSkills = e.getSkills();
  *     // process skill changes
  * }
  * </code>
