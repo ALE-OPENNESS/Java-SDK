@@ -18,6 +18,7 @@
 */
 package com.ale.o2g.events.ccrt;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -26,6 +27,7 @@ import com.google.gson.annotations.SerializedName;
  * @see com.ale.o2g.events.ccrt.OnQueueRtiChangedEvent
  * @since 2.7.4
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum QueueType {
 
     /** Normal queue for standard call distribution. */

@@ -45,7 +45,7 @@ import com.google.gson.annotations.SerializedName;
  * 
  * // Monitor queues with selected attributes
  * filter.setQueueNumbers(new String[] { "1001", "1002" });
- * filter.setQueueAttributes(QueueAttributes.WaitingCalls, QueueAttributes.AverageWaitTime);
+ * filter.setQueueAttributes(QueueAttributes.ExpectedWaitingTime, QueueAttributes.NbOfWaitingCalls);
  * 
  * // Use the filter to create a real-time context
  * Context context = new Context(30, 5, filter);

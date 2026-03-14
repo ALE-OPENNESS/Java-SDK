@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -33,6 +32,7 @@ import com.ale.o2g.internal.types.routing.O2GRoutingState;
 import com.ale.o2g.internal.types.routing.OverflowRoute;
 import com.ale.o2g.internal.types.routing.PresentationRoute;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.routing.Destination;
@@ -66,7 +66,7 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 	
 	private static record SetForwardRouteRequest(ForwardRoute forwardRoute) {}
 	
-	public RoutingRest(HttpClient httpClient, URI uri) {
+	public RoutingRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 
@@ -311,29 +311,6 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 	public boolean overflowOnVoiceMail(Overflow.Condition condition) {
 		return this.overflowOnVoiceMail(condition, null);
 	}
-
-	/*
-	@Override
-	public boolean overflowOnAssociate(Overflow.Condition condition, String loginName) {
-
-		URI uriPost = URIBuilder.appendPath(uri, "overflowroute");
-        if (loginName != null) {
-        	uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
-        }
-
-        SetOverflowRouteRequest setOverflowRouteRequest = new SetOverflowRouteRequest();
-        setOverflowRouteRequest.addRoute(OverflowRoute.createOverflowOnAssociate(condition));
-        
-		HttpRequest request = HttpUtil.POST(uriPost, gson.toJson(setOverflowRouteRequest));
-		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-		return isSucceeded(response);
-	}
-
-	@Override
-	public boolean overflowOnAssociate(Overflow.Condition condition) {
-		return this.overflowOnAssociate(condition, null);
-	}
-*/
 
 	@Override
 	public RoutingState getRoutingState(String loginName) {

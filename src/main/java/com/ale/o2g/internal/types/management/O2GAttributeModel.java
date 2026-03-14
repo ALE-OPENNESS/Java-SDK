@@ -70,12 +70,12 @@ public class O2GAttributeModel {
     
     
     // Transformation into a ModelAttribute
-    public ModelAttribute toAttributeModel(String objectName) {
+    public ModelAttribute toAttributeModel() {
         
         return new ModelAttribute(
                 name,
                 mandatory,
-                com.ale.o2g.types.management.ModelAttribute.Type.valueOf(typeValue),
+                (typeValue == null) ? null :  com.ale.o2g.types.management.ModelAttribute.Type.valueOf(typeValue),
                 multiValue,
                 allowedValues,
                 parseLengthValue(lengthValue),

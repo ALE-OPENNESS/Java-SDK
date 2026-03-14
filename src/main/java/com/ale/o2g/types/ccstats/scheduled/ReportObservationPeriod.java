@@ -73,7 +73,7 @@ public final class ReportObservationPeriod {
     }
 
     private PeriodType periodType;
-    private int lastNb;
+    private Integer lastNb;
     private String beginDate;
     private String endDate;
 
@@ -151,7 +151,7 @@ public final class ReportObservationPeriod {
         LocalDateTime to = AssertUtil.requireNotNull(from, "from")
                 .plusDays(AssertUtil.requireRange(nbDays, 1, 31, "nbDays"));
 
-        return new ReportObservationPeriod(PeriodType.FROM_DATE_TO_DATE, -1, from, to);
+        return new ReportObservationPeriod(PeriodType.FROM_DATE_TO_DATE, null, from, to);
     }
 
     /**
@@ -207,14 +207,14 @@ public final class ReportObservationPeriod {
     }
 
     private ReportObservationPeriod(PeriodType periodType) {
-        this(periodType, -1);
+        this(periodType, null);
     }
 
-    private ReportObservationPeriod(PeriodType periodType, int lastNb) {
+    private ReportObservationPeriod(PeriodType periodType, Integer lastNb) {
         this(periodType, lastNb, null, null);
     }
 
-    private ReportObservationPeriod(PeriodType periodType, int lastNb, LocalDateTime from, LocalDateTime to) {
+    private ReportObservationPeriod(PeriodType periodType, Integer lastNb, LocalDateTime from, LocalDateTime to) {
         this.periodType = periodType;
         this.lastNb = lastNb;
 

@@ -94,6 +94,7 @@ public class PartyInfo {
     public static class Identifier {
         private String loginName;
         private String phoneNumber;
+        private boolean multiLine;
 
         /**
          * Returns the login name of the participant.
@@ -112,6 +113,15 @@ public class PartyInfo {
         public final String getPhoneNumber() {
             return phoneNumber;
         }
+        
+        /**
+         * Returns weather this identifier is part of a multiligne configuration
+         * @return true if the identifier is a multiline configuration
+         */
+        public final boolean isMultiLine() {
+        	return multiLine;
+        }
+        
 
         protected Identifier() {
         }

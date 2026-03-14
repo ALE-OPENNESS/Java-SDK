@@ -19,15 +19,16 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import com.ale.o2g.CallCenterRealtimeService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.ccrt.Context;
@@ -43,7 +44,7 @@ public class CallCenterRealtimeRest extends AbstractRESTService implements CallC
      * @param httpClient
      * @param uri
      */
-    public CallCenterRealtimeRest(HttpClient httpClient, URI uri) {
+    public CallCenterRealtimeRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
@@ -87,90 +88,40 @@ public class CallCenterRealtimeRest extends AbstractRESTService implements CallC
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);
     }
+    
+    private Collection<RtiObjectIdentifier> getCollection(String path, Function<RtiObjects, Collection<RtiObjectIdentifier>> extractor) {
+        URI uriGet = URIBuilder.appendPath(uri, path);
+        HttpRequest request = HttpUtil.GET(uriGet);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        RtiObjects objects = getResult(response, RtiObjects.class);
+
+        return (objects == null) ? null : unmodifiableOrEmpty(extractor.apply(objects));
+    }    
+    
 
     @Override
     public Collection<RtiObjectIdentifier> getAgents() {
-
-        URI uriGet = URIBuilder.appendPath(uri, "agents");
-        
-        HttpRequest request = HttpUtil.GET(uriGet);
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
-        RtiObjects objects = getResult(response, RtiObjects.class);
-        if (objects == null) {
-            return null;
-        }
-        else {
-            return objects.getAgents();
-        }
+    	return getCollection("agents", RtiObjects::getAgents);
     }
 
     @Override
     public Collection<RtiObjectIdentifier> getPilots() {
-
-        URI uriGet = URIBuilder.appendPath(uri, "pilots");
-        
-        HttpRequest request = HttpUtil.GET(uriGet);
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
-        RtiObjects objects = getResult(response, RtiObjects.class);
-        if (objects == null) {
-            return null;
-        }
-        else {
-            return objects.getPilots();
-        }
+    	return getCollection("pilots", RtiObjects::getPilots);
     }
 
     @Override
     public Collection<RtiObjectIdentifier> getQueues() {
-
-        URI uriGet = URIBuilder.appendPath(uri, "queues");
-        
-        HttpRequest request = HttpUtil.GET(uriGet);
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
-        RtiObjects objects = getResult(response, RtiObjects.class);
-        if (objects == null) {
-            return null;
-        }
-        else {
-            return objects.getQueues();
-        }
+    	return getCollection("queues", RtiObjects::getQueues);
     }
 
     @Override
     public Collection<RtiObjectIdentifier> getAgentProcessingGroups() {
-
-        URI uriGet = URIBuilder.appendPath(uri, "pgAgents");
-        
-        HttpRequest request = HttpUtil.GET(uriGet);
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
-        RtiObjects objects = getResult(response, RtiObjects.class);
-        if (objects == null) {
-            return null;
-        }
-        else {
-            return objects.getAgentProcessingGroups();
-        }
+    	return getCollection("pgAgents", RtiObjects::getAgentProcessingGroups);
     }
 
     @Override
     public Collection<RtiObjectIdentifier> getOtherProcessingGroups() {
-
-        URI uriGet = URIBuilder.appendPath(uri, "pgOthers");
-        
-        HttpRequest request = HttpUtil.GET(uriGet);
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
-        RtiObjects objects = getResult(response, RtiObjects.class);
-        if (objects == null) {
-            return null;
-        }
-        else {
-            return objects.getOtherProcessingGroups();
-        }
+    	return getCollection("pgOthers", RtiObjects::getOtherProcessingGroups);
     }
 
     @Override

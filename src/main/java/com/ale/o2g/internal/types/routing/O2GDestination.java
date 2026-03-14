@@ -25,7 +25,6 @@ public class O2GDestination {
 
 	private String type;
 	private String number;
-	@SuppressWarnings("unused")
 	private Boolean selected;
 	
 	

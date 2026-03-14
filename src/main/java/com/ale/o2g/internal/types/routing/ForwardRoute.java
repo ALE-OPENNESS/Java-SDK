@@ -21,6 +21,7 @@ package com.ale.o2g.internal.types.routing;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ale.o2g.types.routing.Destination;
 import com.ale.o2g.types.routing.Forward;
 import com.ale.o2g.types.routing.Forward.Condition;
 
@@ -48,7 +49,7 @@ public class ForwardRoute {
             }
         }
 		else {
-        	return new Forward(null, forwardCondition, null) {};
+        	return new Forward(Destination.NONE, forwardCondition, null) {};
 		}
 	}
 	

@@ -75,9 +75,10 @@ import com.ale.o2g.internal.types.RoxeRestApiDescriptor;
 import com.ale.o2g.internal.types.Service;
 import com.ale.o2g.internal.types.SessionInfo;
 import com.ale.o2g.internal.util.EventListenersMap;
+import com.ale.o2g.internal.util.HttpClientBuilder;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.types.Host;
 import com.ale.o2g.types.ServerInfo;
-import com.ale.o2g.util.HttpClientBuilder;
 
 /**
  *
@@ -90,7 +91,7 @@ public class ServiceFactory {
 		Public, Private
 	}
 
-	private HttpClient httpClient = null;
+	private HttpClientWrapper httpClientWrapper = null;
 
 	private final Map<Service, URI> servicesUri = new HashMap<Service, URI>();
 	private final Map<Service, IService> services = new HashMap<Service, IService>();
@@ -109,7 +110,7 @@ public class ServiceFactory {
 
 		try {
 		    executorService = Executors.newCachedThreadPool();
-			httpClient = HttpClientBuilder.getInstance().build(executorService);
+		    httpClientWrapper = HttpClientBuilder.getInstance().build(executorService);
 		}
 		catch (Exception e) {
 			throw new O2GException(e);
@@ -341,7 +342,7 @@ public class ServiceFactory {
 		if (service == null) {
 
 			try {
-				service = restClass.getConstructor(HttpClient.class, URI.class).newInstance(httpClient,
+				service = restClass.getConstructor(HttpClientWrapper.class, URI.class).newInstance(httpClientWrapper,
 						servicesUri.get(serviceName));
 				services.put(serviceName, service);
 			}

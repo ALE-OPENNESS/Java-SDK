@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -28,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.ale.o2g.RecordingService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.recording.RecordedDevice;
@@ -47,7 +47,7 @@ public class RecordingRest extends AbstractRESTService implements RecordingServi
     }
     
     
-	public RecordingRest(HttpClient httpClient, URI uri) {
+	public RecordingRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 

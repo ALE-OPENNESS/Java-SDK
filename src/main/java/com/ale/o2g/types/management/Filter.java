@@ -24,16 +24,16 @@ import java.util.Collection;
 import com.ale.o2g.internal.util.AssertUtil;
 
 /**
- * {@code AbstractFilter} class represents a filter that can be used to query OmniPCX Enterprise Object instances.
+ * {@code Filter} class represents a filter that can be used to query OmniPCX Enterprise Object instances.
  * <p>
- * The {@code AbstractFilter} class provides method to build logical combination of simple filters.
+ * The {@code Filter} class provides method to build logical combination of simple filters.
  * <pre>
- *   AbstractFilter complex = AbstractFilter.and(
- *                      AbstractFilter.or(
- *                        AbstractFilter.create("Station_Type", AttributeFilter.Equals, "ANALOG"),
- *                        AbstractFilter.create("Station_Type", AttributeFilter.Equals, "ALE-300")
+ *   Filter complex = Filter.and(
+ *                      Filter.or(
+ *                        Filter.create("Station_Type", AttributeFilter.Equals, "ANALOG"),
+ *                        Filter.create("Station_Type", AttributeFilter.Equals, "ALE-300")
  *                      ),
- *                      AbstractFilter.create("Directory_Name", OperationFilter.StartsWith, "f")
+ *                      Filter.create("Directory_Name", OperationFilter.StartsWith, "f")
  *                    );
  * 
  * </pre>
@@ -130,7 +130,7 @@ public class Filter {
     
     private static Filter combine(String ope, Filter filter1, Filter filter2, Collection<Filter> otherFilters) {
         
-        String result = String.format("%S %s %s",
+        String result = String.format("%s %s %s",
                 AssertUtil.requireNotNull(filter1, "filter1").value,
                 ope,
                 AssertUtil.requireNotNull(filter2, "filter2").value);

@@ -20,7 +20,6 @@ package com.ale.o2g.types.ccstats.data;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.ale.o2g.internal.util.FormatUtil;
 import com.ale.o2g.types.ccrt.PilotAttributes;
@@ -47,8 +46,6 @@ import com.ale.o2g.types.ccrt.PilotAttributes;
  * @since 2.7.4
  */
 public class PilotStatisticsRow extends StatisticsRow<PilotAttributes> {
-    
-    private static final DateTimeFormatter DATE_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
     private String date;
     @SuppressWarnings("unused")
@@ -195,7 +192,7 @@ public class PilotStatisticsRow extends StatisticsRow<PilotAttributes> {
      * @return the {@link LocalDateTime} representing when this statistics entry was recorded
      */
     public final LocalDateTime getDate() {
-        return LocalDateTime.parse(date, DATE_FORMATER);
+        return asLocalDateTime(date);
     }
 
     /**

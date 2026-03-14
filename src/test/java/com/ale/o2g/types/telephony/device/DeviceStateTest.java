@@ -1,5 +1,5 @@
 /*
-* Copyright 2024 ALE International
+* Copyright 2026 ALE International
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 * software and associated documentation files (the "Software"), to deal in the Software 
@@ -16,45 +16,42 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package com.ale.o2g.types.ccm.calendar;
 
-/**
- * {@code DayOfWeek} defines the day of a week.
- */
-public enum DayOfWeek {
+package com.ale.o2g.types.telephony.device;
 
-    /**
-     * The day-of-week of Monday.
-     */
-    MONDAY, 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-    /**
-     * The day-of-week of Tuesday.
-     */
-    TUESDAY, 
+import org.junit.jupiter.api.Test;
 
-    /**
-     * The day-of-week of Wednesday.
-     */
-    WEDNESDAY, 
+import com.ale.o2g.test.AbstractJsonTest;
 
-    /**
-     * The day-of-week of Thursday.
-     */
-    THURSDAY, 
+class DeviceStateTest extends AbstractJsonTest {
 
-    /**
-     * The day-of-week of Friday.
-     */
-    FRIDAY, 
+    @Test
+    void testDeserializationFull() {
+        // Full JSON with all fields
+        String json = """
+            {
+                "deviceId": "12000",
+                "state": "OUT_OF_SERVICE"
+            }
+        """;
 
-    /**
-     * The day-of-week of Saturday.
-     */
-    SATURDAY, 
+        DeviceState deviceState = gson.fromJson(json, DeviceState.class);
 
-    /**
-     * The day-of-week of Sunday.
-     */
-    SUNDAY
+        assertEquals("12000", deviceState.getDeviceId());
+        assertEquals(OperationalState.OUT_OF_SERVICE, deviceState.getState());
+    }
+
+    @Test
+    void testDeserializationMin() {
+        // Minimal JSON
+        String json = "{}";
+
+        DeviceState deviceState = gson.fromJson(json, DeviceState.class);
+
+        assertNull(deviceState.getDeviceId());
+        assertNull(deviceState.getState());
+    }
 }

@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -37,6 +36,7 @@ import com.ale.o2g.internal.types.ccm.O2GCalendar.O2GExceptionCalendar;
 import com.ale.o2g.internal.types.ccm.O2GCalendar.O2GNormalCalendar;
 import com.ale.o2g.internal.types.ccm.O2GPilot;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.ccm.Pilot;
@@ -53,7 +53,7 @@ public class CallCenterManagementRest extends AbstractRESTService implements Cal
         private Collection<O2GPilot> pilotList;
     }    
     
-	public CallCenterManagementRest(HttpClient httpClient, URI uri) {
+	public CallCenterManagementRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 

@@ -108,7 +108,7 @@ public class SearchResult {
      * @return an unmodifiable collection of {@link Results} objects.
      */
     public final Collection<Results> getResultElements() {
-        return Collections.unmodifiableCollection(resultElements);
+        return (resultElements == null) ? Collections.emptyList() : Collections.unmodifiableCollection(resultElements);
     }
 
     protected SearchResult() {

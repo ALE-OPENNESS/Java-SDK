@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -27,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.ale.o2g.DirectoryService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.directory.Criteria;
@@ -39,27 +39,23 @@ public class DirectoryRest extends AbstractRESTService implements DirectoryServi
 
 	private static record SearchRequest(Integer limit, Criteria filter) {}
 	
-	public DirectoryRest(HttpClient httpClient, URI uri) {
+	public DirectoryRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 
-	private boolean search(Criteria filter, Integer limit, String loginName) {
+	@Override
+	public boolean search(Criteria filter, int limit, String loginName) {
 
 		URI uriPost = URIBuilder.appendPath(uri, "search");
         if (loginName != null) {
         	uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
 
-		String json = gson.toJson(new SearchRequest(limit, AssertUtil.requireNotNull(filter, "filter")));
+		String json = gson.toJson(new SearchRequest((limit > 0) ? limit : null, AssertUtil.requireNotNull(filter, "filter")));
 
 		HttpRequest request = HttpUtil.POST(uriPost, json);
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 		return isSucceeded(response);
-	}
-
-	@Override
-	public boolean search(Criteria filter, int limit, String loginName) {
-		return this.search(filter, limit, loginName);
 	}
 
 	@Override
@@ -69,7 +65,7 @@ public class DirectoryRest extends AbstractRESTService implements DirectoryServi
 
 	@Override
 	public boolean search(Criteria filter) {
-		return this.search(filter, null, null);
+		return this.search(filter, -1, null);
 	}
 
 	@Override

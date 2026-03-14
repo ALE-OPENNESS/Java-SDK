@@ -19,8 +19,7 @@
 package com.ale.o2g.types.cca;
 
 import java.util.Collection;
-
-import com.google.gson.annotations.SerializedName;
+import java.util.Collections;
 
 /**
  * {@code AgentGroups} represents the group configuration of a CCD operator.
@@ -31,8 +30,6 @@ import com.google.gson.annotations.SerializedName;
 public final class AgentGroups {
 
     private String preferred;
-
-    @SerializedName(value = "processingGroups")
     private Collection<String> groups;
 
     /**
@@ -52,7 +49,7 @@ public final class AgentGroups {
      *         may be empty but never {@code null}
      */
     public final Collection<String> getGroups() {
-        return groups;
+    	return groups != null ? Collections.unmodifiableCollection(groups) : Collections.emptyList();
     }
 
     protected AgentGroups() {

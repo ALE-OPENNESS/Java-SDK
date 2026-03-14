@@ -19,46 +19,23 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.Collection;
-import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import com.ale.o2g.MaintenanceService;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
-import com.ale.o2g.types.maintenance.License;
-import com.ale.o2g.types.maintenance.PbxStatus;
-import com.ale.o2g.types.maintenance.ServerAddress;
 import com.ale.o2g.types.maintenance.SystemStatus;
 
 /**
  *
  */
 public class MaintenanceRest extends AbstractRESTService implements MaintenanceService {
-
-    class LicenseStatus{
-        public Collection<License> lics;
-    }
     
-    static class O2GSystemStatus {
-        private ServerAddress logicalAddress;
-        private Date startDate;
-        private boolean ha;
-        private String primary;
-        private String primaryVersion;
-        private String secondary;
-        private String secondaryVersion;
-        private Collection<PbxStatus> pbxs;
-        private LicenseStatus license;
-        private SystemStatus.Configuration configurationType;
-    }
-    
-    
-	public MaintenanceRest(HttpClient httpClient, URI uri) {
+	public MaintenanceRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 
@@ -68,29 +45,7 @@ public class MaintenanceRest extends AbstractRESTService implements MaintenanceS
 		HttpRequest request = HttpUtil.GET(URIBuilder.appendPath(uri, "status"));
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 		
-		O2GSystemStatus systemStatus = getResult(response, O2GSystemStatus.class);
-		if (systemStatus == null) {
-		    return null;
-		}
-		else {
-		    
-		    Collection<License> lics = null;
-		    if (systemStatus.license != null) {
-		        lics = systemStatus.license.lics;
-		    }
-		    
-		    return new SystemStatus(
-		            systemStatus.logicalAddress,
-		            systemStatus.startDate, 
-		            systemStatus.ha,
-		            systemStatus.primary,
-		            systemStatus.primaryVersion,
-		            systemStatus.secondary,
-		            systemStatus.secondaryVersion,
-		            systemStatus.pbxs,
-		            lics,
-		            systemStatus.configurationType) {};
-		}
+		return getResult(response, SystemStatus.class);
 	}
 
 }

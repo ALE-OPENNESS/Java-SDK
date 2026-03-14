@@ -18,6 +18,7 @@
 */
 package com.ale.o2g.types.telephony;
 
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -25,8 +26,9 @@ import java.util.Date;
  * users.
  */
 public class MiniMessage {
+	
     private String sender;
-    private Date dateTime;
+    private String date;
     private String message;
 
     /**
@@ -44,7 +46,8 @@ public class MiniMessage {
      * @return the date
      */
     public final Date getDate() {
-        return dateTime;
+    	if (this.date == null) return null;
+    	return Date.from(Instant.parse(this.date));
     }
 
     /**

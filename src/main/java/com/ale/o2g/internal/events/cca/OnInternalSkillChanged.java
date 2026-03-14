@@ -48,7 +48,7 @@ public class OnInternalSkillChanged extends O2GEvent {
             // Transform the AgentSkills to a SkillSet
             Map<Integer, AgentSkill> mapSkills = new HashMap<Integer, AgentSkill>();
          
-            if (org.skills.skills != null) {
+            if ((org.skills != null) && (org.skills.skills != null)) {
                 org.skills.skills.forEach(s -> mapSkills.put(s.getNumber(), s));
             }
 

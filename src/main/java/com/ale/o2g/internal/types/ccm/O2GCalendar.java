@@ -159,10 +159,10 @@ public class O2GCalendar {
     
     O2GNormalCalendar normalDays;
     O2GExceptionCalendar exceptionDays;
-    
+     
     public Calendar toCalendar() {
         return new Calendar(
-                normalDays.toNormalCalendar(),
-                exceptionDays.toExceptionCalendar()) {};
+                (normalDays != null) ? normalDays.toNormalCalendar() : null,
+                (exceptionDays != null) ? exceptionDays.toExceptionCalendar() : null) {};
     }
 }

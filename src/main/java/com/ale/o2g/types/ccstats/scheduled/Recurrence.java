@@ -50,7 +50,7 @@ public final class Recurrence {
 
     private Type type;
     private Set<DayOfWeek> daysInWeek;
-    private int dayInMonth;
+    private Integer dayInMonth;
 
     /**
      * Creates a recurrence that occurs every day.
@@ -89,17 +89,22 @@ public final class Recurrence {
     private Recurrence(Type type, DayOfWeek[] daysOfWeek, int dayInMonth) {
         this.type = type;
 
-        if ((daysOfWeek == null) || (daysOfWeek.length == 0)) {
-            throw new IllegalArgumentException("Days array cannot be null or empty");
-        }
+        
+        if (type == Type.WEEKLY) {
+            if ((daysOfWeek == null) || (daysOfWeek.length == 0)) {
+                throw new IllegalArgumentException("Days array cannot be null or empty");
+            }
 
-        Set<DayOfWeek> daySet = new HashSet<>(Arrays.asList(daysOfWeek));
-        if (daySet.size() != daysOfWeek.length) {
-            throw new IllegalArgumentException("Duplicate DayOfWeek values are not allowed");
-        }
+            Set<DayOfWeek> daySet = new HashSet<>(Arrays.asList(daysOfWeek));
+            if (daySet.size() != daysOfWeek.length) {
+                throw new IllegalArgumentException("Duplicate DayOfWeek values are not allowed");
+            }
 
-        this.daysInWeek = Set.copyOf(daySet); // unmodifiable set
-        this.dayInMonth = dayInMonth;
+            this.daysInWeek = Set.copyOf(daySet);
+        }
+        else {
+        	this.dayInMonth = dayInMonth;
+        }
     }
 
     /**

@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -28,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import com.ale.o2g.Subscription;
 import com.ale.o2g.internal.services.ISubscriptions;
 import com.ale.o2g.internal.types.SubscriptionResult;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.URIBuilder;
 
 /**
@@ -36,7 +36,7 @@ import com.ale.o2g.internal.util.URIBuilder;
  */
 public class SubscriptionsRest  extends AbstractRESTService implements ISubscriptions {
 
-	public SubscriptionsRest(HttpClient httpClient, URI uri) {
+	public SubscriptionsRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 

@@ -22,6 +22,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -59,6 +63,16 @@ import com.ale.o2g.internal.util.FormatUtil;
  */
 public abstract class StatisticsRow<E extends Enum<E>> {
     
+	// Dedicated formatter used in concrete class
+	private static final DateTimeFormatter DATE_FORMATER = new DateTimeFormatterBuilder()
+		    .appendPattern("yyyy-MM-dd")
+		    .optionalStart()
+		    .appendPattern("'T'HH:mm")
+		    .optionalEnd()
+		    .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+		    .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+		    .toFormatter();	
+	
     private final Map<E, Field> fieldCache = new EnumMap<>(getEnumClass());
     
     @SuppressWarnings("unchecked")
@@ -172,6 +186,7 @@ public abstract class StatisticsRow<E extends Enum<E>> {
         public Duration asDuration() {
             if (value == null) return null;
             if (value instanceof Duration) return (Duration) value;
+            if (value instanceof Integer) return Duration.ofSeconds((Integer)value);
             if (value instanceof String s) {
                 return FormatUtil.asDuration(s);
             }
@@ -187,6 +202,11 @@ public abstract class StatisticsRow<E extends Enum<E>> {
             return value == null ? null : value.toString();
         }
     }
+    
+    protected LocalDateTime asLocalDateTime(String value) {
+    	return LocalDateTime.parse(value, DATE_FORMATER);
+    }
+    
     
     protected StatisticsRow() {
         

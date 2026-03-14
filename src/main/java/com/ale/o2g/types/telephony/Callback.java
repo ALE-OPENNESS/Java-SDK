@@ -21,8 +21,8 @@ package com.ale.o2g.types.telephony;
 import com.ale.o2g.types.common.PartyInfo;
 
 /**
- * {@code Callback} class represenst a callback request. A callback request is
- * invoked by a caller to ask the user to call him back as sson as possible.
+ * {@code Callback} class represents a callback request. A callback request is
+ * invoked by a caller to ask the user to call him back as soon as possible.
  */
 public class Callback {
     private String callbackId;

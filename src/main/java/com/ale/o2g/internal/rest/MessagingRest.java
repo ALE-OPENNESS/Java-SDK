@@ -21,7 +21,6 @@ package com.ale.o2g.internal.rest;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -31,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.ale.o2g.MessagingService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.messaging.MailBox;
@@ -52,7 +52,7 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
 
     static record ConnectRequest(String password) {}
     
-    public MessagingRest(HttpClient httpClient, URI uri) {
+    public MessagingRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
@@ -72,7 +72,7 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
             return null;
         }
         else {
-            return mailboxes.mailboxes;
+            return unmodifiableOrEmpty(mailboxes.mailboxes);
         }
     }
 
@@ -122,7 +122,7 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
         }
 
         if (limit != null) {
-            uriGet = URIBuilder.appendQuery(uriGet, "offset", String.valueOf(limit));
+            uriGet = URIBuilder.appendQuery(uriGet, "limit", String.valueOf(limit));
         }
 
         if (newOnly) {
@@ -137,7 +137,7 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
             return null;
         }
         else {
-            return voicemails.voicemails;
+            return unmodifiableOrEmpty(voicemails.voicemails);
         }
     }
 
@@ -227,7 +227,9 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
         
         CompletableFuture<HttpResponse<Path>> response = 
                 httpClient.sendAsync(request, BodyHandlers.ofFile(downloadedFile));
-        return downloadedFile(wavPath, response);
+        
+        return fileDownloader.download(wavPath, response);
+//        return downloadedFile(wavPath, response);
     }
 
     @Override

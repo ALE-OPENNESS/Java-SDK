@@ -21,13 +21,14 @@ package com.ale.o2g.internal.rest;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -37,6 +38,8 @@ import java.util.regex.Pattern;
 
 import com.ale.o2g.O2GRuntimeException;
 import com.ale.o2g.internal.util.AnnotationExclusionStrategy;
+import com.ale.o2g.internal.util.FileDownloader;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.types.RestErrorInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,14 +59,17 @@ public abstract class AbstractRESTService {
     static final List<String> PROHIBITED = List.of(".", "..", "", "~" , "|");
     
     protected URI uri;
-    protected HttpClient httpClient;
+    protected HttpClientWrapper httpClient;
+    protected FileDownloader fileDownloader;
+    
     protected Gson gson = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy()).create();
 
     protected static Optional<RestErrorInfo> lastError = Optional.empty();
 
-    public AbstractRESTService(HttpClient httpClient, URI uri) {
+    public AbstractRESTService(HttpClientWrapper httpClient, URI uri) {
         this.uri = uri;
         this.httpClient = httpClient;
+        this.fileDownloader = this::downloadedFile;
     }
     
     protected boolean isSucceeded(int statusCode) {
@@ -335,5 +341,9 @@ public abstract class AbstractRESTService {
         else {
             return null;
         }
+    }
+    
+    protected <T> Collection<T> unmodifiableOrEmpty(Collection<T> c) {
+    	return (c == null) ? Collections.emptyList() : Collections.unmodifiableCollection(c);
     }
 }

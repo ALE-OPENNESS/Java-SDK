@@ -34,7 +34,10 @@ public class OnInternalRoutingStateChangedEvent extends O2GEvent {
         if (ev instanceof OnInternalRoutingStateChangedEvent) {
             
             OnInternalRoutingStateChangedEvent org = (OnInternalRoutingStateChangedEvent)ev;
-            return new OnRoutingStateChangedEvent(org.getName(), org.loginName, org.routingState.toRoutingState()) {};
+            return new OnRoutingStateChangedEvent(
+            		org.getName(), 
+            		org.loginName, 
+            		(org.routingState == null) ? null : org.routingState.toRoutingState()) {};
         }
         else {
             throw new Error("Invalid translator exception");

@@ -114,7 +114,7 @@ public class OperatorState {
     private String proAcdDeviceNumber;
     private String pgNumber;
     private Integer withdrawReason;
-    private boolean withdraw;
+    private boolean withdrawn;
 
     /**
      * Returns the static (main) state of the operator, indicating login or error status.
@@ -168,8 +168,8 @@ public class OperatorState {
      *
      * @return {@code true} if the operator is in withdraw state, {@code false} otherwise
      */
-    public final boolean isWithdraw() {
-        return withdraw;
+    public final boolean isWithdrawn() {
+        return withdrawn;
     }
 
     protected OperatorState() {

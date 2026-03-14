@@ -19,10 +19,12 @@
 package com.ale.o2g.types.telephony.call;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import com.ale.o2g.internal.util.HexaString;
 import com.ale.o2g.types.common.PartyInfo;
 import com.ale.o2g.types.telephony.Call;
+import com.ale.o2g.types.telephony.TrunkIdentification;
 import com.ale.o2g.types.telephony.call.acd.AcdData;
 
 /**
@@ -42,6 +44,7 @@ public class CallData {
     private String hexaBinaryAssociatedData;
     private String accountInfo;
     private AcdData acdCallData;
+    private TrunkIdentification trunkIdentification;
 
     /**
      * Returns the state of this call.
@@ -113,7 +116,7 @@ public class CallData {
      * @return the tags
      */
     public final Collection<Tag> getTags() {
-        return tags;
+        return (tags == null) ? Collections.emptyList() : Collections.unmodifiableCollection(tags);
     }
 
     /**
@@ -160,6 +163,16 @@ public class CallData {
         return acdCallData;
     }
 
+    /**
+     * Returns trunk information in case of an external call.
+     *
+     * @return the {@link TrunkIdentification} associated with the call, or
+     *         {@code null} if not applicable
+     */
+    public final TrunkIdentification getTrunkIdentification() {
+        return trunkIdentification;
+    }    
+    
     protected CallData() {
     }
 

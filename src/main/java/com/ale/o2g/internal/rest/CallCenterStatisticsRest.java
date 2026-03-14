@@ -21,7 +21,6 @@ package com.ale.o2g.internal.rest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -56,6 +55,7 @@ import com.ale.o2g.internal.types.ccstats.ScheduledReportImpl;
 import com.ale.o2g.internal.util.AssertUtil;
 import com.ale.o2g.internal.util.CompressionUtil;
 import com.ale.o2g.internal.util.FileUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.ccstats.AgentFilter;
@@ -151,7 +151,7 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
     private final AtomicBoolean running = new AtomicBoolean(false);    
     
     // Constructor
-    public CallCenterStatisticsRest(HttpClient httpClient, URI uri) {
+    public CallCenterStatisticsRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
@@ -267,8 +267,8 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
             return null;
         }
         else {
-            return contexts.contexts.stream()
-                    .collect(Collectors.toList());
+            return unmodifiableOrEmpty(contexts.contexts.stream()
+                    .collect(Collectors.toList()));
         }
     }
 
@@ -684,7 +684,7 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
     public ScheduledReport createScheduledReport(Context context, String id, String description,
             ReportObservationPeriod observationPeriod, Format format, String[] recipients) {
         
-        URI uriPost = URIBuilder.appendPath(
+        URI uriPost = URIBuilder.appendPath( 
                 uri, 
                 "scope", 
                 URLEncoder.encode(AssertUtil.requireNotNull(context, "context").getRequesterId(), StandardCharsets.UTF_8),
@@ -759,8 +759,8 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
         else {
             schedules.schedules.forEach(report -> report.setContext(context));
 
-            return schedules.schedules.stream()
-                    .collect(Collectors.toList());
+            return unmodifiableOrEmpty(schedules.schedules.stream()
+                    .collect(Collectors.toList()));
         }
     }
 

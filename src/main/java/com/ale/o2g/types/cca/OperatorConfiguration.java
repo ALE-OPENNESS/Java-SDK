@@ -45,7 +45,7 @@ public class OperatorConfiguration {
     }
 
     private Type type;
-    private String proacd;
+    private String proacd;    
     private AgentGroups groups;
     private AgentSkillSet skills;
     private boolean selfAssign;

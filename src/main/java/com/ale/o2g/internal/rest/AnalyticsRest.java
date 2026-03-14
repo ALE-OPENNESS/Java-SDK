@@ -19,12 +19,9 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -39,6 +36,7 @@ import com.ale.o2g.internal.types.analytics.O2GCharging;
 import com.ale.o2g.internal.types.analytics.O2GChargingFile;
 import com.ale.o2g.internal.types.analytics.O2GIncident;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.analytics.ChargingFile;
@@ -112,7 +110,7 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
     }
     
     
-    public AnalyticsRest(HttpClient httpClient, URI uri) {
+    public AnalyticsRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
@@ -135,7 +133,7 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
             return null;
         }
         else {
-            return o2gIncidents.toIncidents();
+            return unmodifiableOrEmpty(o2gIncidents.toIncidents());
         }
     }
 
@@ -157,9 +155,10 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
         
         // From and to can be null if called from getChargingFiles(int nodeId)
         if ((from != null) && (to != null)) {
-            DateFormat df = new SimpleDateFormat("yyyyMMdd");
-            uriGet = URIBuilder.appendQuery(uriGet, "fromDate", df.format(from));
-            uriGet = URIBuilder.appendQuery(uriGet, "toDate", df.format(to));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+            uriGet = URIBuilder.appendQuery(uriGet, "fromDate", formatter.format(from));
+            uriGet = URIBuilder.appendQuery(uriGet, "toDate", formatter.format(to));
         }
 
         HttpRequest request = HttpUtil.GET(uriGet);
@@ -170,7 +169,7 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
             return null;
         }
         else {
-            return chargingFiles.toChargingFiles();
+            return unmodifiableOrEmpty(chargingFiles.toChargingFiles());
         }
     }
     
@@ -199,10 +198,10 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
         URI uriGet = URIBuilder.appendPath(uri, "charging");
         uriGet = URIBuilder.appendQuery(uriGet, "nodeId", String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")));
         
-        DateFormat df = new SimpleDateFormat("yyyyMMdd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         
-        uriGet = URIBuilder.appendQuery(uriGet, "fromDate", df.format(from));
-        uriGet = URIBuilder.appendQuery(uriGet, "toDate", df.format(to));            
+        uriGet = URIBuilder.appendQuery(uriGet, "fromDate", formatter.format(from));
+        uriGet = URIBuilder.appendQuery(uriGet, "toDate", formatter.format(to));            
         
         if (topResults != null) {
             uriGet = URIBuilder.appendQuery(uriGet, "top", String.valueOf(topResults));

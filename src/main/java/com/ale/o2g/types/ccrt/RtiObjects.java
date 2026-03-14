@@ -19,6 +19,7 @@
 package com.ale.o2g.types.ccrt;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Represents a collection of CCD objects on which real-time information is available.
@@ -45,13 +46,18 @@ public class RtiObjects {
     private Collection<RtiObjectIdentifier> pgAgents;
     private Collection<RtiObjectIdentifier> pgOthers;
 
+    
+    private Collection<RtiObjectIdentifier> unmodifableOrEmpty(Collection<RtiObjectIdentifier> c) {
+    	return (c == null) ? Collections.emptyList() : Collections.unmodifiableCollection(c);
+    }
+    
     /**
      * Returns the collection of CCD agents.
      *
      * @return the agents
      */
     public final Collection<RtiObjectIdentifier> getAgents() {
-        return agents;
+        return unmodifableOrEmpty(agents);
     }
 
     /**
@@ -60,7 +66,7 @@ public class RtiObjects {
      * @return the pilots
      */
     public final Collection<RtiObjectIdentifier> getPilots() {
-        return pilots;
+        return unmodifableOrEmpty(pilots);
     }
 
     /**
@@ -69,7 +75,7 @@ public class RtiObjects {
      * @return the queues
      */
     public final Collection<RtiObjectIdentifier> getQueues() {
-        return queues;
+        return unmodifableOrEmpty(queues);
     }
 
     /**
@@ -78,7 +84,7 @@ public class RtiObjects {
      * @return the agent processing groups
      */
     public final Collection<RtiObjectIdentifier> getAgentProcessingGroups() {
-        return pgAgents;
+        return unmodifableOrEmpty(pgAgents);
     }
 
     /**
@@ -87,7 +93,7 @@ public class RtiObjects {
      * @return the other processing groups
      */
     public final Collection<RtiObjectIdentifier> getOtherProcessingGroups() {
-        return pgOthers;
+        return unmodifableOrEmpty(pgOthers);
     }
 
     /**

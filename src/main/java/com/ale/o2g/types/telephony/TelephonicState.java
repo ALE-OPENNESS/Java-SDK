@@ -19,12 +19,17 @@
 package com.ale.o2g.types.telephony;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import com.ale.o2g.types.telephony.device.Capabilities;
 import com.ale.o2g.types.telephony.user.UserState;
 
 /**
- * Represent the telephonic state of a user.
+ * Represents the telephonic state of a user.
+ * <p>
+ * This class provides information about the user's current call activity, device capabilities,
+ * and overall telephonic status within the system.
+ * </p>
  */
 public class TelephonicState {
     private Collection<Call> calls;
@@ -32,32 +37,50 @@ public class TelephonicState {
     private UserState userState;
 
     /**
-     * Returns the collection of active calls.
-     * 
-     * @return the collection of active calls
+     * Returns the collection of active calls associated with the user.
+     * <p>
+     * If the user has no active calls, an empty unmodifiable collection is returned.
+     * </p>
+     *
+     * @return an unmodifiable {@link Collection} of {@link Call} objects, never {@code null}
      */
     public final Collection<Call> getCalls() {
-        return calls;
+        return (calls == null) ? Collections.emptyList() : Collections.unmodifiableCollection(calls);
     }
 
     /**
-     * Returns the collection of device capabilities.
-     * 
-     * @return the collection of device capabilities
+     * Returns the collection of capabilities for the user's devices.
+     * <p>
+     * Each {@link Capabilities} object describes the actions the device can perform,
+     * such as making a call or un-parking a call. If no device capabilities are available,
+     * an empty unmodifiable collection is returned.
+     * </p>
+     *
+     * @return an unmodifiable {@link Collection} of {@link Capabilities}, never {@code null}
      */
     public final Collection<Capabilities> getDeviceCapabilities() {
-        return deviceCapabilities;
+        return (deviceCapabilities == null) ? Collections.emptyList() : Collections.unmodifiableCollection(deviceCapabilities);
     }
 
     /**
-     * Gets the user state.
-     * 
-     * @return the user state
+     * Returns the overall telephonic state of the user.
+     * <p>
+     * If the user state has not been explicitly set, {@link UserState#UNKNOWN} is returned.
+     * </p>
+     *
+     * @return the user's telephonic {@link UserState}, never {@code null}
      */
     public final UserState getUserState() {
         return (userState == null) ? UserState.UNKNOWN : userState;
     }
 
+    /**
+     * Protected constructor to prevent direct instantiation.
+     * <p>
+     * Instances are typically created internally by the system to reflect
+     * the current telephonic state of a user.
+     * </p>
+     */
     protected TelephonicState() {
     }
 }

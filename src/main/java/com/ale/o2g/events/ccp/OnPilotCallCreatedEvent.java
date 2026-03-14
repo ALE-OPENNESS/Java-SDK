@@ -19,10 +19,16 @@
 package com.ale.o2g.events.ccp;
 
 import com.ale.o2g.events.O2GEvent;
+import com.ale.o2g.types.ccp.CallDataPilot;
 import com.ale.o2g.types.telephony.call.Cause;
 
 /**
- * This event is raised when a new call arrive on a CCD pilot.
+ * Event triggered when a new call arrives on a CCD pilot.
+ * <p>
+ * This event contains information about the pilot handling the call, 
+ * the caller, the call reference, and additional call-related data.
+ * </p>
+ *
  * @since 2.7
  */
 public class OnPilotCallCreatedEvent extends O2GEvent {
@@ -31,10 +37,11 @@ public class OnPilotCallCreatedEvent extends O2GEvent {
     private String caller;
     private String callRef;
     private Cause cause;
+    private CallDataPilot callData;
     
     /**
-     * Return the pilot which distribute the call
-     * 
+     * Returns the pilot number distributing the call.
+     *
      * @return the pilot number
      */
     public final String getPilot() {
@@ -42,8 +49,8 @@ public class OnPilotCallCreatedEvent extends O2GEvent {
     }
 
     /**
-     * Return the caller's number
-     * 
+     * Returns the caller's phone number.
+     *
      * @return the caller's number
      */
     public final String getCaller() {
@@ -51,8 +58,8 @@ public class OnPilotCallCreatedEvent extends O2GEvent {
     }
 
     /**
-     * Returns this call reference
-     * 
+     * Returns the unique reference identifier for this call.
+     *
      * @return the call reference
      */
     public final String getCallRef() {
@@ -60,17 +67,27 @@ public class OnPilotCallCreatedEvent extends O2GEvent {
     }
 
     /**
-     * Returns the event cause
-     * 
-     * @return the cause
+     * Returns the cause of this event.
+     *
+     * @return the event cause
      */
     public final Cause getCause() {
         return cause;
     }
 
+    /**
+     * Returns additional data associated with this call.
+     *
+     * @return the call data
+     * @since 2.7.2
+     */
+    public final CallDataPilot getCallData() {
+        return callData;
+    }
     
+    /**
+     * Protected constructor to prevent direct instantiation.
+     */
     protected OnPilotCallCreatedEvent() {
     }    
-    
-    
 }

@@ -39,7 +39,7 @@ public class OnInternalPbxObjectEvent extends O2GEvent {
             OnInternalPbxObjectEvent org = (OnInternalPbxObjectEvent)ev;
             return new OnPbxObjectInstanceCreatedEvent(
                     org.getName(), 
-                    Integer.parseInt(org.nodeId),
+                    (org.nodeId == null) ? -1 : Integer.parseInt(org.nodeId),
                     new PbxObjectDefinition(org.objectName, org.objectId) {},
                     org.father) {};
         }

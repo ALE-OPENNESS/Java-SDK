@@ -30,7 +30,7 @@ public class O2GPilotRule {
     private boolean active;
 
     public int getNumber() {
-        return Integer.parseInt(ruleNumber);
+    	return (ruleNumber == null) ? -1 : Integer.parseInt(ruleNumber);
     }
     
     public PilotRule toPilotRule() {

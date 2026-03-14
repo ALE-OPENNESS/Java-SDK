@@ -19,10 +19,10 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -30,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 import com.ale.o2g.CallCenterAgentService;
 import com.ale.o2g.internal.types.cca.O2GAgentConfig;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.RestErrorInfo;
@@ -76,7 +77,7 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
      * @param httpClient
      * @param uri
      */
-    public CallCenterAgentRest(HttpClient httpClient, URI uri) {
+    public CallCenterAgentRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
@@ -407,7 +408,7 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
             return null;
         }
         else {
-            return reasons.getReasons();
+            return Collections.unmodifiableList(reasons.getReasons());
         }
     }
 
@@ -456,20 +457,4 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
         return this.deactivateSkills(skills, null);
     }
 
-    /*
-     * @Override public boolean setMultiMediaWrapup(MultiMediaState state, String
-     * loginName) { URI uriPost = URIBuilder.appendPath(uri, "wrapUpMM"); if
-     * (loginName != null) { uriPost = URIBuilder.appendQuery(uriPost, "loginName",
-     * loginName); }
-     * 
-     * uriPost = URIBuilder.appendQuery(uriPost, "multimedia", state.toString());
-     * 
-     * HttpRequest request = HttpUtil.POST(uriPost);
-     * CompletableFuture<HttpResponse<String>> response =
-     * httpClient.sendAsync(request, BodyHandlers.ofString()); return
-     * isSucceeded(response); }
-     * 
-     * @Override public boolean setMultiMediaWrapup(MultiMediaState state) { return
-     * this.setMultiMediaWrapup(state, null); }
-     */
-}
+ }

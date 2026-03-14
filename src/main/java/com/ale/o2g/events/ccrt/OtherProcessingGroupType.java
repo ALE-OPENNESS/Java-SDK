@@ -18,6 +18,7 @@
 */
 package com.ale.o2g.events.ccrt;
 
+import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -29,30 +30,31 @@ import com.google.gson.annotations.SerializedName;
  * @see com.ale.o2g.events.ccrt.OnPGOtherRtiChangedEvent
  * @since 2.7.4
  */
+@JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum OtherProcessingGroupType {
 
     /**
      * Mutual aid processing group.
      */
-    @SerializedName(value = "mutualAid")
+    @SerializedName(value = "MutualAid")
     MUTUAL_AID,
 
     /**
      * Forward processing group.
      */
-    @SerializedName(value = "forward")
+    @SerializedName(value = "Forward")
     FORWARD,
 
     /**
      * Guide processing group.
      */
-    @SerializedName(value = "guide")
+    @SerializedName(value = "Guide")
     GUIDE,
 
     /**
      * Remote processing group.
      */
-    @SerializedName(value = "remote")
+    @SerializedName(value = "Remote")
     REMOTE,
 
     /**

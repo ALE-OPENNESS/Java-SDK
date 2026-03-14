@@ -19,6 +19,7 @@
 package com.ale.o2g.types.comlog;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import com.ale.o2g.types.telephony.call.CorrelatorData;
@@ -138,7 +139,7 @@ public class ComRecord {
      *         participants in the call.
      */
     public final Collection<ComRecordParticipant> getParticipants() {
-        return participants;
+        return (participants == null) ? Collections.emptyList() : Collections.unmodifiableCollection(participants);
     }
 
     /**

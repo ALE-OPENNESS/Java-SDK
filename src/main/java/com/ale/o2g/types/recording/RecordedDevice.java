@@ -19,6 +19,7 @@
 package com.ale.o2g.types.recording;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -65,6 +66,6 @@ public class RecordedDevice {
      * @return a list of recorder names
      */
     public Collection<String> getRecorders() {
-        return recorders;
+        return (recorders == null) ? Collections.emptyList() : Collections.unmodifiableCollection(recorders);
     }
 }

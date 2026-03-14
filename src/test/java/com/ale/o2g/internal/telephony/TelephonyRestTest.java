@@ -1,13 +1,13 @@
 package com.ale.o2g.internal.telephony;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 
 import com.ale.o2g.internal.util.AnnotationExclusionStrategy;
-import com.ale.o2g.internal.util.AssertUtil;
 import com.ale.o2g.types.telephony.call.acd.CallProfile;
 import com.ale.o2g.types.telephony.call.acd.PilotTransferQueryParameters;
 import com.google.gson.Gson;

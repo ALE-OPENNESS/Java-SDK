@@ -37,6 +37,11 @@ public class EventSummary {
     private Integer oldTextNb;
     private boolean eventWaiting;
 
+    
+    private int getNotNullInt(Integer value) {
+    	return (value == null) ? 0 : value;
+    }
+    
     /**
      * Returns the number of missed calls.
      * <p>
@@ -54,7 +59,7 @@ public class EventSummary {
      * @return the number of missed calls, or {@code null} if unavailable
      */
     public final Integer getMissedCallsNb() {
-        return missedCallsNb;
+        return getNotNullInt(missedCallsNb) ;
     }
 
     /**
@@ -63,7 +68,7 @@ public class EventSummary {
      * @return the number of new voice messages, or {@code null} if unavailable
      */
     public final Integer getVoiceMessagesNb() {
-        return voiceMessagesNb;
+        return getNotNullInt(voiceMessagesNb);
     }
 
     /**
@@ -72,7 +77,7 @@ public class EventSummary {
      * @return the number of callback requests, or {@code null} if unavailable
      */
     public final Integer getCallBackRequestsNb() {
-        return callBackRequestsNb;
+        return getNotNullInt(callBackRequestsNb);
     }
 
     /**
@@ -81,7 +86,7 @@ public class EventSummary {
      * @return the number of faxes, or {@code null} if unavailable
      */
     public final Integer getFaxNb() {
-        return faxNb;
+        return getNotNullInt(faxNb);
     }
 
     /**
@@ -90,7 +95,7 @@ public class EventSummary {
      * @return the number of new text messages, or {@code null} if unavailable
      */
     public final Integer getNewTextNb() {
-        return newTextNb;
+        return getNotNullInt(newTextNb);
     }
 
     /**
@@ -99,7 +104,7 @@ public class EventSummary {
      * @return the number of old text messages, or {@code null} if unavailable
      */
     public final Integer getOldTextNb() {
-        return oldTextNb;
+        return getNotNullInt(oldTextNb);
     }
 
     /**

@@ -16,14 +16,19 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package com.ale.o2g.util;
+package com.ale.o2g.internal.util;
 
+import java.io.IOException;
 import java.net.CookieManager;
 import java.net.Socket;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Builder;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandler;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import javax.net.ssl.HostnameVerifier;
@@ -37,6 +42,28 @@ import javax.net.ssl.X509ExtendedTrustManager;
 
 public class HttpClientBuilder {
 
+	
+	static class DefaultHttpClientWrapper implements HttpClientWrapper {
+		private HttpClient httpClient;
+		
+		public DefaultHttpClientWrapper(HttpClient httpClient) {
+			this.httpClient = httpClient;
+		}
+
+		@Override
+		public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request,
+				BodyHandler<T> responseBodyHandler) {
+			return this.httpClient.sendAsync(request, responseBodyHandler);
+		}
+
+		@Override
+		public <T> HttpResponse<T> send(HttpRequest request, BodyHandler<T> responseBodyHandler)
+				throws IOException, InterruptedException {
+			return this.send(request, responseBodyHandler);
+		}
+	}
+	
+	
 	private static HttpClientBuilder instance = null;
 
 	public static HttpClientBuilder getInstance() {
@@ -84,11 +111,11 @@ public class HttpClientBuilder {
 
 	}
 
-    public HttpClient build() throws Exception {
+    public HttpClientWrapper build() throws Exception {
         return this.build(null);
     }
 
-    public HttpClient build(ExecutorService executorService) throws Exception {
+    public HttpClientWrapper build(ExecutorService executorService) throws Exception {
 
 		Builder builder = HttpClient.newBuilder().cookieHandler(new CookieManager());
 
@@ -115,6 +142,6 @@ public class HttpClientBuilder {
             builder = builder.sslContext(sc);
 		}
 
-		return builder.build();
+		return new DefaultHttpClientWrapper(builder.build());
 	}
 }

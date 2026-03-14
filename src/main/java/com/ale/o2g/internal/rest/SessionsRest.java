@@ -19,27 +19,37 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
 
+import com.ale.o2g.SupervisedAccount;
 import com.ale.o2g.internal.services.ISessions;
 import com.ale.o2g.internal.types.SessionInfo;
+import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 
 public class SessionsRest extends AbstractRESTService implements ISessions {
 
-	public SessionsRest(HttpClient httpClient, URI uri) {
+    private static record SessionRequest(String applicationName, SupervisedAccount supervisedAccount) {}
+    
+    
+	public SessionsRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 
 	@Override
-	public SessionInfo open(String applicationName) {
+	public SessionInfo open(String applicationName, SupervisedAccount supervisedAccount) {
 
-		HttpRequest request = HttpUtil.POST(uri, String.format("{\"applicationName\":\"%s\"}", applicationName));
+       String json = gson.toJson(new SessionRequest(
+                AssertUtil.requireNotEmpty(applicationName, "applicationName"),
+                supervisedAccount));
+
+		HttpRequest request = HttpUtil.POST(uri, json);
+		
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 		return getResult(response, SessionInfo.class);
 	}

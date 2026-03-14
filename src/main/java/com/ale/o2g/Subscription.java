@@ -39,7 +39,7 @@ import com.ale.o2g.internal.events.SubscriptionBuilderImpl;
 /**
  * A {@code Subscription} class represents an event subscription. It is used by
  * the application to request event notifications from the O2G server. An
- * application receives event on a http chunk connection established with teh
+ * application receives event on a http chunk connection established with the
  * O2G server.
  *
  */

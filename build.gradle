@@ -34,7 +34,7 @@ group = 'io.github.ale-openness.o2g'
 // 3 = 2.7 incremented with each O2G version
 // 4 = minor O2G version
 // 1 = patch version SDK
-version = '3.4.2'
+version = '3.4.3'
 
 repositories {
     mavenLocal()
@@ -45,6 +45,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.slf4j:slf4j-api:2.0.13'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+	testImplementation("org.mockito:mockito-core:5.5.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
+   	testImplementation 'com.jayway.jsonpath:json-path:2.8.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
 }

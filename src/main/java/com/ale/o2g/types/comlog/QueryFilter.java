@@ -194,7 +194,7 @@ public final class QueryFilter {
      *
      * @return a new builder
      */
-    public Builder newBuilder() {
+    public static Builder newBuilder() {
         return new Builder() {
             private Date after;
             private Date before;

@@ -23,62 +23,93 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * {@code PilotRuleSet} represents a collection of rules for a CCD pilot.
+ * Represents a collection of rules associated with a CCD pilot.
  * <p>
- * Each rule in the set is uniquely identified by its number. This class provides
- * methods to access individual rules, check for their existence, and retrieve
- * the full set of rules or their identifiers.
+ * Each {@link PilotRule} in this set is uniquely identified by its numeric identifier
+ * (rule number). A {@code PilotRuleSet} provides methods to:
+ * <ul>
+ *     <li>Retrieve individual rules by number</li>
+ *     <li>Check whether a rule exists</li>
+ *     <li>Access all rules or all rule numbers</li>
+ *     <li>Query the size or emptiness of the set</li>
+ * </ul>
+ * <p>
+ * This class is typically used internally when creating {@link Pilot} objects,
+ * providing a structured and immutable view of all rules governing call
+ * distribution for the pilot.
+ * <p>
+ * The rule numbers serve as keys for fast lookup and ensure that each rule is
+ * unique within the set.
  */
 public class PilotRuleSet {
 
     private Map<Integer, PilotRule> rules;
 
     /**
+     * Constructs a new {@code PilotRuleSet} with the specified rules.
+     * <p>
+     * Typically, this constructor is used internally by the system when
+     * creating {@code Pilot} objects from deserialized data.
+     *
+     * @param rules a {@link Map} mapping rule numbers to {@link PilotRule} objects
+     */
+    protected PilotRuleSet(Map<Integer, PilotRule> rules) {
+        this.rules = rules;
+    }
+
+    /**
      * Returns the rule with the specified number.
-     * 
-     * @param number the rule number
-     * @return the {@link PilotRule} with the specified number, or {@code null} if
-     *         no such rule exists
+     *
+     * @param number the unique identifier of the rule
+     * @return the {@link PilotRule} with the given number, or {@code null} if no such rule exists
      */
     public PilotRule get(int number) {
         return rules.get(number);
     }
 
     /**
-     * Determines whether the rule with the specified number exists in this set.
-     * 
+     * Checks whether a rule with the specified number exists in this set.
+     *
      * @param number the rule number to check
      * @return {@code true} if the rule is present; {@code false} otherwise
      */
     public boolean contains(int number) {
         return rules.containsKey(number);
     }
-        
+
     /**
-     * Returns the set of rule numbers contained in this rule set.
-     * 
-     * @return a {@link Set} of integers representing the rule numbers
+     * Returns {@code true} if this rule set contains no rules.
+     *
+     * @return {@code true} if the set is empty; {@code false} otherwise
+     */
+    public boolean isEmpty() {
+        return rules.isEmpty();
+    }
+
+    /**
+     * Returns the number of rules in this set.
+     *
+     * @return the size of the rule set
+     */
+    public int size() {
+        return rules.size();
+    }
+
+    /**
+     * Returns a {@link Set} of all rule numbers in this set.
+     *
+     * @return a set containing the unique numbers of all {@link PilotRule} objects
      */
     public Set<Integer> getRulesNumbers() {
         return rules.keySet();
     }
-    
+
     /**
-     * Returns all rules in this set.
-     * 
-     * @return a {@link Collection} of {@link PilotRule} objects
+     * Returns a {@link Collection} of all rules in this set.
+     *
+     * @return a collection containing all {@link PilotRule} objects
      */
     public Collection<PilotRule> getRules() {
         return rules.values();
     }
-
-    /**
-     * Constructs a new {@code PilotRuleSet} with the specified rules.
-     * 
-     * @param rules a {@link Map} of rule numbers to {@link PilotRule} objects
-     */
-    protected PilotRuleSet(Map<Integer, PilotRule> rules) {
-        this.rules = rules;
-    }
-    
 }

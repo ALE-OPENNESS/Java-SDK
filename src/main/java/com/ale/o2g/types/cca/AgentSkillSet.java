@@ -61,6 +61,24 @@ public class AgentSkillSet {
     }
 
     /**
+     * Returns the number of skill in this agent skills set
+     * @return the number of skills
+     */
+    public int size() {
+    	return skillsByNumber.size();
+    }
+    
+    
+    /**
+     * Returns {@code true} if this skill set contains skill.
+     *
+     * @return {@code true} if this skill set contains skill
+     */
+    public boolean isEmpty() {
+    	return skillsByNumber.isEmpty();
+    }
+    
+    /**
      * Returns the skill with the specified number.
      *
      * @param number the skill number (identifier)

@@ -56,9 +56,11 @@ public class O2GCharging {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 
-        Date startTimestamp;
+        Date startTimestamp = null;
         try {
-            startTimestamp = formatter.parse(startDate);
+        	if (startDate != null) {
+        		startTimestamp = formatter.parse(startDate);
+        	}
         }
         catch (ParseException e) {
             startTimestamp = null;
@@ -77,7 +79,7 @@ public class O2GCharging {
                 callType, 
                 effectiveCallDuration, 
                 actingExtensionNumberNode, 
-                internalFacilities.facilities,
-                externalFacilities.facilities) {};
+                (internalFacilities != null) ? internalFacilities.facilities : null,
+                (externalFacilities != null) ? externalFacilities.facilities : null) {};
     }
 }

@@ -28,7 +28,7 @@ package com.ale.o2g.types.cca;
  */
 public final class AgentSkill {
 
-    private int number;
+	private int number;
     private int level;
     private boolean active;
     private Integer domain;
@@ -99,6 +99,7 @@ public final class AgentSkill {
     /**
      * Protected constructor to allow subclassing or framework use.
      */
-    protected AgentSkill() {
-    }
+	protected AgentSkill() {
+	}
+
 }

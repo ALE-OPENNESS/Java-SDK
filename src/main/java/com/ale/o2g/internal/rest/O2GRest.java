@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -32,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.ale.o2g.O2GException;
 import com.ale.o2g.internal.services.IO2G;
 import com.ale.o2g.internal.types.RoxeRestApiDescriptor;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 
 /**
  *
@@ -40,7 +40,7 @@ public class O2GRest extends AbstractRESTService implements IO2G {
 
 	final static Logger logger = LoggerFactory.getLogger(O2GRest.class);
 
-	public O2GRest(HttpClient httpClient, URI uri) {
+	public O2GRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 

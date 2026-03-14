@@ -24,7 +24,7 @@ import com.ale.o2g.types.Host;
 import com.ale.o2g.types.ServerInfo;
 
 /**
- * {@code O2G} is the basic class to bootstarp the SDK and create a
+ * {@code O2G} is the basic class to bootstrap the SDK and create a
  * {@linkplain ServiceEndPoint} object.
  */
 public final class O2G {

@@ -301,7 +301,7 @@ public class PbxAttribute {
     }
     
     /**
-     * Returns this attribute value as a boolean.
+     * Returns this attribute value as an integer.
      * @return an int value.
      */
     public int asInt() {

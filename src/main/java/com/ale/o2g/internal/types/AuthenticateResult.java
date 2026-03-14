@@ -56,7 +56,7 @@ public class AuthenticateResult {
 	    return loginName;
 	}
 	
-	public boolean getExpired() {
+	public boolean isExpired() {
 	    return expired;
 	}
 }

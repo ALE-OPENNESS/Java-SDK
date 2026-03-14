@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -29,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.ale.o2g.RsiService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.rsi.AdditionalDigitCollectionCriteria;
@@ -91,7 +91,7 @@ public class RsiRest extends AbstractRESTService implements RsiService {
     }
     
     
-    public RsiRest(HttpClient httpClient, URI uri) {
+    public RsiRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
@@ -255,7 +255,7 @@ public class RsiRest extends AbstractRESTService implements RsiService {
             return null;
         }
         else {
-            return routeSessions.routeSessions;
+            return unmodifiableOrEmpty(routeSessions.routeSessions);
         }
     }
 

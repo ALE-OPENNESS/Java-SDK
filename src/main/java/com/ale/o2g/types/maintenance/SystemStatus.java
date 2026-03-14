@@ -19,149 +19,196 @@
 package com.ale.o2g.types.maintenance;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 
+
 /**
- * {@code SystemStatus} class provide a full status of the O2G server and its
- * connections.
+ * Represents the full status of an O2G server and its connections.
+ * <p>
+ * Provides detailed information including server addresses, versions,
+ * high-availability status, connected OmniPCX Enterprise nodes, license status,
+ * and server configuration type.
+ * </p>
  */
 public class SystemStatus {
 
     /**
-     * {@code Configuration} represents the possible O2G server configurations.
+     * Represents possible O2G server configurations.
      */
     @JsonEnumDeserializerFallback(value = "UNKNOWN")
     public enum Configuration {
         /**
-         * O2G Server is configured for management. An O2G server configured for
-         * management does not monitor devices on the OmniPCX Enterprise.
+         * O2G Server is configured for management.
+         * <p>
+         * An O2G server in management mode does not monitor devices on the OmniPCX
+         * Enterprise.
+         * </p>
          */
         PBX_MANAGEMENT,
 
         /**
-         * O2G Server is configured with full services.
+         * O2G Server is configured with full services enabled.
          */
         FULL_SERVICES,
-        
+
         /**
          * Unknown O2G configuration.
          */
         UNKNOWN
     }
 
+    
+    /**
+     * Defines how O2G automatically loads users from OXE subscribers.
+     *
+     * Controls which OXE subscribers are automatically imported or filtered
+     * when provisioning users in the O2G system.
+     */
+    @JsonEnumDeserializerFallback(value = "UNKNOWN")
+    public enum SubscriberFilter {
+        /** 
+         * Only OXE subscribers with the **A4980 attribute** are automatically loaded. 
+         * Useful when selective subscriber provisioning is required.
+         */
+        A4980,
+
+        /**
+         * All OXE subscribers are automatically loaded.
+         * Use this for full subscriber synchronization.
+         */
+        ALL,
+
+        /**
+         * No OXE subscribers are automatically loaded.
+         * Users must be created manually or through another provisioning process.
+         */
+        NONE,
+        
+        /**
+         * Unable to identify the filtering
+         */
+        UNKNOWN
+    }
+    
+    
     private ServerAddress logicalAddress;
     private Date startDate;
     private boolean ha;
     private String primary;
     private String primaryVersion;
+    private SystemServices primaryServicesStatus;
     private String secondary;
     private String secondaryVersion;
+    private SystemServices secondaryServicesStatus;
     private Collection<PbxStatus> pbxs;
-    private Collection<License> lics;
+    private LicenseStatus license;
     private Configuration configurationType;
+    private String applicationId;
+    private SubscriberFilter subscriberFilter;
 
-    /**
-     * Returns this O2G server logical address.
-     * 
-     * @return the logical address.
-     */
-    public final ServerAddress getLogicalAddress() {
+    /** @return the logical address of this O2G server */
+    public ServerAddress getLogicalAddress() {
         return logicalAddress;
     }
 
-    /**
-     * Returns the start date of the O2G server.
-     * 
-     * @return the start date
-     */
-    public final Date getStartDate() {
+    /** @return the start date of the server */
+    public Date getStartDate() {
         return startDate;
     }
 
-    /**
-     * Returns whether this O2G is deployed in high availability mode.
-     * 
-     * @return {@code true} if O2G is in ha mode; {@code false} otehrwise.
-     */
-    public final boolean isHa() {
+    /** @return true if the server is deployed in high availability (HA) mode */
+    public boolean isHa() {
         return ha;
     }
 
-    /**
-     * Returns the FQDN of the currently active O2G server when it is configured in
-     * HA mode.
-     * 
-     * @return the primary fqdn.
-     */
-    public final String getPrimary() {
+    /** @return the FQDN of the primary server in HA mode */
+    public String getPrimary() {
         return primary;
     }
 
-    /**
-     * Returns the version of the current active O2G server when it is configured in
-     * HA mode.
-     * 
-     * @return the primary version.
-     */
-    public final String getPrimaryVersion() {
+    /** @return the version of the primary server in HA mode */
+    public String getPrimaryVersion() {
         return primaryVersion;
     }
 
-    /**
-     * Return the FQDN of the backup O2G server when it is configured in HA mode.
-     * @return the secondary O2G server.
-     */
-    public final String getSecondary() {
+    /** @return the status of services running on the primary server */
+    public SystemServices getPrimaryServicesStatus() {
+        return primaryServicesStatus;
+    }
+
+    /** @return the FQDN of the secondary server in HA mode */
+    public String getSecondary() {
         return secondary;
     }
 
-    /**
-     * Returns the version of the backup O2G server when it is configured in HA mode.
-     * @return the secondary version.
-     */
-    public final String getSecondaryVersion() {
+    /** @return the version of the secondary server in HA mode */
+    public String getSecondaryVersion() {
         return secondaryVersion;
     }
 
-    /**
-     * Returns the collection of OmniPCX Enterprise nodes connected to this O2G server
-     * @return the pbxs nodes
-     */
-    public final Collection<PbxStatus> getPbxs() {
-        return pbxs;
+    /** @return the status of services running on the secondary server */
+    public SystemServices getSecondaryServicesStatus() {
+        return secondaryServicesStatus;
     }
 
-    /**
-     * Returns the O2G server licenses.
-     * @return the lics
-     */
-    public final Collection<License> getLics() {
-        return lics;
+    /** @return an unmodifiable collection of connected OmniPCX Enterprise nodes */
+    public Collection<PbxStatus> getPbxs() {
+        return (pbxs == null) ? Collections.emptyList() : Collections.unmodifiableCollection(pbxs);
     }
 
-    /**
-     * Return this O2G Server configuration
-     * @return the configuration Type
-     */
-    public final Configuration getConfiguration() {
+    /** @return the license status of this O2G server */
+    public LicenseStatus getLicense() {
+        return license;
+    }
+
+    /** @return the configuration type of the server */
+    public Configuration getConfiguration() {
         return configurationType;
     }
-    
 
+    /** @return the application ID of this O2G instance */
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+
+    /**
+     * @return the configuration type of this O2G.
+     */
+    public Configuration getConfigurationType() {
+        return configurationType;
+    }
+
+    /**
+     * @return the subscriber'sfilter applied by this O2G
+     */
+    public SubscriberFilter getSubscriberFilter() {
+        return subscriberFilter;
+    }
+    
+    /*
     protected SystemStatus(ServerAddress logicalAddress, Date startDate, boolean ha, String primary,
-            String primaryVersion, String secondary, String secondaryVersion, Collection<PbxStatus> pbxs,
-            Collection<License> lics, Configuration configurationType) {
+            String primaryVersion, SystemServices primaryServicesStatus, String secondary, String secondaryVersion,
+            SystemServices secondaryServicesStatus, Collection<PbxStatus> pbxs, LicenseStatus license,
+            Configuration configurationType, String applicationId, SubscriberFilter subscriberFilter) {
         this.logicalAddress = logicalAddress;
         this.startDate = startDate;
         this.ha = ha;
         this.primary = primary;
         this.primaryVersion = primaryVersion;
+        this.primaryServicesStatus = primaryServicesStatus;
         this.secondary = secondary;
         this.secondaryVersion = secondaryVersion;
+        this.secondaryServicesStatus = secondaryServicesStatus;
         this.pbxs = pbxs;
-        this.lics = lics;
+        this.license = license;
         this.configurationType = configurationType;
+        this.applicationId = applicationId;
+        this.subscriberFilter = subscriberFilter;
     }
+    */
+
 }

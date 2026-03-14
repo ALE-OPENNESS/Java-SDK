@@ -1,0 +1,80 @@
+/*
+* Copyright 2026 ALE International
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this 
+* software and associated documentation files (the "Software"), to deal in the Software 
+* without restriction, including without limitation the rights to use, copy, modify, merge, 
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons 
+* to whom the Software is furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all copies or 
+* substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
+* BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+package com.ale.o2g.types;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
+
+import com.ale.o2g.test.AbstractJsonTest;
+import com.ale.o2g.types.telephony.Call;
+import com.ale.o2g.types.telephony.call.MediaState;
+
+class CallTest extends AbstractJsonTest {
+
+    @Test
+    void testDeserializationFull() {
+        String json = """
+            {
+                "callRef": "CALL123",
+                "callData": {
+                    "state": "RINGING_OUTGOING",
+                    "callUUID": "UUID123"
+                },
+                "legs": [
+                    {"deviceId": "12000"}
+                ],
+                "participants": [
+                    {"participantId": "PART001"}
+                ]
+            }
+        """;
+
+        Call call = gson.fromJson(json, Call.class);
+
+        assertEquals("CALL123", call.getCallRef());
+
+        assertNotNull(call.getCallData());
+        assertEquals("UUID123", call.getCallData().getCallUUID());
+        assertEquals(MediaState.RINGING_OUTGOING, call.getCallData().getState());
+
+        assertNotNull(call.getLegs());
+        assertEquals(1, call.getLegs().size());
+        assertEquals("12000", call.getLegs().iterator().next().getDeviceId());
+
+        assertNotNull(call.getParticipants());
+        assertEquals(1, call.getParticipants().size());
+        assertEquals("PART001", call.getParticipants().iterator().next().getId());
+    }
+
+    @Test
+    void testDeserializationMin() {
+        String json = "{}";
+
+        Call call = gson.fromJson(json, Call.class);
+
+        assertNull(call.getCallRef());
+        assertNull(call.getCallData());
+        assertNull(call.getLegs());
+        assertNull(call.getParticipants());
+    }
+}

@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -27,25 +26,19 @@ import java.util.concurrent.CompletableFuture;
 
 import com.ale.o2g.CallCenterPilotService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 
 public class CallCenterPilotRest extends AbstractRESTService implements CallCenterPilotService {
 
-	public CallCenterPilotRest(HttpClient httpClient, URI uri) {
+	public CallCenterPilotRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 
     @Override
     public boolean monitorStart(int nodeId, String pilotNumber) {
-        
-        URI uriPost = URIBuilder.appendPath(uri, 
-                String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")),
-                AssertUtil.requireNotEmpty(pilotNumber, "pilotNumber"));
-        
-        HttpRequest request = HttpUtil.POST(uriPost);
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        return isSucceeded(response);
+    	return this.monitorStart(pilotNumber);
     }
 
     @Override
@@ -60,14 +53,7 @@ public class CallCenterPilotRest extends AbstractRESTService implements CallCent
     
     @Override
     public boolean monitorStop(int nodeId, String pilotNumber) {
-        
-        URI uriDelete = URIBuilder.appendPath(uri, 
-                String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")),
-                AssertUtil.requireNotEmpty(pilotNumber, "pilotNumber"));
-        
-        HttpRequest request = HttpUtil.DELETE(uriDelete);
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        return isSucceeded(response);
+    	return this.monitorStop(pilotNumber);
     }
 
     @Override

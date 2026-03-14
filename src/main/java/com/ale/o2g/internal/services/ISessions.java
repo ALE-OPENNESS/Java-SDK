@@ -18,6 +18,7 @@
 */
 package com.ale.o2g.internal.services;
 
+import com.ale.o2g.SupervisedAccount;
 import com.ale.o2g.internal.types.SessionInfo;
 
 /**
@@ -26,7 +27,7 @@ import com.ale.o2g.internal.types.SessionInfo;
  */
 public interface ISessions extends IService {
 
-	SessionInfo open(String applicationName);
+	SessionInfo open(String applicationName, SupervisedAccount supervisedAccount);
 
 	boolean close();
 

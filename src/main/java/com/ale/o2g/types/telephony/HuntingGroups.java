@@ -19,34 +19,48 @@
 package com.ale.o2g.types.telephony;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
- * {@code HuntingGroups} gives the hunting group information for a user. A user
- * can be member of only one hunting group.
+ * Represents the hunting group information for a user.
+ * <p>
+ * A hunting group is a set of extensions where calls are distributed. A user can be a member 
+ * of at most one hunting group at a time.
+ * </p>
  */
 public class HuntingGroups {
     private Collection<String> hgList;
     private String currentHg;
 
     /**
-     * Gives the list of existing hunting groups.
-     * 
-     * @return the hunting groups extension number.
+     * Returns the list of all existing hunting groups in the system.
+     * <p>
+     * If no hunting groups are defined, an empty unmodifiable collection is returned.
+     * </p>
+     *
+     * @return an unmodifiable {@link Collection} of hunting group extension numbers, never {@code null}
      */
     public final Collection<String> getHuntingGroups() {
-        return hgList;
+        return (hgList == null) ? Collections.emptyList() : Collections.unmodifiableCollection(hgList);
     }
 
     /**
-     * Return the hunting group which the user is a member.
-     * 
-     * @return the phone number of the hunting group which the user is a member, or
-     *         {@code null} if the user is not member of any hunting group.
+     * Returns the hunting group of which the user is currently a member.
+     *
+     * @return the extension number of the user's hunting group, or {@code null} if the user
+     *         is not a member of any hunting group
      */
     public final String getCurrentHuntingGroup() {
         return currentHg;
     }
 
+    /**
+     * Protected constructor to prevent direct instantiation.
+     * <p>
+     * Instances are typically created internally by the system to represent
+     * a user's hunting group configuration.
+     * </p>
+     */
     protected HuntingGroups() {
     }
 

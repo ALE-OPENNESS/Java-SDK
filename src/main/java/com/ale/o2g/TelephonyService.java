@@ -243,15 +243,66 @@ public interface TelephonyService extends IService {
      * @param autoAnswer          automatic answer on make call
      * @param inhibitProgressTone allows to inhibit the progress tone on the current
      *                            external call
+     * @param correlatorData      correlator data to add to the call
+     * @param callingNumber       calling number to present to the public network
+     * @param loginName           the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makeCall(String deviceId, String callee, boolean autoAnswer)
+     */
+    boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
+    		CorrelatorData correlatorData, String callingNumber, String loginName);
+
+    /**
+     * Initiates a new call to another user (the callee), using the specified
+     * deviceId and options.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately
+     * 
+     * @param deviceId            the device phone number for which the call is made
+     * @param callee              the called number
+     * @param autoAnswer          automatic answer on make call
+     * @param inhibitProgressTone allows to inhibit the progress tone on the current
+     *                            external call
      * @param associatedData      correlator data to add to the call
      * @param callingNumber       calling number to present to the public network
      * @param loginName           the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #makeCall(String deviceId, String callee, boolean autoAnswer, String
      *      loginName)
+     * @deprecated Use {@link #makeCall(String, String, boolean, boolean, CorrelatorData, String, String)} instead.
      */
     boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
             String associatedData, String callingNumber, String loginName);
+
+    /**
+     * Initiates a new call to another user (the callee), using the specified
+     * deviceId and options.
+     * <p>
+     * This method will return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately
+     * 
+     * @param deviceId            the device phone number for which the call is made
+     * @param callee              the called number
+     * @param autoAnswer          automatic answer on make call
+     * @param inhibitProgressTone allows to inhibit the progress tone on the current
+     *                            external call
+     * @param correlatorData      correlator data to add to the call
+     * @param callingNumber       calling number to present to the public network
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makeCall(String, String, boolean, boolean, String, String, String)
+     */
+    boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
+    		CorrelatorData correlatorData, String callingNumber);
 
     /**
      * Initiates a new call to another user (the callee), using the specified
@@ -273,6 +324,7 @@ public interface TelephonyService extends IService {
      * @param callingNumber       calling number to present to the public network
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #makeCall(String, String, boolean, boolean, String, String, String)
+     * @deprecated Use {@link #makeCall(String, String, boolean, boolean, CorrelatorData, String)} instead.
      */
     boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
             String associatedData, String callingNumber);
@@ -1303,6 +1355,7 @@ public interface TelephonyService extends IService {
      * @param hgNumber  the hunting group number
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @deprecated Use {@link #addMeToHuntingGroup(String, String)} instead.
      */
     boolean addHuntingGroupMember(String hgNumber, String loginName);
 
@@ -1318,6 +1371,7 @@ public interface TelephonyService extends IService {
      * 
      * @param hgNumber the hunting group number
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @deprecated Use {@link #addMeToHuntingGroup(String)} instead.
      */
     boolean addHuntingGroupMember(String hgNumber);
 
@@ -1334,6 +1388,7 @@ public interface TelephonyService extends IService {
      * @param hgNumber  the hunting group number
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @deprecated Use {@link #removeMeFromHuntingGroup(String, String)} instead.
      */
     boolean deleteHuntingGroupMember(String hgNumber, String loginName);
 
@@ -1348,8 +1403,70 @@ public interface TelephonyService extends IService {
      * 
      * @param hgNumber the hunting group number
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @deprecated Use {@link #removeMeFromHuntingGroup(String)} instead.
      */
     boolean deleteHuntingGroupMember(String hgNumber);
+
+    
+    /**
+     * Sets the specified user as member of an hunting group.
+     * <p>
+     * The request will fail if the hunting group does not exist. If the user
+     * already belongs to the group, nothing is done and {@code true} is returned.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * 
+     * @param hgNumber  the hunting group number
+     * @param loginName the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean addMeToHuntingGroup(String hgNumber, String loginName);
+
+    /**
+     * Sets the user who has opened the session as member of a hunting group.
+     * <p>
+     * The request will fail if the hunting group does not exist. If the user
+     * already belongs to the group, nothing is done and {@code true} is returned.
+     * <p>
+     * This method will return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * 
+     * @param hgNumber the hunting group number
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean addMeToHuntingGroup(String hgNumber);
+
+    /**
+     * Removes the specified user from an existing hunting group.
+     * <p>
+     * The request will fail if the hunting group does not exist. If the user does
+     * not belong to the group, nothing is done and {@code true} is returned.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * 
+     * @param hgNumber  the hunting group number
+     * @param loginName the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean removeMeFromHuntingGroup(String hgNumber, String loginName);
+
+    /**
+     * Removes the specified user from an existing hunting group.
+     * <p>
+     * The request will fail if the hunting group does not exist. If the user does
+     * not belong to the group, nothing is done and {@code true} is returned.
+     * <p>
+     * This method will return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * 
+     * @param hgNumber the hunting group number
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean removeMeFromHuntingGroup(String hgNumber);
 
     /**
      * Gets the list of hunting groups existing on the OXE node the specified user

@@ -19,13 +19,20 @@
 package com.ale.o2g.types.management;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /**
- * {@code Model} represents an object model. It provides the detail of object
- * attributes: whether the attribute is mandatory/optional in the object
- * creation, what range of value is authorized, what are the possible
- * enumeration value.
+ * {@code Model} represents a structured object model in the OmniPCX Enterprise system.
+ * <p>
+ * A {@code Model} defines the characteristics of an object, including its attributes, 
+ * possible child objects, and allowed operations. Each attribute can specify whether it 
+ * is mandatory or optional, its type, allowed values or enumerations, and other constraints.
+ * </p>
+ * <p>
+ * This class also provides metadata about the object, such as whether it is hidden in the 
+ * object model, and which operations (create, delete, set, get, or custom actions) are permitted.
+ * </p>
  */
 public class Model {
 
@@ -42,90 +49,120 @@ public class Model {
 
     /**
      * Returns the name of this object model.
-     * 
-     * @return the name
+     *
+     * @return the name of the object model
      */
     public final String getName() {
         return name;
     }
 
     /**
-     * Returns the specified attribute.
-     * 
-     * @param attrName the attribute name.
-     * @return The attribute or {@code null} if there is no attribute with this
-     *         name.
+     * Returns all attributes defined for this model.
+     * <p>
+     * The returned collection is unmodifiable to prevent external changes.
+     * </p>
+     *
+     * @return an unmodifiable collection of {@link ModelAttribute} objects
+     */
+    public Collection<ModelAttribute> getAttributes() {
+        return Collections.unmodifiableCollection(attributes.values());
+    }
+
+    /**
+     * Returns the attribute with the specified name.
+     *
+     * @param attrName the name of the attribute
+     * @return the {@link ModelAttribute} with the given name, or {@code null} if none exists
      */
     public ModelAttribute getAttribute(String attrName) {
         return attributes.get(attrName);
     }
 
     /**
-     * Returns the specified child model.
-     * 
-     * @param name the name of the child model.
-     * @return the child model or {@code null} if there is no model with this name.
+     * Returns all child models of this object.
+     * <p>
+     * The returned collection is unmodifiable to prevent external changes.
+     * </p>
+     *
+     * @return an unmodifiable collection of child {@link Model} objects
+     */
+    public Collection<Model> getChildModels() {
+        return Collections.unmodifiableCollection(children.values());
+    }
+
+    /**
+     * Returns the child model with the specified name.
+     *
+     * @param name the name of the child model
+     * @return the child {@link Model} with the given name, or {@code null} if none exists
      */
     public Model getChildModel(String name) {
         return children.get(name);
     }
 
     /**
-     * Returns whether this object is hidden in the OmniPCX Enterprise object model.
-     * 
-     * @return {@code true} if the object is hidden; {@code false} otherwise.
+     * Indicates whether this object is hidden in the OmniPCX Enterprise object model.
+     *
+     * @return {@code true} if the object is hidden; {@code false} otherwise
      */
     public final boolean isHidden() {
         return hidden;
     }
 
     /**
-     * Returns whether this object can be created.
-     * 
-     * @return {@code true} if the object can be created; {@code false} otherwise.
+     * Indicates whether this object can be created.
+     *
+     * @return {@code true} if creation is allowed; {@code false} otherwise
      */
     public final boolean canCreate() {
         return create;
     }
 
     /**
-     * Returns whether this object can be deleted.
-     * 
-     * @return {@code true} if the object can be deleted; {@code false} otherwise.
+     * Indicates whether this object can be deleted.
+     *
+     * @return {@code true} if deletion is allowed; {@code false} otherwise
      */
     public final boolean canDelete() {
         return delete;
     }
 
     /**
-     * Returns whether this object can be set.
-     * 
-     * @return {@code true} if the object can be set; {@code false} otherwise.
+     * Indicates whether this object can be modified.
+     *
+     * @return {@code true} if modification (set) is allowed; {@code false} otherwise
      */
     public final boolean canSet() {
         return set;
     }
 
     /**
-     * Returns whether this object can be gotten.
-     * 
-     * @return {@code true} if the object can be gotten; {@code false} otherwise.
+     * Indicates whether this object can be retrieved.
+     *
+     * @return {@code true} if retrieval (get) is allowed; {@code false} otherwise
      */
     public final boolean canGet() {
         return get;
     }
 
     /**
-     * Returns the collection of other possible actions.
-     * 
-     * @return the other actions.
+     * Returns the collection of other custom actions allowed on this object.
+     *
+     * @return an unmodifiable collection of action names; empty if none
      */
     public final Collection<String> getOtherActions() {
-        return otherActions;
+        return (otherActions == null) ? Collections.emptyList() : Collections.unmodifiableCollection(otherActions);
     }
 
-    protected Model(Map<String, ModelAttribute> attributes, Map<String, Model> children, String name, boolean hidden,
-            boolean create, boolean delete, boolean set, boolean get, Collection<String> otherActions) {
+    /**
+     * Protected constructor for initializing a {@code Model}.
+     * <p>
+     * Typically used internally by the framework when building object models.
+     * </p>
+     */
+    protected Model(Map<String, ModelAttribute> attributes, Map<String, Model> children, String name,
+                    boolean hidden, boolean create, boolean delete, boolean set, boolean get,
+                    Collection<String> otherActions) {
         this.attributes = attributes;
         this.children = children;
         this.name = name;

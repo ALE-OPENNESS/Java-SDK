@@ -48,7 +48,7 @@ public class O2GPilot {
     public Pilot toPilot() {
         
         Map<Integer, PilotRule> mapRules = new HashMap<Integer, PilotRule>();
-        if (rules.ruleList != null) {
+        if ((rules != null) && (rules.ruleList != null)) {
             rules.ruleList.forEach(r -> mapRules.put(r.getNumber(), r.toPilotRule()));
         }
 
