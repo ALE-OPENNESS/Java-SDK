@@ -19,10 +19,15 @@
 package com.ale.o2g.types.users;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
- * {@code User} class represents a user in the system. A user is an OmniPCX
- * Enterprise subscriber. He can have one or several devices, an a mail box.
+ * {@code User} represents a subscriber in the OmniPCX Enterprise system.
+ * <p>
+ * A user can have one or multiple devices and optionally a voicemail mailbox.
+ * This class provides access to the user's personal and account information,
+ * devices, and system configuration.
+ * </p>
  */
 public final class User {
 
@@ -33,77 +38,90 @@ public final class User {
     private Voicemail voicemail;
     private Collection<Device> devices;
     private String nodeId;
+    private String externalLogin;
 
     /**
-     * Returns this user company phone. This company phone number is the phone
-     * number of the main device when the user has a multi-device configuration.
-     * 
-     * @return the company phone number.
+     * Returns the user's company phone number.
+     * <p>
+     * For multi-device users, this is the phone number of the main device.
+     * </p>
+     *
+     * @return the company phone number, or {@code null} if not set.
      */
     public String getCompanyPhone() {
         return companyPhone;
     }
 
     /**
-     * Returns this user's first name.
-     * 
-     * @return the first name.
+     * Returns the user's first name.
+     *
+     * @return the first name, or {@code null} if not set.
      */
     public String getFirstName() {
         return firstName;
     }
 
     /**
-     * Returns this user's last name.
-     * 
-     * @return the last name.
+     * Returns the user's last name.
+     *
+     * @return the last name, or {@code null} if not set.
      */
     public String getLastName() {
         return lastName;
     }
 
     /**
-     * Returns this user's login.
-     * 
-     * @return the login.
+     * Returns the user's login name.
+     *
+     * @return the login name, or {@code null} if not set.
      */
     public String getLoginName() {
         return loginName;
     }
 
     /**
-     * Return this user's voice mail information.
-     * 
-     * @return the voice mail information or {@code null} if the user do not have a voice mail.
+     * Returns the user's voicemail information.
+     *
+     * @return the {@link Voicemail} object, or {@code null} if the user does not have voicemail.
      */
     public Voicemail getVoicemail() {
         return voicemail;
     }
 
     /**
-     * Returns the user's devices.
-     * 
-     * @return a collection of devices.
+     * Returns the collection of devices assigned to this user.
+     *
+     * @return a {@link Collection} of {@link Device} objects, or {@code null} if the user has no devices.
      */
     public Collection<Device> getDevices() {
-        return devices;
+        return (devices == null) ? Collections.emptyList() : Collections.unmodifiableCollection(devices);
     }
 
     /**
-     * Return the OmniPCX Enterprise node this user is configured on.
-     * 
-     * @return the the OmniPCX Enterprise node number.
+     * Returns the OmniPCX Enterprise node ID this user is configured on.
+     *
+     * @return the node ID as an integer, or {@code -1} if the node ID is not a valid number.
      */
     public int getNodeId() {
         try {
             return Integer.parseInt(nodeId);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return -1;
         }
     }
 
+    /**
+     * Returns the user's external login, if any.
+     *
+     * @return the external login, or {@code null} if the user does not have an external login.
+     */
+    public final String getExternalLogin() {
+        return externalLogin;
+    }
+
+    /**
+     * Protected default constructor for internal use and subclassing.
+     */
     protected User() {
     }
-    
 }

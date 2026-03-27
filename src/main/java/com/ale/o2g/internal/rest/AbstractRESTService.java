@@ -21,12 +21,14 @@ package com.ale.o2g.internal.rest;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -34,8 +36,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ale.o2g.O2GRuntimeException;
 import com.ale.o2g.internal.util.AnnotationExclusionStrategy;
+import com.ale.o2g.internal.util.FileDownloader;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.types.RestErrorInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,6 +53,8 @@ import com.google.gson.JsonSyntaxException;
  */
 public abstract class AbstractRESTService {
 
+	final static Logger logger = LoggerFactory.getLogger(AbstractRESTService.class);
+	
     /** The "attachment" disposition-type and separator. */
     static final String DISPOSITION_TYPE = "attachment;";
 
@@ -55,14 +64,17 @@ public abstract class AbstractRESTService {
     static final List<String> PROHIBITED = List.of(".", "..", "", "~" , "|");
     
     protected URI uri;
-    protected HttpClient httpClient;
+    protected HttpClientWrapper httpClient;
+    protected FileDownloader fileDownloader;
+    
     protected Gson gson = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy()).create();
 
     protected static Optional<RestErrorInfo> lastError = Optional.empty();
 
-    public AbstractRESTService(HttpClient httpClient, URI uri) {
+    public AbstractRESTService(HttpClientWrapper httpClient, URI uri) {
         this.uri = uri;
         this.httpClient = httpClient;
+        this.fileDownloader = this::downloadedFile;
     }
     
     protected boolean isSucceeded(int statusCode) {
@@ -93,6 +105,61 @@ public abstract class AbstractRESTService {
             throw new O2GRuntimeException(e);
         }
     }
+    
+    
+    protected String asString(CompletableFuture<HttpResponse<String>> response) {
+        
+        HttpResponse<String> httpResponse;
+        try {
+            httpResponse = response.get();
+
+            if (isSucceeded(httpResponse.statusCode())) {
+                lastError = Optional.empty();
+                return httpResponse.body();
+            }
+            else {
+
+                try {
+                    lastError = Optional.of(gson.fromJson(httpResponse.body(), RestErrorInfo.class));
+                }
+                catch (JsonSyntaxException e) {
+                    lastError = Optional.empty();
+                }
+                return null;
+            }
+        }
+        catch (InterruptedException | ExecutionException e) {
+            throw new O2GRuntimeException(e);
+        }
+    }
+    
+
+    protected byte[] asByteArray(CompletableFuture<HttpResponse<byte[]>> response) {
+
+        HttpResponse<byte[]> httpResponse;
+        try {
+            httpResponse = response.get();
+
+            if (isSucceeded(httpResponse.statusCode())) {
+                lastError = Optional.empty();
+                return httpResponse.body();
+            }
+            else {
+
+                try {
+                    String error = new String(httpResponse.body(), StandardCharsets.UTF_8);
+                    lastError = Optional.of(gson.fromJson(error, RestErrorInfo.class));
+                }
+                catch (JsonSyntaxException e) {
+                    lastError = Optional.empty();
+                }
+                return null;
+            }
+        }
+        catch (InterruptedException | ExecutionException e) {
+            throw new O2GRuntimeException(e);
+        }
+    }
 
     protected <T> T getResult(CompletableFuture<HttpResponse<String>> response, Class<T> objClass) {
 
@@ -100,14 +167,23 @@ public abstract class AbstractRESTService {
         try {
             httpResponse = response.get();
 
+            String body = httpResponse.body();
+            
             if (isSucceeded(httpResponse.statusCode())) {
-                lastError = Optional.empty();
-                return gson.fromJson(httpResponse.body(), objClass);
+                lastError = Optional.empty();                
+                if (logger.isDebugEnabled()) {
+                	logger.debug("Request succeeded: {} - Result body : {}", httpResponse.statusCode(), body);
+                }
+                
+                return gson.fromJson(body, objClass);
             }
             else {
+                if (logger.isDebugEnabled()) {
+                	logger.debug("Request failed: {} - Result body : {}", httpResponse.statusCode(), body);
+                }
 
                 try {
-                    lastError = Optional.of(gson.fromJson(httpResponse.body(), RestErrorInfo.class));
+                    lastError = Optional.of(gson.fromJson(body, RestErrorInfo.class));
                 }
                 catch (JsonSyntaxException e) {
                     lastError = Optional.empty();
@@ -279,5 +355,9 @@ public abstract class AbstractRESTService {
         else {
             return null;
         }
+    }
+    
+    protected <T> Collection<T> unmodifiableOrEmpty(Collection<T> c) {
+    	return (c == null) ? Collections.emptyList() : Collections.unmodifiableCollection(c);
     }
 }

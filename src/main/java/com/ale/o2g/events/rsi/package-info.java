@@ -19,5 +19,6 @@
 
 /**
  * Contains classes and interfaces to receive rsi events.
+ * @hidden
  */
 package com.ale.o2g.events.rsi;

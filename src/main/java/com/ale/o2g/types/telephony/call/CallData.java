@@ -19,9 +19,12 @@
 package com.ale.o2g.types.telephony.call;
 
 import java.util.Collection;
+import java.util.Collections;
 
+import com.ale.o2g.internal.util.HexaString;
 import com.ale.o2g.types.common.PartyInfo;
 import com.ale.o2g.types.telephony.Call;
+import com.ale.o2g.types.telephony.TrunkIdentification;
 import com.ale.o2g.types.telephony.call.acd.AcdData;
 
 /**
@@ -29,6 +32,7 @@ import com.ale.o2g.types.telephony.call.acd.AcdData;
  */
 public class CallData {
     private PartyInfo initialCalled;
+    private PartyInfo lastRedirecting;
     private boolean deviceCall;
     private boolean anonymous;
     private String callUUID;
@@ -37,8 +41,10 @@ public class CallData {
     private Collection<Tag> tags;
     private Call.Capabilities capabilities;
     private String associateData;
+    private String hexaBinaryAssociatedData;
     private String accountInfo;
     private AcdData acdCallData;
+    private TrunkIdentification trunkIdentification;
 
     /**
      * Returns the state of this call.
@@ -56,6 +62,16 @@ public class CallData {
      */
     public final PartyInfo getInitialCalled() {
         return initialCalled;
+    }
+
+    /**
+     * Returns the last device which redirects the call, if it is different from the initialCalled.
+     * 
+     * @return the last redirection.
+     * @since 2.7.4
+     */
+    public final PartyInfo getLastRedirecting() {
+        return this.lastRedirecting;
     }
 
     /**
@@ -100,7 +116,7 @@ public class CallData {
      * @return the tags
      */
     public final Collection<Tag> getTags() {
-        return tags;
+        return (tags == null) ? Collections.emptyList() : Collections.unmodifiableCollection(tags);
     }
 
     /**
@@ -113,14 +129,22 @@ public class CallData {
     }
 
     /**
-     * Returns the call associated data.
-     * 
-     * @return the associate data.
+     * Return the attached corelator data.
+     * @return the correlator data or {@code null} if there is no attached data.
      */
-    public final String getAssociateData() {
-        return associateData;
+    public final CorrelatorData getCorrelatorData() {
+        if (associateData != null) {
+            return new CorrelatorData(associateData);
+        }
+        else if (hexaBinaryAssociatedData != null) {
+            return new CorrelatorData(HexaString.toByteArray(hexaBinaryAssociatedData));
+        }
+        else {
+            return null;
+        }
     }
-
+    
+    
     /**
      * Return this call account info.
      * 
@@ -139,6 +163,16 @@ public class CallData {
         return acdCallData;
     }
 
+    /**
+     * Returns trunk information in case of an external call.
+     *
+     * @return the {@link TrunkIdentification} associated with the call, or
+     *         {@code null} if not applicable
+     */
+    public final TrunkIdentification getTrunkIdentification() {
+        return trunkIdentification;
+    }    
+    
     protected CallData() {
     }
 

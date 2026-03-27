@@ -23,6 +23,7 @@ import com.ale.o2g.types.rsi.DataCollected;
 
 /**
  * This event is raised when a data collection has ended.
+ * @hidden
  */
 public class OnDigitCollectedEvent extends O2GEvent {
 

@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -42,7 +41,8 @@ import com.ale.o2g.events.O2GEvent;
 import com.ale.o2g.events.common.OnChannelInformationEvent;
 import com.ale.o2g.internal.SessionMonitoringHandler;
 import com.ale.o2g.internal.util.AbstractQueuedThread;
-import com.ale.o2g.util.HttpClientBuilder;
+import com.ale.o2g.internal.util.HttpClientBuilder;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 
 /**
  *
@@ -52,7 +52,7 @@ public class ChunkEventListener extends AbstractQueuedThread<O2GEventDescriptor>
     final static Logger logger = LoggerFactory.getLogger(ChunkEventListener.class);
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
-    private HttpClient httpClient;
+    private HttpClientWrapper httpClient;
     private URI uri;
     private Semaphore signalReady;
     private SessionMonitoringHandler sessionMonitoringHandler;

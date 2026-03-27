@@ -26,6 +26,7 @@ package com.ale.o2g.types.rsi;
  * {@linkplain com.ale.o2g.events.rsi.OnRouteRequestEvent OnRouteRequestEvent}.
  * The application selects a route and answer the request by calling
  * {@linkplain com.ale.o2g.RsiService#routeSelect RsiService.routeSelect}
+ * @hidden
  */
 public class RouteSession {
 

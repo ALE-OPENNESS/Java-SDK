@@ -28,8 +28,11 @@ import com.ale.o2g.types.telephony.HuntingGroups;
 import com.ale.o2g.types.telephony.MiniMessage;
 import com.ale.o2g.types.telephony.RecordingAction;
 import com.ale.o2g.types.telephony.TelephonicState;
+import com.ale.o2g.types.telephony.call.CorrelatorData;
 import com.ale.o2g.types.telephony.call.Leg;
 import com.ale.o2g.types.telephony.call.Participant;
+import com.ale.o2g.types.telephony.call.acd.PilotInfo;
+import com.ale.o2g.types.telephony.call.acd.PilotTransferQueryParameters;
 import com.ale.o2g.types.telephony.device.DeviceState;
 
 /**
@@ -109,7 +112,7 @@ public interface TelephonyService extends IService {
      * If the call is a single call, it is released; if it is a conference, the call
      * carries on without the user.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -133,7 +136,7 @@ public interface TelephonyService extends IService {
     /**
      * Retrieves the calls in progress for the user who opened the session.
      * <p>
-     * This method with return {@code null} if it is invoked from a session opened
+     * This method will return {@code null} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return The collection of calls in progress in case of success; {@code null}
@@ -181,7 +184,7 @@ public interface TelephonyService extends IService {
      * @param correlatorData the correlator data to add
      * @return {@code true} in case of success; {@code false} otherwise.
      */
-//    boolean attachData(String callRef, String deviceId, CorrelatorData correlatorData);
+    boolean attachData(String callRef, String deviceId, CorrelatorData correlatorData);
 
     /**
      * Initiates a call from the specified device to the specified called number for
@@ -207,7 +210,7 @@ public interface TelephonyService extends IService {
      * Initiates a call from the specified device to the specified called number for
      * the user who opened the session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * <p>
      * If the automatic answer on make call {@code autoAnswer} parameter is set to
@@ -240,13 +243,41 @@ public interface TelephonyService extends IService {
      * @param autoAnswer          automatic answer on make call
      * @param inhibitProgressTone allows to inhibit the progress tone on the current
      *                            external call
+     * @param correlatorData      correlator data to add to the call
+     * @param callingNumber       calling number to present to the public network
+     * @param loginName           the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makeCall(String deviceId, String callee, boolean autoAnswer)
+     */
+    boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
+    		CorrelatorData correlatorData, String callingNumber, String loginName);
+
+    /**
+     * Initiates a new call to another user (the callee), using the specified
+     * deviceId and options.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately
+     * 
+     * @param deviceId            the device phone number for which the call is made
+     * @param callee              the called number
+     * @param autoAnswer          automatic answer on make call
+     * @param inhibitProgressTone allows to inhibit the progress tone on the current
+     *                            external call
      * @param associatedData      correlator data to add to the call
      * @param callingNumber       calling number to present to the public network
      * @param loginName           the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #makeCall(String deviceId, String callee, boolean autoAnswer, String
      *      loginName)
+     * @deprecated Use {@link #makeCall(String, String, boolean, boolean, CorrelatorData, String, String)} instead.
      */
+	@Deprecated
     boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
             String associatedData, String callingNumber, String loginName);
 
@@ -254,7 +285,31 @@ public interface TelephonyService extends IService {
      * Initiates a new call to another user (the callee), using the specified
      * deviceId and options.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * <p>
+     * If the automatic answer on make call {@code autoAnswer} parameter is set to
+     * {@code false} the deviceId is called before launching the make call to
+     * callee, else callee is called immediately
+     * 
+     * @param deviceId            the device phone number for which the call is made
+     * @param callee              the called number
+     * @param autoAnswer          automatic answer on make call
+     * @param inhibitProgressTone allows to inhibit the progress tone on the current
+     *                            external call
+     * @param correlatorData      correlator data to add to the call
+     * @param callingNumber       calling number to present to the public network
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makeCall(String, String, boolean, boolean, String, String, String)
+     */
+    boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
+    		CorrelatorData correlatorData, String callingNumber);
+
+    /**
+     * Initiates a new call to another user (the callee), using the specified
+     * deviceId and options.
+     * <p>
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * <p>
      * If the automatic answer on make call {@code autoAnswer} parameter is set to
@@ -270,7 +325,9 @@ public interface TelephonyService extends IService {
      * @param callingNumber       calling number to present to the public network
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #makeCall(String, String, boolean, boolean, String, String, String)
+     * @deprecated Use {@link #makeCall(String, String, boolean, boolean, CorrelatorData, String)} instead.
      */
+	@Deprecated
     boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
             String associatedData, String callingNumber);
 
@@ -308,7 +365,7 @@ public interface TelephonyService extends IService {
      * Initiates a new private call to another user (the callee), using a pin code
      * and an optional secret code.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * <p>
      * If the automatic answer on make call {@code autoAnswer} parameter is set to
@@ -357,7 +414,7 @@ public interface TelephonyService extends IService {
      * Initiates a new business call to another user (the callee), using the
      * specified business code.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * <p>
      * If the automatic answer on make call {@code autoAnswer} parameter is set to
@@ -404,19 +461,6 @@ public interface TelephonyService extends IService {
     boolean answer(String callRef, String deviceId);
 
     /**
-     * Associates data to a previously established call.
-     * <p>
-     * If the session is opened by a user, the device phone number must be one of
-     * the user.
-     * 
-     * @param callRef        the call reference of the call on hold
-     * @param deviceId       the device phone number for which the operation is done
-     * @param associatedData the associated data
-     * @return {@code true} in case of success; {@code false} otherwise.
-     */
-    boolean attachData(String callRef, String deviceId, String associatedData);
-
-    /**
      * Transfers the active call to another user, without keeping control on this
      * call.
      * <p>
@@ -437,7 +481,7 @@ public interface TelephonyService extends IService {
      * Transfers the active call to another user, without keeping control on this
      * call.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef    the reference of the active call
@@ -454,7 +498,7 @@ public interface TelephonyService extends IService {
      * Transfers the active call to another user, without keeping control on this
      * call, and without being anonymous.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef    the reference of the active call
@@ -483,7 +527,7 @@ public interface TelephonyService extends IService {
      * Requests a callback on the call specified by the call reference for the user
      * who opened the session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef the call reference
@@ -510,7 +554,7 @@ public interface TelephonyService extends IService {
      * Returns the legs involved by the call specified by the call reference for the
      * user who opened the session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef the call reference
@@ -538,7 +582,7 @@ public interface TelephonyService extends IService {
      * Returns the leg specified by its id, involved by the call specified by the
      * call reference for the user who opened the session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef the call reference
@@ -568,7 +612,7 @@ public interface TelephonyService extends IService {
      * Exits from the call specified by its reference for the user who opened the
      * session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * <p>
      * if the call is a single call, it is released; if it is a conference, the call
@@ -599,7 +643,7 @@ public interface TelephonyService extends IService {
      * Puts on hold the call specified by its reference, on the specified device,
      * for the user who opened the session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef  the call reference
@@ -628,7 +672,7 @@ public interface TelephonyService extends IService {
      * Makes a 3-party conference with a specified active call and a specified held
      * call , for the user who opened the session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef     the active call reference
@@ -657,7 +701,7 @@ public interface TelephonyService extends IService {
      * Redirects an outgoing ringing call specified by its reference to the voice
      * mail of the called user.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef the ringing call reference
@@ -682,7 +726,7 @@ public interface TelephonyService extends IService {
      * Gets the telephonic state and capabilities for the user who opened the
      * session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return The telephonic state in case of success; {@code null} otherwise.
@@ -709,7 +753,7 @@ public interface TelephonyService extends IService {
      * Parks the specified active call to a target device. If the device is not
      * provided, the call will be parked on the current device.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef the active call reference
@@ -722,7 +766,7 @@ public interface TelephonyService extends IService {
     /**
      * Parks the specified active call on the current device.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef the active call reference
@@ -748,7 +792,7 @@ public interface TelephonyService extends IService {
     /**
      * Returns the list of participants in a the specified call.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef the call reference
@@ -775,7 +819,7 @@ public interface TelephonyService extends IService {
     /**
      * Returns the specified participant in the specified call.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef       the call reference
@@ -810,7 +854,7 @@ public interface TelephonyService extends IService {
      * If the call is a single call, it is released; if it is a conference, the call
      * carries on without the participant.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef       the call reference
@@ -839,7 +883,7 @@ public interface TelephonyService extends IService {
      * If the call is a single call, it is released; if it is a conference, the call
      * carries on without the participant.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef the call reference to hang on
@@ -871,7 +915,7 @@ public interface TelephonyService extends IService {
      * If the call is a single call, it is released; if it is a conference, the call
      * carries on without the participant.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef        the held call reference
@@ -900,7 +944,7 @@ public interface TelephonyService extends IService {
     /**
      * Starts, stops, pauses or resumes the recording of a the specified call.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef the reference of the recorded call
@@ -934,7 +978,7 @@ public interface TelephonyService extends IService {
      * responding to it. If {@code redirectTo} is equal to {@code VOICEMAIL},
      * redirect the incoming ringing call to the user voice mail.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef    the incoming ringing call reference
@@ -953,7 +997,7 @@ public interface TelephonyService extends IService {
      * redirect the incoming ringing call to the user voice mail. without being
      * anonymous.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef    the incoming ringing call reference
@@ -967,7 +1011,7 @@ public interface TelephonyService extends IService {
     /**
      * Retrieves a call that has been previously put in hold.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef  the held call reference
@@ -1033,7 +1077,7 @@ public interface TelephonyService extends IService {
      * Transfers a specified active call to a specified held call for the specified
      * user.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callRef     the active call reference
@@ -1065,7 +1109,7 @@ public interface TelephonyService extends IService {
      * <p>
      * The user must be configured as a Desk sharing user.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param dssDeviceNumber the desk sharing set phone number
@@ -1094,7 +1138,7 @@ public interface TelephonyService extends IService {
      * <p>
      * The user must be configured as a Desk sharing user.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -1118,7 +1162,7 @@ public interface TelephonyService extends IService {
     /**
      * Gets states of all devices of the user who has open the session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return The collection of device state in case of success; {@code null}
@@ -1143,13 +1187,33 @@ public interface TelephonyService extends IService {
     /**
      * Gets state of the specified device of the user who has open the session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param deviceId the device phone number for which the operation is done
      * @return The device state in case of success; {@code null} otherwise.
      */
     DeviceState getDeviceState(String deviceId);
+
+    /**
+     * Activate or deactivate the interphony by simulating pressing the key on the
+     * specified device.
+     * <ul>
+     * <li>it activates or deactivates the microphone if the device has an outgoing
+     * or established call
+     * <li>it activates or deactivates the interphony if the device is idle
+     * <li>it has no effect if the device is ringing on incoming call
+     * </ul>
+     * <p>
+     * This operation is done in blind mode: no state event is provided on the push
+     * but when the device returns to idle after a call, the microphone comes back
+     * in the active state.
+     * 
+     * @param deviceId the device phone number for which the operation is done
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @since 2.6
+     */
+    boolean toggleInterphony(String deviceId);
 
     /**
      * Picks up the specified incoming call for another user.
@@ -1218,7 +1282,7 @@ public interface TelephonyService extends IService {
     /**
      * Retrieves the hunting group status of the user who has opened the session.
      * <p>
-     * This method with return {@code null} if it is invoked from a session opened
+     * This method will return {@code null} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return the hunting group status in case of success; {@code null} otherwise.
@@ -1245,7 +1309,7 @@ public interface TelephonyService extends IService {
      * <p>
      * The user must be configured as member of a hunting group.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -1272,7 +1336,7 @@ public interface TelephonyService extends IService {
      * <p>
      * The user must be configured as member of a hunting group.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -1293,7 +1357,9 @@ public interface TelephonyService extends IService {
      * @param hgNumber  the hunting group number
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @deprecated Use {@link #addMeToHuntingGroup(String, String)} instead.
      */
+	@Deprecated
     boolean addHuntingGroupMember(String hgNumber, String loginName);
 
     /**
@@ -1303,12 +1369,14 @@ public interface TelephonyService extends IService {
      * The request will fail if the hunting group does not exist. If the user
      * already belongs to the group, nothing is done and {@code true} is returned.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param hgNumber the hunting group number
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @deprecated Use {@link #addMeToHuntingGroup(String)} instead.
      */
+	@Deprecated
     boolean addHuntingGroupMember(String hgNumber);
 
     /**
@@ -1324,7 +1392,9 @@ public interface TelephonyService extends IService {
      * @param hgNumber  the hunting group number
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @deprecated Use {@link #removeMeFromHuntingGroup(String, String)} instead.
      */
+	@Deprecated
     boolean deleteHuntingGroupMember(String hgNumber, String loginName);
 
     /**
@@ -1333,13 +1403,76 @@ public interface TelephonyService extends IService {
      * The request will fail if the hunting group does not exist. If the user does
      * not belong to the group, nothing is done and {@code true} is returned.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * 
+     * @param hgNumber the hunting group number
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @deprecated Use {@link #removeMeFromHuntingGroup(String)} instead.
+     */
+	@Deprecated
+    boolean deleteHuntingGroupMember(String hgNumber);
+
+    
+    /**
+     * Sets the specified user as member of an hunting group.
+     * <p>
+     * The request will fail if the hunting group does not exist. If the user
+     * already belongs to the group, nothing is done and {@code true} is returned.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * 
+     * @param hgNumber  the hunting group number
+     * @param loginName the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean addMeToHuntingGroup(String hgNumber, String loginName);
+
+    /**
+     * Sets the user who has opened the session as member of a hunting group.
+     * <p>
+     * The request will fail if the hunting group does not exist. If the user
+     * already belongs to the group, nothing is done and {@code true} is returned.
+     * <p>
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param hgNumber the hunting group number
      * @return {@code true} in case of success; {@code false} otherwise.
      */
-    boolean deleteHuntingGroupMember(String hgNumber);
+    boolean addMeToHuntingGroup(String hgNumber);
+
+    /**
+     * Removes the specified user from an existing hunting group.
+     * <p>
+     * The request will fail if the hunting group does not exist. If the user does
+     * not belong to the group, nothing is done and {@code true} is returned.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     * 
+     * @param hgNumber  the hunting group number
+     * @param loginName the login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean removeMeFromHuntingGroup(String hgNumber, String loginName);
+
+    /**
+     * Removes the specified user from an existing hunting group.
+     * <p>
+     * The request will fail if the hunting group does not exist. If the user does
+     * not belong to the group, nothing is done and {@code true} is returned.
+     * <p>
+     * This method will return {@code false} if it is invoked from a session opened
+     * by an administrator.
+     * 
+     * @param hgNumber the hunting group number
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean removeMeFromHuntingGroup(String hgNumber);
 
     /**
      * Gets the list of hunting groups existing on the OXE node the specified user
@@ -1358,7 +1491,7 @@ public interface TelephonyService extends IService {
      * Gets the list of hunting groups existing on the OXE node the user who has
      * opened the session belongs to.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return the hunting groups result in case of success; {@code null} otherwise.
@@ -1382,7 +1515,7 @@ public interface TelephonyService extends IService {
     /**
      * Returns the list of callback requests for the specified user.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return the collection of callback in case of success; {@code null}
@@ -1406,7 +1539,7 @@ public interface TelephonyService extends IService {
     /**
      * Deletes all callback requests for the specified user.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -1430,7 +1563,7 @@ public interface TelephonyService extends IService {
     /**
      * Deletes the specified callback requests for the specified user.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callbackId the callback identifier
@@ -1444,7 +1577,7 @@ public interface TelephonyService extends IService {
      * As soon as a message is read, it is erased from OXE and cannot be read again.
      * The messages are retrieved in Last In First Out mode.
      * <p>
-     * This method with return {@code false} if all the messages have been
+     * This method will return {@code false} if all the messages have been
      * retrieved.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
@@ -1462,10 +1595,10 @@ public interface TelephonyService extends IService {
      * As soon as a message is read, it is erased from OXE and cannot be read again.
      * The message are retrieved in Last In First Out mode.
      * <p>
-     * This method with return {@code false} if all the messages have been
+     * This method will return {@code false} if all the messages have been
      * retrieved.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @return The mini message on success; {@code null} otherwise.
@@ -1494,7 +1627,7 @@ public interface TelephonyService extends IService {
      * @param recipient the recipient of the mini message phone number
      * @param message   the mini message text
      *                  <p>
-     *                  This method with return {@code false} if it is invoked from
+     *                  This method will return {@code false} if it is invoked from
      *                  a session opened by an administrator.
      * 
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -1520,7 +1653,7 @@ public interface TelephonyService extends IService {
      * Requests for call back from an idle device of the user who has opened the
      * session.
      * <p>
-     * This method with return {@code false} if it is invoked from a session opened
+     * This method will return {@code false} if it is invoked from a session opened
      * by an administrator.
      * 
      * @param callee phone number of the called party for which a call back is
@@ -1528,6 +1661,102 @@ public interface TelephonyService extends IService {
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean requestCallback(String callee);
+
+    /**
+     * Queries the specified CCD pilot information using the given transfer
+     * criteria.
+     * <p>
+     * The {@code pilotTransferQueryParam} defines the optional filtering criteria
+     * such as agent number, priority transfer, supervised transfer, or call
+     * profile.
+     * </p>
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored. It is required only when the session has been opened by an
+     * administrator.
+     * </p>
+     *
+     * @param nodeId                  the PCX Enterprise node ID
+     * @param pilotNumber             the pilot number to query
+     * @param pilotTransferQueryParam the transfer criteria; must not be
+     *                                {@code null}
+     * @param loginName               the login name; required if session opened by
+     *                                administrator
+     * @return the {@link PilotInfo} for the CCD pilot on success, or {@code null}
+     *         otherwise
+     * @throws IllegalArgumentException if {@code pilotTransferQueryParam} is
+     *                                  {@code null}
+     * @since 2.7.4
+     */
+    PilotInfo getPilotInfo(int nodeId, String pilotNumber, PilotTransferQueryParameters pilotTransferQueryParam,
+            String loginName);
+
+    /**
+     * Queries the specified CCD pilot information without any transfer criteria.
+     * <p>
+     * This is a convenience overload for cases where no filtering is required. It
+     * internally calls
+     * {@link #getPilotInfo(int, String, PilotTransferQueryParameters, String)} with
+     * an empty {@link PilotTransferQueryParameters} object.
+     * </p>
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored. It is required only when the session has been opened by an
+     * administrator.
+     * </p>
+     *
+     * @param nodeId      the PCX Enterprise node ID
+     * @param pilotNumber the pilot number to query
+     * @param loginName   the login name; required if session opened by
+     *                    administrator
+     * @return the {@link PilotInfo} for the CCD pilot on success, or {@code null}
+     *         otherwise
+     * @since 2.7
+     */
+    PilotInfo getPilotInfo(int nodeId, String pilotNumber, String loginName);
+
+    /**
+     * Queries the specified CCD pilot information using the given transfer
+     * criteria.
+     * <p>
+     * The {@code pilotTransferQueryParam} defines the optional filtering criteria
+     * such as agent number, priority transfer, supervised transfer, or call
+     * profile.
+     * </p>
+     * <p>
+     * This method will return {@code null} if it is invoked from a session opened
+     * by an administrator.
+     * </p>
+     * 
+     * @param nodeId                  the PCX Enterprise node id
+     * @param pilotNumber             the pilot number
+     * @param pilotTransferQueryParam the transfer criteria; must not be
+     *                                {@code null}
+     * @return The CCD pilot information on success; {@code null} otherwise.
+     * @since 2.7.4
+     */
+    PilotInfo getPilotInfo(int nodeId, String pilotNumber, PilotTransferQueryParameters pilotTransferQueryParam);
+
+
+    /**
+     * Queries the specified CCD pilot information without any transfer criteria.
+     * <p>
+     * This is a convenience overload for cases where no filtering is required. It
+     * internally calls
+     * {@link #getPilotInfo(int, String, PilotTransferQueryParameters)} with
+     * an empty {@link PilotTransferQueryParameters} object.
+     * </p>
+     * <p>
+     * This method will return {@code null} if it is invoked from a session opened
+     * by an administrator.
+     * </p>
+     * 
+     * @param nodeId                  the PCX Enterprise node id
+     * @param pilotNumber             the pilot number
+     * @return The CCD pilot information on success; {@code null} otherwise.
+     * @since 2.7
+     */
+    PilotInfo getPilotInfo(int nodeId, String pilotNumber);
 
     /**
      * Asks a snapshot event on the specified user.

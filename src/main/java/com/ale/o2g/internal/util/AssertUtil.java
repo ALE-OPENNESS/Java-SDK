@@ -25,7 +25,7 @@ public class AssertUtil {
 
 	public static String requireNotEmpty(String value, String paramName) {
 		if ((value == null) || value.trim().isEmpty()) {
-			throw new NullPointerException(String.format("'%s' must be non null", paramName));
+			throw new IllegalArgumentException(String.format("'%s' must be not empty", paramName));
 		}
 		
 		return value;
@@ -33,17 +33,34 @@ public class AssertUtil {
 
 	public static <T> T requireNotNull(T value, String paramName) {
 		if (value == null) {
-			throw new NullPointerException(String.format("'%s' must be non null", paramName));
+			throw new IllegalArgumentException(String.format("'%s' must be non null", paramName));
 		}
 		
 		return value;
 	}
 
-    public static int requirePositive(int value, String paramName) {
+    public static <T> T[] requireNotEmpty(T[] value, String paramName) {
+        if ((value == null) || (value.length == 0)) {
+            throw new IllegalArgumentException(String.format("'%s' must be not empty", paramName));
+        }
+        
+        return value;
+    }
+
+	public static int requirePositive(int value, String paramName) {
         
         if (value < 0)
         {
-            throw new NullPointerException(String.format("'%s' must not be >= 0", paramName));
+            throw new IllegalArgumentException(String.format("'%s' must not be >= 0", paramName));
+        }
+        return value;
+    }
+
+    public static int requireRange(int value, int min, int max, String paramName) {
+        
+        if ((value < min) || (value > max))
+        {
+            throw new IllegalArgumentException(String.format("'%s' must not be in [%s - %s]", paramName, min, max));
         }
         return value;
     }

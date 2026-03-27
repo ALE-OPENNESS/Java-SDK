@@ -21,16 +21,20 @@ package com.ale.o2g.internal.rest;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ale.o2g.MessagingService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.messaging.MailBox;
@@ -41,6 +45,7 @@ import com.ale.o2g.types.messaging.VoiceMessage;
  *
  */
 public class MessagingRest extends AbstractRESTService implements MessagingService {
+	final static Logger logger = LoggerFactory.getLogger(MessagingRest.class);
 
     static class MailBoxes {
         private Collection<MailBox> mailboxes;
@@ -52,12 +57,15 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
 
     static record ConnectRequest(String password) {}
     
-    public MessagingRest(HttpClient httpClient, URI uri) {
+    public MessagingRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
     @Override
     public Collection<MailBox> getMailBoxes(String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getMailBoxes() called with: loginName={}", loginName);
+		}
 
         URI uriGet = uri;
         if (loginName != null) {
@@ -72,7 +80,7 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
             return null;
         }
         else {
-            return mailboxes.mailboxes;
+            return unmodifiableOrEmpty(mailboxes.mailboxes);
         }
     }
 
@@ -83,6 +91,9 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
 
     @Override
     public MailBoxInfo getMailBoxInfo(String mailBoxId, String password, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getMailBoxInfo() called with: mailBoxId={}, password={...}, loginName={}", mailBoxId, loginName);
+		}
 
         URI uriPost = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(mailBoxId, "mailBoxId"));
         if (loginName != null) {
@@ -109,10 +120,14 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
     }
 
     @Override
-    public Collection<VoiceMessage> getVoiceMessages(String mailboxId, boolean newOnly, Integer offset, Integer limit,
+    public Collection<VoiceMessage> getVoiceMessages(String mailBoxId, boolean newOnly, Integer offset, Integer limit,
             String loginName) {
-
-        URI uriGet = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(mailboxId, "mailboxId"), "voicemails");
+		if (logger.isDebugEnabled()) {
+			logger.debug("getMailBoxInfo() called with: mailBoxId={}, newOnly={}, offset={}, limit={}, loginName={}", 
+					mailBoxId, newOnly, offset, limit, loginName);
+		}
+    	
+        URI uriGet = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(mailBoxId, "mailboxId"), "voicemails");
         if (loginName != null) {
             uriGet = URIBuilder.appendQuery(uriGet, "loginName", loginName);
         }
@@ -122,7 +137,7 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
         }
 
         if (limit != null) {
-            uriGet = URIBuilder.appendQuery(uriGet, "offset", String.valueOf(limit));
+            uriGet = URIBuilder.appendQuery(uriGet, "limit", String.valueOf(limit));
         }
 
         if (newOnly) {
@@ -137,7 +152,7 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
             return null;
         }
         else {
-            return voicemails.voicemails;
+            return unmodifiableOrEmpty(voicemails.voicemails);
         }
     }
 
@@ -157,9 +172,13 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
     }
 
     @Override
-    public boolean deleteVoiceMessages(String mailboxId, String[] msgIds, String loginName) {
+    public boolean deleteVoiceMessages(String mailBoxId, String[] msgIds, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("deleteVoiceMessages() called with: mailBoxId={}, msgIds={}, loginName={}", 
+					mailBoxId, Arrays.toString(msgIds), loginName);
+		}
 
-        URI uriDelete = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(mailboxId, "mailboxId"), "voicemails");
+        URI uriDelete = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(mailBoxId, "mailboxId"), "voicemails");
         if (loginName != null) {
             uriDelete = URIBuilder.appendQuery(uriDelete, "loginName", loginName);
         }
@@ -179,11 +198,15 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
     }
 
     @Override
-    public boolean deleteVoiceMessage(String mailboxId, String voicemailId, String loginName) {
+    public boolean deleteVoiceMessage(String mailBoxId, String voicemailId, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("deleteVoiceMessage() called with: mailBoxId={}, voicemailId={}, loginName={}", 
+					mailBoxId, voicemailId, loginName);
+		}
 
         URI uriDelete = URIBuilder.appendPath(
                 uri, 
-                AssertUtil.requireNotEmpty(mailboxId, "mailboxId"), 
+                AssertUtil.requireNotEmpty(mailBoxId, "mailboxId"), 
                 "voicemails",
                 AssertUtil.requireNotEmpty(voicemailId, "voicemailId"));
 
@@ -202,11 +225,15 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
     }
 
     @Override
-    public Path downloadVoiceMessage(String mailboxId, String voicemailId, String wavPath, String loginName) throws IOException {
+    public Path downloadVoiceMessage(String mailBoxId, String voicemailId, String wavPath, String loginName) throws IOException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("downloadVoiceMessage() called with: mailBoxId={}, voicemailId={}, wavPath={}, loginName={}", 
+					mailBoxId, voicemailId, wavPath, loginName);
+		}
 
         URI uriGet = URIBuilder.appendPath(
                 uri, 
-                AssertUtil.requireNotEmpty(mailboxId, "mailboxId"), 
+                AssertUtil.requireNotEmpty(mailBoxId, "mailboxId"), 
                 "voicemails",
                 AssertUtil.requireNotEmpty(voicemailId, "voicemailId"));
         
@@ -227,7 +254,9 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
         
         CompletableFuture<HttpResponse<Path>> response = 
                 httpClient.sendAsync(request, BodyHandlers.ofFile(downloadedFile));
-        return downloadedFile(wavPath, response);
+        
+        return fileDownloader.download(wavPath, response);
+//        return downloadedFile(wavPath, response);
     }
 
     @Override

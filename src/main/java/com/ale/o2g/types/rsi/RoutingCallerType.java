@@ -22,6 +22,7 @@ import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 
 /**
  * {@code RoutingCallerType} represents the call origin of a route request.
+ * @hidden
  */
 @JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum RoutingCallerType {

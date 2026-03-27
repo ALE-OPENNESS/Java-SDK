@@ -21,23 +21,35 @@ package com.ale.o2g.types.comlog;
 import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 
 /**
- * {@code Role} defines the roles a participant can have in a com record.
+ * {@code Role} defines the possible roles a participant can have in a communication record.
+ * <p>
+ * Each participant in a call or communication session is assigned a role describing 
+ * their function in the interaction. This information is used to identify whether 
+ * a participant is the initiator, receiver, or has an unknown role.
+ * 
+ * <p>Example usage:
+ * <pre>{@code 
+ * Role role = participant.getRole();
+ * if (role == Role.CALLER) {
+ *     System.out.println("This participant initiated the call.");
+ * }
+ * }</pre>
  */
 @JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum Role {
 
     /**
-     * The participant is a caller party.
+     * The participant is the caller (initiating the call).
      */
     CALLER,
 
     /**
-     * The participant is a called party.
+     * The participant is the callee (receiving the call).
      */
     CALLEE,
 
     /**
-     * The role is unknown.
+     * The participant's role is unknown or not specified.
      */
     UNKNOWN
 }

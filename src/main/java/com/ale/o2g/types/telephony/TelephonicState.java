@@ -19,45 +19,91 @@
 package com.ale.o2g.types.telephony;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import com.ale.o2g.types.telephony.device.Capabilities;
+import com.ale.o2g.types.telephony.device.DeviceState;
 import com.ale.o2g.types.telephony.user.UserState;
 
 /**
- * Represent the telephonic state of a user.
+ * Represents the telephonic state of a user.
+ * <p>
+ * This class provides information about the user's current call activity, device capabilities,
+ * and overall telephonic status within the system.
+ * </p>
  */
 public class TelephonicState {
-    private Collection<Call> calls;
+	
+	private Collection<Call> calls;
     private Collection<Capabilities> deviceCapabilities;
     private UserState userState;
+    private Collection<DeviceState> deviceStates;
 
     /**
-     * Returns the collection of active calls.
-     * 
-     * @return the collection of active calls
+     * Returns the collection of active calls associated with the user.
+     * <p>
+     * If the user has no active calls, an empty unmodifiable collection is returned.
+     * </p>
+     *
+     * @return an unmodifiable {@link Collection} of {@link Call} objects, never {@code null}
      */
     public final Collection<Call> getCalls() {
-        return calls;
+        return (calls == null) ? Collections.emptyList() : Collections.unmodifiableCollection(calls);
     }
 
     /**
-     * Returns the collection of device capabilities.
-     * 
-     * @return the collection of device capabilities
+     * Returns the collection of capabilities for the user's devices.
+     * <p>
+     * Each {@link Capabilities} object describes the actions the device can perform,
+     * such as making a call or un-parking a call. If no device capabilities are available,
+     * an empty unmodifiable collection is returned.
+     * </p>
+     *
+     * @return an unmodifiable {@link Collection} of {@link Capabilities}, never {@code null}
      */
     public final Collection<Capabilities> getDeviceCapabilities() {
-        return deviceCapabilities;
+        return (deviceCapabilities == null) ? Collections.emptyList() : Collections.unmodifiableCollection(deviceCapabilities);
     }
 
     /**
-     * Gets the user state.
-     * 
-     * @return the user state
+     * Returns the overall telephonic state of the user.
+     * <p>
+     * If the user state has not been explicitly set, {@link UserState#UNKNOWN} is returned.
+     * </p>
+     *
+     * @return the user's telephonic {@link UserState}, never {@code null}
      */
     public final UserState getUserState() {
         return (userState == null) ? UserState.UNKNOWN : userState;
     }
 
-    protected TelephonicState() {
+    
+    /**
+     * Returns the collection of the user's devices' state.
+     * <p>
+     * If the user has no device, an empty unmodifiable collection is returned.
+     * </p>
+     *
+     * @return an unmodifiable {@link Collection} of {@link Capabilities}, never {@code null}
+     * @since 2.7.5
+     */
+    public final Collection<DeviceState> getDevicesState() {
+    	return (deviceStates == null) ? Collections.emptyList() : Collections.unmodifiableCollection(deviceStates);
     }
+    
+    
+    /**
+     * Protected constructor to prevent direct instantiation.
+	 * @param calls
+	 * @param deviceCapabilities
+	 * @param userState
+	 * @param deviceStates
+	 */
+	protected TelephonicState(Collection<Call> calls, Collection<Capabilities> deviceCapabilities, UserState userState,
+			Collection<DeviceState> deviceStates) {
+		this.calls = calls;
+		this.deviceCapabilities = deviceCapabilities;
+		this.userState = userState;
+		this.deviceStates = deviceStates;
+	}
 }

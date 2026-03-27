@@ -19,13 +19,16 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ale.o2g.EventSummaryService;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.eventsummary.EventSummary;
@@ -34,13 +37,18 @@ import com.ale.o2g.types.eventsummary.EventSummary;
  *
  */
 public class EventSummaryRest extends AbstractRESTService implements EventSummaryService {
+	
+	final static Logger logger = LoggerFactory.getLogger(EventSummaryRest.class);
 
-	public EventSummaryRest(HttpClient httpClient, URI uri) {
+	public EventSummaryRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 
 	@Override
 	public EventSummary get(String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("get() called with: loginName={}", loginName);
+		}
 
 		URI uriGet = uri;
         if (loginName != null) {

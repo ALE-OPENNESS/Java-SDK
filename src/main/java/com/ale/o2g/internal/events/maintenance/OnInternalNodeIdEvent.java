@@ -21,6 +21,8 @@ package com.ale.o2g.internal.events.maintenance;
 import com.ale.o2g.events.O2GEvent;
 import com.ale.o2g.events.maintenance.OnCtiLinkDownEvent;
 import com.ale.o2g.events.maintenance.OnCtiLinkUpEvent;
+import com.ale.o2g.events.maintenance.OnPbxLinkDownEvent;
+import com.ale.o2g.events.maintenance.OnPbxLinkUpEvent;
 import com.ale.o2g.events.maintenance.OnPbxLoadedEvent;
 
 /**
@@ -29,31 +31,63 @@ import com.ale.o2g.events.maintenance.OnPbxLoadedEvent;
 public class OnInternalNodeIdEvent extends O2GEvent {
     private String nodeId;
 
-    public static O2GEvent adaptLinkUp(O2GEvent ev) {
+    
+    private static int returnSafeNodeId(String nodeId) {
+    	return (nodeId == null) ? -1 : Integer.parseInt(nodeId);
+    }
+    
+    public static O2GEvent adaptCtiLinkUp(O2GEvent ev) {
         if (ev instanceof OnInternalNodeIdEvent) {
             
             OnInternalNodeIdEvent org = (OnInternalNodeIdEvent)ev;
             return new OnCtiLinkUpEvent(
                     org.getName(), 
-                    Integer.parseInt(org.nodeId)) {};
+                    returnSafeNodeId(org.nodeId)) {};
+        }
+        else {
+            throw new Error("Invalid translator exception"); 
+        }
+    }
+
+    public static O2GEvent adaptCtiLinkDown(O2GEvent ev) {
+        if (ev instanceof OnInternalNodeIdEvent) {
+            
+            OnInternalNodeIdEvent org = (OnInternalNodeIdEvent)ev;
+            return new OnCtiLinkDownEvent(
+                    org.getName(), 
+                    returnSafeNodeId(org.nodeId)) {};
         }
         else {
             throw new Error("Invalid translator exception");
         }
     }
 
-    public static O2GEvent adaptLinkDown(O2GEvent ev) {
+    public static O2GEvent adaptPbxLinkUp(O2GEvent ev) {
         if (ev instanceof OnInternalNodeIdEvent) {
             
             OnInternalNodeIdEvent org = (OnInternalNodeIdEvent)ev;
-            return new OnCtiLinkDownEvent(
+            return new OnPbxLinkUpEvent(
                     org.getName(), 
-                    Integer.parseInt(org.nodeId)) {};
+                    returnSafeNodeId(org.nodeId)) {};
+        }
+        else {
+            throw new Error("Invalid translator exception"); 
+        }
+    }
+
+    public static O2GEvent adaptPbxLinkDown(O2GEvent ev) {
+        if (ev instanceof OnInternalNodeIdEvent) {
+            
+            OnInternalNodeIdEvent org = (OnInternalNodeIdEvent)ev;
+            return new OnPbxLinkDownEvent(
+                    org.getName(), 
+                    returnSafeNodeId(org.nodeId)) {};
         }
         else {
             throw new Error("Invalid translator exception");
         }
     }
+
 
     public static O2GEvent adaptPbxLoaded(O2GEvent ev) {
         if (ev instanceof OnInternalNodeIdEvent) {
@@ -61,7 +95,7 @@ public class OnInternalNodeIdEvent extends O2GEvent {
             OnInternalNodeIdEvent org = (OnInternalNodeIdEvent)ev;
             return new OnPbxLoadedEvent(
                     org.getName(), 
-                    Integer.parseInt(org.nodeId)) {};
+                    returnSafeNodeId(org.nodeId)) {};
         }
         else {
             throw new Error("Invalid translator exception");

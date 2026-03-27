@@ -56,7 +56,7 @@ public class O2GObjectModel {
         Map<String, ModelAttribute> mapAttributes = new HashMap<String, ModelAttribute>();
         if (o2gObjectModel.attributes != null) {
             
-            o2gObjectModel.attributes.forEach(a -> mapAttributes.put(a.getName(), a.toAttributeModel(o2gObjectModel.objectName)));
+            o2gObjectModel.attributes.forEach(a -> mapAttributes.put(a.getName(), a.toAttributeModel()));
         }
         
         return new Model(

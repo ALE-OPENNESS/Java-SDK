@@ -41,6 +41,7 @@ import com.ale.o2g.types.rsi.Tones;
  * point.
  * <p>
  * Using this service requires having a <b>CONTACTCENTER_RSI</b> license.
+ * @hidden
  */
 public interface RsiService extends IService {
 
@@ -55,9 +56,10 @@ public interface RsiService extends IService {
      * Enables the specified rsi point.
      * 
      * @param rsiNumber the rsi point extension number
+     * @param backup to enable the RSI point in backup mode.
      * @return {@code true} in case of success; {@code false} otherwise.
      */
-    boolean enableRsiPoint(String rsiNumber);
+    boolean enableRsiPoint(String rsiNumber, boolean backup);
 
     /**
      * Disables the specified rsi point.

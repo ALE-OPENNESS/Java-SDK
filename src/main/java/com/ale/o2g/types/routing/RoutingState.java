@@ -19,7 +19,7 @@
 package com.ale.o2g.types.routing;
 
 /**
- * {@code RoutingState} represente a user routing state. A routing state is
+ * {@code RoutingState} representes a user routing state. A routing state is
  * composed of four elements:
  * <table>
  * <caption>Routing state elements</caption>
@@ -48,12 +48,12 @@ package com.ale.o2g.types.routing;
  * </table>
  */
 public class RoutingState {
-    private Boolean remoteExtensionActivated;
+    private boolean remoteExtensionActivated;
     private Forward forward;
     private Overflow overflow;
     private DndState dndState;
 
-    protected RoutingState(Boolean remoteExtensionActivated, Forward forward, Overflow overflow, DndState dndState) {
+    protected RoutingState(boolean remoteExtensionActivated, Forward forward, Overflow overflow, DndState dndState) {
         this.remoteExtensionActivated = remoteExtensionActivated;
         this.forward = forward;
         this.overflow = overflow;
@@ -66,7 +66,7 @@ public class RoutingState {
      * @return {@code true} if the routing on remote extension is activated;
      *         {@code false} otherwise.
      */
-    public final Boolean isRemoteExtensionActivated() {
+    public final boolean isRemoteExtensionActivated() {
         return remoteExtensionActivated;
     }
 

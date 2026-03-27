@@ -63,6 +63,31 @@ public interface ServiceEndPoint {
     void setSessionMonitoringPolicy(SessionMonitoringPolicy sessionMonitoringPolicy);
 
     /**
+     * Opens a supervised session on this O2G service endpoint for the specified credential,
+     * application name, a supervised account.
+     *
+     * <p>The opened session provides access to services according to the licenses
+     * associated with the administrator for whom the session is opened.</p>
+     *
+     * <p>When the session is successfully opened, it is automatically maintained
+     * by a keep-alive mechanism running on a dedicated thread. The session can be
+     * used like a normal user or administrator session. the session allows the supervisor 
+     * to operate as the supervised user or administrator.</p>
+     *
+     * @param credential        the {@link Credential} associated with the user or
+     *                          administrator for whom the session is opened
+     * @param applicationName   an identifier for logging and statistical purposes
+     * @param supervisedAccount {@link SupervisedAccount} representing
+     *                          the user or administrator to supervise; can be
+     *                          {@code null} if the session is not supervised
+     *                          
+     * @return the created {@link Session} object representing the opened session
+     * @throws O2GAuthenticationException if authentication with the provided
+     *                                    {@link Credential} fails
+     */
+    Session openSession(Credential credential, String applicationName, SupervisedAccount supervisedAccount) throws O2GAuthenticationException;
+
+    /**
      * Open a session on this O2G service endpoint for the specified credential and
      * the specified applicationName.
      * <p>

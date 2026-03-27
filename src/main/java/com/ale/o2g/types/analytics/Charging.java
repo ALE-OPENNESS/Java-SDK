@@ -71,7 +71,7 @@ public class Charging {
      * <p>
      * This information is provided only if the query has been done with the {@code all} option.
      * @return the initialDialedNumber
-     * @see com.ale.o2g.AnalyticsService#getChargings(int, TimeRange, Integer, boolean) AnalyticsService.getChargings
+     * @see com.ale.o2g.AnalyticsService#getChargings(int, DateRange, Integer, boolean) AnalyticsService.getChargings
      */
     public final String getInitialDialedNumber() {
         return initialDialedNumber;
@@ -82,7 +82,7 @@ public class Charging {
      * <p>
      * This information is provided only if the query has been done with the {@code all} option.
      * @return the callNumber
-     * @see com.ale.o2g.AnalyticsService#getChargings(int, TimeRange, Integer, boolean) AnalyticsService.getChargings
+     * @see com.ale.o2g.AnalyticsService#getChargings(int, DateRange, Integer, boolean) AnalyticsService.getChargings
      */
     public final int getCallNumber() {
         return callNumber;
@@ -93,7 +93,7 @@ public class Charging {
      * <p>
      * This information is provided only if the query has been done with the {@code all} option.
      * @return the chargingUnits
-     * @see com.ale.o2g.AnalyticsService#getChargings(int, TimeRange, Integer, boolean) AnalyticsService.getChargings
+     * @see com.ale.o2g.AnalyticsService#getChargings(int, DateRange, Integer, boolean) AnalyticsService.getChargings
      */
     public final int getChargingUnits() {
         return chargingUnits;
@@ -104,7 +104,7 @@ public class Charging {
      * <p>
      * This information is provided only if the query has been done with the {@code all} option.
      * @return the cost
-     * @see com.ale.o2g.AnalyticsService#getChargings(int, TimeRange, Integer, boolean) AnalyticsService.getChargings
+     * @see com.ale.o2g.AnalyticsService#getChargings(int, DateRange, Integer, boolean) AnalyticsService.getChargings
      */
     public final float getCost() {
         return cost;
@@ -115,7 +115,7 @@ public class Charging {
      * <p>
      * This information is provided only if the query has been done with the {@code all} option.
      * @return the startDate
-     * @see com.ale.o2g.AnalyticsService#getChargings(int, TimeRange, Integer, boolean) AnalyticsService.getChargings
+     * @see com.ale.o2g.AnalyticsService#getChargings(int, DateRange, Integer, boolean) AnalyticsService.getChargings
      */
     public final Date getStartDate() {
         return startDate;
@@ -134,7 +134,7 @@ public class Charging {
      * <p>
      * This information is provided only if the query has been done with the {@code all} option.
      * @return the callType
-     * @see com.ale.o2g.AnalyticsService#getChargings(int, TimeRange, Integer, boolean) AnalyticsService.getChargings
+     * @see com.ale.o2g.AnalyticsService#getChargings(int, DateRange, Integer, boolean) AnalyticsService.getChargings
      */
     public final CallType getCallType() {
         return callType;

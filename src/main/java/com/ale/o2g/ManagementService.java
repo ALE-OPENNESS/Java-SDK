@@ -135,7 +135,7 @@ public interface ManagementService extends IService {
     /**
      * Query the list of object instances that match the specified filter.
      * <pre>{@code 
-     *     Filter filter = Filter.create("StationType", AttributeFilter.Equals, "ANALOG");
+     *     AbstractFilter filter = AbstractFilter.create("StationType", AttributeFilter.Equals, "ANALOG");
      *     Collection<String> objectInstances = pbxManagementService.getObjectInstances(5, "Subscriber", filter);
      * }</pre>
      * @param nodeId the OmniPCX Enterprise node id

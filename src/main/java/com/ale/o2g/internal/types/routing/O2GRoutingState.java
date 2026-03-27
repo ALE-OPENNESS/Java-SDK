@@ -54,7 +54,7 @@ public class O2GRoutingState {
 			overflow = new Overflow(Destination.NONE, null) {};
 		}
 
-		return new RoutingState(getRemoteExtensionActivation(), forward, overflow, dndState) {};
+		return new RoutingState(getRemoteExtensionActivation(), forward, overflow, (dndState == null) ? new DndState(false) {} : dndState) {};
 	}
 
 	private boolean getRemoteExtensionActivation() {

@@ -19,32 +19,38 @@
 package com.ale.o2g.types.management;
 
 /**
- * {@code Pbx} represents basic information of a Pbx (OmniPCX Enterprise). 
- * In an OmniPcx Enterprise sub-network, each OXE node is identifier by a unique node id.
+ * {@code Pbx} represents the basic information of a PBX (OmniPCX Enterprise).
+ *
+ * <p>
+ * In an OmniPCX Enterprise sub-network, each OXE node is identified by a unique node ID.
+ * </p>
  */
 public class Pbx {
 
-    private int nodeId;
+    private Integer nodeId;
     private String fqdn;
-    
-    
+
     /**
-     * Returns the OmniPcx Enterprise node id. 
-     * @return the node id.
+     * Returns the OmniPCX Enterprise node ID.
+     *
+     * @return the node ID of this PBX
      */
     public final int getNodeId() {
-        return nodeId;
+        return (nodeId == null) ? -1 : nodeId;
     }
-    
+
     /**
-     * Returns the OmniPCX Enterprise node Fqdn.
-     * @return the fqdn
+     * Returns the fully qualified domain name (FQDN) of this OmniPCX Enterprise node.
+     *
+     * @return the FQDN of this PBX
      */
     public final String getFqdn() {
         return fqdn;
     }
-    
+
+    /**
+     * Protected default constructor for internal use and subclassing.
+     */
     protected Pbx() {
-        
     }
 }

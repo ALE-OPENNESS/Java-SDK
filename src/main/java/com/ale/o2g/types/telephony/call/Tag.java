@@ -19,6 +19,7 @@
 package com.ale.o2g.types.telephony.call;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * {@code Tag} represents a tag (a define name and value), associated to a call.
@@ -56,6 +57,6 @@ public class Tag {
      * @return the visibilities.
      */
     public final Collection<String> getVisibilities() {
-        return visibilities;
+        return (visibilities == null) ? Collections.emptyList() : Collections.unmodifiableCollection(visibilities);
     }
 }

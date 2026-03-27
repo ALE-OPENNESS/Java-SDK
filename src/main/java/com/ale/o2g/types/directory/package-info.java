@@ -18,7 +18,19 @@
 */
 
 /**
- * Contains classes and interfaces used to query the OmniPCX Enterprise phone book.
- * 
+ * Provides classes and interfaces to query and search the OmniPCX Enterprise
+ * phone book (directory service).
+ * <p>
+ * This package is used in conjunction with the 
+ * {@link com.ale.o2g.DirectoryService} to perform searches and retrieve user 
+ * information.
+ * <p>
+ * Key classes include:
+ * <ul>
+ *   <li>{@link Criteria} - Defines filters and 
+ *       search criteria to apply when querying the directory.</li>
+ *   <li>{@link SearchResult} - Represents the 
+ *       results of a directory search, including the status and retrieved contacts.</li>
+ * </ul>
  */
 package com.ale.o2g.types.directory;

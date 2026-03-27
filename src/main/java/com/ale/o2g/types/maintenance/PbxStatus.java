@@ -50,7 +50,7 @@ public class PbxStatus {
     }
 
     private String name;
-    private int nodeId;
+    private Integer nodeId;
     private ServerAddress mainAddress;
     private ServerAddress secondaryAddress;
     private String version;
@@ -75,7 +75,7 @@ public class PbxStatus {
      * @return the node number
      */
     public final int getNodeId() {
-        return nodeId;
+        return (nodeId == null) ? -1 : nodeId;
     }
 
     /**

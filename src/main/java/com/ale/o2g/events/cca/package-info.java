@@ -16,7 +16,31 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 /**
- * Contains classes and interfaces to receive call center agent events.
+ * Provides the classes and interfaces for listening to <a href=
+ * "https://www.al-enterprise.com/en/products/applications/omnitouch-contact-center">call
+ * center agent</a> events in a CCD environment.
+ * <p>
+ * This package includes event classes that are delivered by the 
+ * {@link com.ale.o2g.CallCenterAgentService CallCenterAgentService} whenever
+ * changes occur related to CCD agents, such as:
+ * <ul>
+ *     <li>Agent state changes (login, logout, ready, busy, wrap-up, withdraw, etc.)</li>
+ *     <li>Skill activation or deactivation</li>
+ *     <li>Supervisor help requests and cancellations</li>
+ * </ul>
+ * <p>
+ * To receive notifications about these events, applications implement the
+ * {@link com.ale.o2g.events.cca.CallCenterAgentEventListener CallCenterAgentEventListener} interface, or extend
+ * the {@link com.ale.o2g.events.cca.CallCenterAgentEventAdapter CallCenterAgentEventAdapter} and override only the
+ * methods of interest. The listener object is then registered with an
+ * {@link com.ale.o2g.Session Session} via
+ * {@link com.ale.o2g.Session#listenEvents(com.ale.o2g.Subscription) Session.listenEvents}.
+ * 
+ * @see com.ale.o2g.CallCenterAgentService
+ * @see com.ale.o2g.events.cca.CallCenterAgentEventListener
+ * @see com.ale.o2g.events.cca.CallCenterAgentEventAdapter
+ * @since 2.7.4
  */
 package com.ale.o2g.events.cca;

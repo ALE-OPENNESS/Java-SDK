@@ -1,3 +1,6 @@
-/main/
-/test/
-/default/
+/target/
+/build/
+/bin/
+/doc/
+/.gradle/
+/.metadata/

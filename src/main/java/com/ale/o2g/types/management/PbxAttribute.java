@@ -75,7 +75,7 @@ import com.ale.o2g.internal.types.management.ValueConverter;
  */
 public class PbxAttribute {
 
-    protected List<String> values;
+	protected List<String> values;
     protected List<PbxAttributeMap> attributeMaps;
     protected PbxAttributeMap sequenceMap;
 
@@ -86,6 +86,11 @@ public class PbxAttribute {
         
     }
     
+    @Override
+	public String toString() {
+		return "PbxAttribute [name=" + name + "]";
+	}
+
     
     /**
      * Returns this attribute's name.
@@ -301,7 +306,7 @@ public class PbxAttribute {
     }
     
     /**
-     * Returns this attribute value as a boolean.
+     * Returns this attribute value as an integer.
      * @return an int value.
      */
     public int asInt() {

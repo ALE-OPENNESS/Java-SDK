@@ -21,78 +21,65 @@ package com.ale.o2g.types.comlog;
 import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 
 /**
- * {@code Reason} enum defines the why reason the communication has been released, established or rerouted.
+ * {@code Reason} enumerates the possible reasons why a communication was
+ * released, established, or rerouted.
+ * <p>
+ * Each reason represents the cause of call termination, the outcome of the
+ * communication, or the final handling of the call.
+ * <p>
+ * This enum is commonly used in call logs to indicate
+ * why a call ended or was redirected.
+ *
+ * <p>Example usage:
+ * <pre>{@code
+ * Reason reason = callRecord.getReason();
+ * if (reason == Reason.ABANDONED) {
+ *     System.out.println("The caller abandoned the call before it was answered.");
+ * }
+ * }</pre>
  */
 @JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum Reason {
-    
-    /**
-     * The call was abandonned because there was no Available trunk.
-     */
+
+    /** All trunks were busy, preventing call completion. */
     ALL_TRUNK_BUSY,
-    
-    /**
-     * The call was refused because the dialed number is not valid.
-     */
+
+    /** The call was refused because the dialed number was invalid. */
     INVALID_NUMBER,
-    
-    /**
-     * The call was canceled by the caller.
-     */
+
+    /** The call was canceled by the caller before being answered. */
     ABANDONED,
-    
-    /**
-     * The call failed because the called party is busy.
-     */
+
+    /** The call failed because the called party was busy. */
     BUSY,
-    
-    /**
-     * The call was set to be a conference.
-     */
+
+    /** The call was set up as part of a conference. */
     CONFERENCED,
-    
-    /**
-     * he call was picked up.
-     */
+
+    /** The call was successfully picked up by the callee. */
     PICKUP,
-    
-    /**
-     * The call was forwarded to another destination.
-     */
+
+    /** The call was forwarded to another destination. */
     FORWARDED,
-    
-    /**
-     * The call was redirected to another destination.
-     */
+
+    /** The call was redirected to a different destination. */
     REDIRECTED,
-    
-    /**
-     * The call was released since redirection to another destination fails.
-     */
+
+    /** The call was released because redirection to another destination failed. */
     RELEASED_ON_REDIRECT,
-    
-    /**
-     * The call was transferred.
-     */
+
+    /** The call was successfully transferred to another destination. */
     TRANSFERRED,
-    
-    /**
-     * The call was released since transfer to another destination fails.
-     */
+
+    /** The call was released because transfer to another destination failed. */
     RELEASED_ON_TRANSFER,
-    
-    /**
-     * The call ended on voicemail.
-     */
+
+    /** The call ended and was sent to voicemail. */
     VOICEMAIL,
-    
-    /**
-     * The call normally ended.
-     */
+
+    /** The call ended normally without any special handling. */
     NORMAL,
-    
-    /**
-     * The reason is unknown.
-     */
+
+    /** The reason for call termination is unknown or unspecified. */
     UNKNOWN
 }

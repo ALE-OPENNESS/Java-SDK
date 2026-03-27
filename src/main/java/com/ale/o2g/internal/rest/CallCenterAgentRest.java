@@ -19,17 +19,21 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ale.o2g.CallCenterAgentService;
 import com.ale.o2g.internal.types.cca.O2GAgentConfig;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.RestErrorInfo;
@@ -43,55 +47,75 @@ import com.ale.o2g.types.cca.WithdrawReason;
  */
 public class CallCenterAgentRest extends AbstractRESTService implements CallCenterAgentService {
 
-    
-    private static record LogOnAgentRequest(String proAcdDeviceNumber, String pgGroupNumber, boolean headset) {} 
-    private static record PgRequest(String pgGroupNumber) {}
-    private static record WithdrawAgentRequest(int reasonIndex) {}
-    private static record PermanentListeningRequest(String agentNumber) {}
-    private static record IntrusionRequest(String agentNumber, IntrusionMode mode) {}
-    private static record ChangeIntrusionModeRequest(IntrusionMode mode) {}
-    private static record AgentSkillActivation(List<Integer> skills) {}
-    
+	final static Logger logger = LoggerFactory.getLogger(CallCenterAgentService.class);
+	
+    private static record LogOnAgentRequest(String proAcdDeviceNumber, String pgGroupNumber, boolean headset) {
+    }
+
+    private static record PgRequest(String pgGroupNumber) {
+    }
+
+    private static record WithdrawAgentRequest(int reasonIndex) {
+    }
+
+    private static record PermanentListeningRequest(String agentNumber) {
+    }
+
+    private static record IntrusionRequest(String agentNumber, IntrusionMode mode) {
+    }
+
+    private static record ChangeIntrusionModeRequest(IntrusionMode mode) {
+    }
+
+    private static record AgentSkillActivation(List<Integer> skills) {
+    }
+
     static class WithdrawReasons {
         private List<WithdrawReason> reasons;
-        
+
         public final List<WithdrawReason> getReasons() {
             return reasons;
         }
     }
 
-    
     /**
      * @param httpClient
      * @param uri
      */
-    public CallCenterAgentRest(HttpClient httpClient, URI uri) {
+    public CallCenterAgentRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
     @Override
     public OperatorConfiguration getOperatorConfiguration(String loginName) {
-        URI uriGet = URIBuilder.appendPath(uri, "config");
+    	
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("getOperatorConfiguration() called with: loginName={}", loginName);
+    	}
+
+    	URI uriGet = URIBuilder.appendPath(uri, "config");
         if (loginName != null) {
             uriGet = URIBuilder.appendQuery(uriGet, "loginName", loginName);
         }
 
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
+
         O2GAgentConfig agentConfig = getResult(response, O2GAgentConfig.class);
-        if (agentConfig == null)
-        {
+        if (agentConfig == null) {
             return null;
         }
-        else
-        {
+        else {
             return agentConfig.toOperatorConfiguration();
         }
     }
 
     @Override
     public OperatorState getOperatorState(String loginName) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("getOperatorState() called with: loginName={}", loginName);
+    	}
+
         URI uriGet = URIBuilder.appendPath(uri, "state");
         if (loginName != null) {
             uriGet = URIBuilder.appendQuery(uriGet, "loginName", loginName);
@@ -99,10 +123,9 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
+
         return getResult(response, OperatorState.class);
     }
-
 
     @Override
     public OperatorState getOperatorState() {
@@ -111,15 +134,22 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean logonOperator(String proAcdNumber, String pgNumber, boolean headset, String loginName) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("logonOperator() called with: proAcdNumber={}, pgNumber={}, headset={}, loginName={}", 
+    				proAcdNumber, pgNumber, headset, loginName);
+    	}
+
         URI uriPost = URIBuilder.appendPath(uri, "logon");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
 
-        String json = gson.toJson(new LogOnAgentRequest(
-                AssertUtil.requireNotEmpty(proAcdNumber, "proAcdNumber"),
-                pgNumber,
-                headset));
+        String json = gson.toJson(
+                new LogOnAgentRequest(AssertUtil.requireNotEmpty(proAcdNumber, "proAcdNumber"), pgNumber, headset));
+        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -133,6 +163,10 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean logoffOperator(String loginName) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("logoffOperator() called with: loginName={}", loginName);
+    	}
+    	
         URI uriPost = URIBuilder.appendPath(uri, "logoff");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
@@ -150,14 +184,20 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean enterAgentGroup(String pgNumber, String loginName) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("enterAgentGroup() called with: pgNumber={}, loginName={}", pgNumber, loginName);
+    	}
+    	
         URI uriPost = URIBuilder.appendPath(uri, "enterPG");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
-        String json = gson.toJson(new PgRequest(
-                AssertUtil.requireNotEmpty(pgNumber, "pgNumber")));
 
+        String json = gson.toJson(new PgRequest(AssertUtil.requireNotEmpty(pgNumber, "pgNumber")));
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
+    	
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);
@@ -170,13 +210,18 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean exitAgentGroup(String loginName) {
-        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("exitAgentGroup() called with: loginName={}", loginName);
+    	}
+    	
         // First get the operator state to get the processing group
         OperatorState operatorState = this.getOperatorState(loginName);
+        
         if (operatorState.getPgNumber() == null) {
             // The supervisor is NOT in a group return an error
-            
-            lastError = Optional.ofNullable(new RestErrorInfo("Supervisor is not in a group", false) {});
+
+            lastError = Optional.ofNullable(new RestErrorInfo("Requester is not in a group", false) {
+            });
             return false;
         }
         else {
@@ -184,9 +229,13 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
             if (loginName != null) {
                 uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
             }
-            
-            String json = gson.toJson(new PgRequest(
-                    AssertUtil.requireNotEmpty(operatorState.getPgNumber(), "pgNumber")));
+
+            String json = gson
+                    .toJson(new PgRequest(AssertUtil.requireNotEmpty(operatorState.getPgNumber(), "pgNumber")));
+
+            if (logger.isDebugEnabled()) {
+        		logger.debug("Request=: {}", json);
+        	}
 
             HttpRequest request = HttpUtil.POST(uriPost, json);
             CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -200,7 +249,7 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     }
 
     private boolean doAgentAction(String action, String loginName) {
-        URI uriPost = URIBuilder.appendPath(uri, "exitPG");
+        URI uriPost = URIBuilder.appendPath(uri, action);
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
@@ -209,12 +258,14 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);
     }
-    
-    
-    
+
     @Override
     public boolean setWrapup(String loginName) {
-        return this.doAgentAction("wrapUp", loginName);
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("setWrapup() called with: loginName={}", loginName);
+    	}
+
+    	return this.doAgentAction("wrapUp", loginName);
     }
 
     @Override
@@ -224,6 +275,10 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean setReady(String loginName) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("setReady() called with: loginName={}", loginName);
+    	}
+
         return this.doAgentAction("ready", loginName);
     }
 
@@ -234,6 +289,10 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean setPause(String loginName) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("setPause() called with: loginName={}", loginName);
+    	}
+
         return this.doAgentAction("pause", loginName);
     }
 
@@ -244,13 +303,20 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean setWithdraw(WithdrawReason reason, String loginName) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("setWithdraw() called with: reason={}, loginName={}", reason, loginName);
+    	}
+
         URI uriPost = URIBuilder.appendPath(uri, "withdraw");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
-        String json = gson.toJson(new WithdrawAgentRequest(
-                AssertUtil.requireNotNull(reason.getIndex(), "reason")));
+
+        String json = gson.toJson(new WithdrawAgentRequest(AssertUtil.requireNotNull(reason.getIndex(), "reason")));
+
+        if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -264,14 +330,21 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean requestPermanentListening(String agentNumber, String loginName) {
-        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("requestPermanentListening() called with: agentNumber={}, loginName={}", agentNumber, loginName);
+    	}
+
         URI uriPost = URIBuilder.appendPath(uri, "permanentListening");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
-        String json = gson.toJson(new PermanentListeningRequest(
-                AssertUtil.requireNotEmpty(agentNumber, "agentNumber")));
+
+        String json = gson
+                .toJson(new PermanentListeningRequest(AssertUtil.requireNotEmpty(agentNumber, "agentNumber")));
+
+        if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -285,15 +358,21 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean requestIntrusion(String agentNumber, IntrusionMode intrusionMode, String loginName) {
-        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("requestIntrusion() called with: agentNumber={}, intrusionMode={}, loginName={}", agentNumber, intrusionMode, loginName);
+    	}
+
         URI uriPost = URIBuilder.appendPath(uri, "intrusion");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
-        String json = gson.toJson(new IntrusionRequest(
-                AssertUtil.requireNotEmpty(agentNumber, "agentNumber"),
-                intrusionMode));
+
+        String json = gson
+                .toJson(new IntrusionRequest(AssertUtil.requireNotEmpty(agentNumber, "agentNumber"), intrusionMode));
+
+        if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -307,13 +386,20 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean changeIntrusionMode(IntrusionMode newIntrusionMode, String loginName) {
-        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("changeIntrusionMode() called with: newIntrusionMode={}, loginName={}", newIntrusionMode, loginName);
+    	}
+
         URI uriPut = URIBuilder.appendPath(uri, "intrusion");
         if (loginName != null) {
             uriPut = URIBuilder.appendQuery(uriPut, "loginName", loginName);
         }
-        
+
         String json = gson.toJson(new ChangeIntrusionModeRequest(newIntrusionMode));
+
+        if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
         HttpRequest request = HttpUtil.PUT(uriPut, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -334,9 +420,9 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     public boolean requestSupervisorHelp() {
         return this.requestSupervisorHelp(null);
     }
-    
+
     private boolean doCancelSupervisorHelpRequest(String otherNumber, String loginName) {
-        
+
         URI uriDelete = URIBuilder.appendPath(uri, "intrusion");
         if (loginName != null) {
             uriDelete = URIBuilder.appendQuery(uriDelete, "loginName", loginName);
@@ -346,13 +432,14 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);
     }
-    
 
     @Override
     public boolean rejectAgentHelpRequest(String agentNumber, String loginName) {
-        return this.doCancelSupervisorHelpRequest(
-                AssertUtil.requireNotEmpty(agentNumber, "agentNumber"), 
-                loginName);
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("rejectAgentHelpRequest() called with: agentNumber={}, loginName={}", agentNumber, loginName);
+    	}
+
+        return this.doCancelSupervisorHelpRequest(AssertUtil.requireNotEmpty(agentNumber, "agentNumber"), loginName);
     }
 
     @Override
@@ -362,8 +449,10 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean cancelSupervisorHelpRequest(String supervisorNumber, String loginName) {
-        return this.doCancelSupervisorHelpRequest(
-                AssertUtil.requireNotEmpty(supervisorNumber, "supervisorNumber"), 
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("cancelSupervisorHelpRequest() called with: supervisorNumber={}, loginName={}", supervisorNumber, loginName);
+    	}
+        return this.doCancelSupervisorHelpRequest(AssertUtil.requireNotEmpty(supervisorNumber, "supervisorNumber"),
                 loginName);
     }
 
@@ -374,16 +463,19 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean requestSnaphot(String loginName) {
-        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("requestSnaphot() called with: loginName={}", loginName);
+    	}
+
         URI uriPost = URIBuilder.appendPath(uri, "state/snapshot");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
+
         HttpRequest request = HttpUtil.POST(uriPost);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);
-        
+
     }
 
     @Override
@@ -393,25 +485,26 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public List<WithdrawReason> getWithdrawReasons(String pgNumber, String loginName) {
-        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("getWithdrawReasons() called with: pbNumber={}, loginName={}", pgNumber, loginName);
+    	}
+
         URI uriGet = URIBuilder.appendPath(uri, "withdrawReasons");
         uriGet = URIBuilder.appendQuery(uriGet, "pgNumber", AssertUtil.requireNotEmpty(pgNumber, "pgNumber"));
-        
+
         if (loginName != null) {
             uriGet = URIBuilder.appendQuery(uriGet, "loginName", loginName);
         }
 
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
+
         WithdrawReasons reasons = getResult(response, WithdrawReasons.class);
-        if (reasons == null)
-        {
+        if (reasons == null) {
             return null;
         }
-        else
-        {
-            return reasons.getReasons();
+        else {
+            return Collections.unmodifiableList(reasons.getReasons());
         }
     }
 
@@ -422,13 +515,20 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean activateSkills(List<Integer> skills, String loginName) {
-        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("activateSkills() called with: skills={}, loginName={}", skills, loginName);
+    	}
+
         URI uriPost = URIBuilder.appendPath(uri, "config/skills/activate");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
+
         String json = gson.toJson(new AgentSkillActivation(skills));
+
+        if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -442,13 +542,20 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean deactivateSkills(List<Integer> skills, String loginName) {
-        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("deactivateSkills() called with: skills={}, loginName={}", skills, loginName);
+    	}
+
         URI uriPost = URIBuilder.appendPath(uri, "config/skills/deactivate");
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-        
+
         String json = gson.toJson(new AgentSkillActivation(skills));
+
+        if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -459,4 +566,5 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     public boolean deactivateSkills(List<Integer> skills) {
         return this.deactivateSkills(skills, null);
     }
-}
+
+ }

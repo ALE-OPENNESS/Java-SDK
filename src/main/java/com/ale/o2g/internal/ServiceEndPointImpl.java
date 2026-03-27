@@ -25,6 +25,7 @@ import com.ale.o2g.O2GAuthenticationException;
 import com.ale.o2g.ServiceEndPoint;
 import com.ale.o2g.Session;
 import com.ale.o2g.SessionMonitoringPolicy;
+import com.ale.o2g.SupervisedAccount;
 import com.ale.o2g.internal.services.IAuthentication;
 import com.ale.o2g.internal.services.ISessions;
 import com.ale.o2g.internal.types.AuthenticateResult;
@@ -49,7 +50,7 @@ public class ServiceEndPointImpl implements ServiceEndPoint {
 	}
 
 	@Override
-	public Session openSession(Credential credential, String applicationName)
+	public Session openSession(Credential credential, String applicationName, SupervisedAccount supervisedAccount)
 			throws O2GAuthenticationException {
 
 		if (logger.isTraceEnabled()) {
@@ -71,7 +72,7 @@ public class ServiceEndPointImpl implements ServiceEndPoint {
 		}
 
 		ISessions sessionsService = serviceFactory.getSessionsService();
-		SessionInfo sessionInfo = sessionsService.open(applicationName);
+		SessionInfo sessionInfo = sessionsService.open(applicationName, supervisedAccount);
 		serviceFactory.setServices(sessionInfo);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Session opened: TimeToLive = {}", sessionInfo.getTimeToLive());
@@ -82,12 +83,24 @@ public class ServiceEndPointImpl implements ServiceEndPoint {
 		}
 		
 		// Create the session
-		Session session = new SessionImpl(serviceFactory, sessionInfo, credential.getLogin(), sessionMonitoringPolicy);
+		Session session = new SessionImpl(
+		        serviceFactory, 
+		        sessionInfo, 
+		        credential.getLogin(),
+		        authenticateResult.getLoginName(), 
+		        authenticateResult.isExpired(),
+		        sessionMonitoringPolicy);
 
 		// OK, create the session
 		return session;
 	}
 
+    @Override
+    public Session openSession(Credential credential, String applicationName)
+            throws O2GAuthenticationException {
+        return this.openSession(credential, applicationName, null);
+    }
+	
     @Override
     public void setSessionMonitoringPolicy(SessionMonitoringPolicy sessionMonitoringPolicy) {
         this.sessionMonitoringPolicy = sessionMonitoringPolicy;

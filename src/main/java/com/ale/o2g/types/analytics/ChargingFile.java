@@ -34,8 +34,13 @@ public class ChargingFile {
         this.timestamp = timestamp;
     }
 
+    @Override
+    public String toString() {
+        return "ChargingFile{name=" + name + ", timestamp=" + timestamp + "}";
+    }
 
-    /**
+
+	/**
      * Returns the file name
      * @return the name
      */

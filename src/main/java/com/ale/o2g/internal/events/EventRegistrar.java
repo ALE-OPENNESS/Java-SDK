@@ -70,7 +70,8 @@ public class EventRegistrar {
 			}
 		}
 	}
-
+	
+	
 	public void registerAdapter(String eventName, EventAdapter adapter, Class<? extends O2GEvent> deserializeType) {
 		
 		String qualifiedName = getQualifiedName(eventName);
@@ -90,7 +91,7 @@ public class EventRegistrar {
 
 		return null;
 	}
-
+	
 	public EventTranslator getAdapter(String eventName) {
 
 		if (adapters.containsKey(eventName)) {

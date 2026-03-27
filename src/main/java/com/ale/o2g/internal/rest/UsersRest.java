@@ -19,15 +19,20 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ale.o2g.UsersService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.users.Preferences;
@@ -36,6 +41,8 @@ import com.ale.o2g.types.users.User;
 
 public class UsersRest extends AbstractRESTService implements UsersService {
 
+	final static Logger logger = LoggerFactory.getLogger(UsersRest.class);
+	
 	static class LoginsResponse {
         private Collection<String> loginNames;
 
@@ -46,51 +53,65 @@ public class UsersRest extends AbstractRESTService implements UsersService {
 	
 	static record ChangePasswordRequest(String oldPassword, String newPassword) {}
 	
-	public UsersRest(HttpClient httpClient, URI uri) {
+	public UsersRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 
-	@Override
-	public Collection<String> getLogins(String[] nodeIds, boolean onlyACD) {
-		
-		URI uriGet = URI.create(uri.toString().replace("/users", "/logins"));
+    @Override
+    public Collection<String> getLogins(int[] nodeIds, boolean onlyACD) {
+    	
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("getLogins() called with: nodeIds={}, onlyACD={}",
+    	        Arrays.toString(nodeIds), onlyACD);
+    	}
+    	
+        URI uriGet = URI.create(uri.toString().replace("/users", "/logins"));
         if (nodeIds != null) {
-            uriGet = URIBuilder.appendQuery(uriGet, "nodeIds", MakeNodeQuery(nodeIds));
+            uriGet = URIBuilder.appendQuery(uriGet, "nodeIds", Arrays.stream(nodeIds)
+        	        .mapToObj(Integer::toString)
+        	        .collect(Collectors.joining(";")));
         }
 
         if (onlyACD) {
             uriGet = URIBuilder.appendQuery(uriGet, "onlyACD");
         }
         
-		HttpRequest request = HttpUtil.GET(uriGet);
-		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-		return getOptionalResult(response, LoginsResponse.class)
-				.map(LoginsResponse::getLoginNames)
-				.orElse(null);
-	}
-
-    private String MakeNodeQuery(String[] nodeIds) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < nodeIds.length; i++) {
-            if (i > 0) {
-                sb.append(';');
-            }
-            sb.append(nodeIds[i]);
-        }
-
-        return sb.toString();
+        HttpRequest request = HttpUtil.GET(uriGet);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        
+        return unmodifiableOrEmpty(getOptionalResult(response, LoginsResponse.class)
+                .map(LoginsResponse::getLoginNames)
+                .orElse(null));
     }
+	
+	
+	@Override
+	public Collection<String> getLogins(String[] nodeIds, boolean onlyACD) {
+		
+		int[] intNodeIds = Arrays.stream(nodeIds)
+		        .mapToInt(Integer::parseInt)
+		        .toArray();
+		    return getLogins(intNodeIds, onlyACD);
+	}
 
 	@Override
 	public User getByLoginName(String loginName) {
 
-		HttpRequest request = HttpUtil.GET(URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(loginName, "loginName")));
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("getByLoginName() called with: loginName={}", loginName);
+    	}
+
+    	HttpRequest request = HttpUtil.GET(URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(loginName, "loginName")));
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 		return getResult(response, User.class);
 	}
 
 	@Override
 	public User getByCompanyPhone(String companyPhone) {
+
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("getByCompanyPhone() called with: companyPhone={}", companyPhone);
+    	}
 
 		HttpRequest request = HttpUtil.GET(URIBuilder.appendQuery(uri, "companyPhone", AssertUtil.requireNotEmpty(companyPhone, "companyPhone")));
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -99,6 +120,10 @@ public class UsersRest extends AbstractRESTService implements UsersService {
 
 	@Override
 	public Preferences getPreferences(String loginName) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("getPreferences() called with: loginName={}", loginName);
+    	}
+
 		HttpRequest request = HttpUtil.GET(URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(loginName, "loginName"), "preferences"));
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 		return getResult(response, Preferences.class);
@@ -106,7 +131,11 @@ public class UsersRest extends AbstractRESTService implements UsersService {
 
 	@Override
 	public boolean changePassword(String loginName, String oldPassword, String newPassword) {
-		
+
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("changePassword() called with: loginName={}", loginName);
+    	}
+
 		String json = gson.toJson(new ChangePasswordRequest(oldPassword, newPassword));
 		
 		HttpRequest request = HttpUtil.PUT(URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(loginName, "loginName"), "password"), json); 
@@ -116,8 +145,13 @@ public class UsersRest extends AbstractRESTService implements UsersService {
 
 	@Override
 	public SupportedLanguages getSupportedLanguages(String loginName) {
-		HttpRequest request = HttpUtil.GET(URIBuilder.appendPath(uri, loginName, "preferences/supportedLanguages"));
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("getSupportedLanguages() called with: loginName={}", loginName);
+    	}
+
+    	HttpRequest request = HttpUtil.GET(URIBuilder.appendPath(uri, loginName, "preferences/supportedLanguages"));
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+		
 		return getResult(response, SupportedLanguages.class);
 	}
 }

@@ -18,6 +18,8 @@
 */
 package com.ale.o2g;
 
+import com.ale.o2g.types.Account;
+
 /**
  * The {@code Session} object represents an opened session on the O2G server.
  * The session gives access to the different services.
@@ -29,9 +31,17 @@ public interface Session {
      * Get the login name of the user who has opened this session.
      * 
      * @return the user login name
+     * @deprecated Use {@link #getAccount()} instead.
      */
+    @Deprecated
     String getLoginName();
-
+    
+    /**
+     * Get the account corresponding to the O2G user who has opened the session.
+     * @return the user account.
+     */
+    Account getAccount();
+    
     /**
      * Returns whether this session is opened by an administrator.
      * 
@@ -41,89 +51,131 @@ public interface Session {
     boolean isAdmin();
 
     /**
-     * Return the UsersService.
+     * Returns the UsersService.
      * 
      * @return the {@link UsersService UsersService } object.
      */
     UsersService getUsersService();
 
     /**
-     * Return the MaintenanceService.
+     * Returns the MaintenanceService.
      * 
      * @return the {@link MaintenanceService MaintenanceService } object.
      */
     MaintenanceService getMaintenanceService();
 
     /**
-     * Return the ManagementService.
+     * Returns the ManagementService.
      * 
      * @return the {@link ManagementService ManagementService } object.
      */
     ManagementService getManagementService();
 
     /**
-     * Return the DirectoryService.
+     * Returns the DirectoryService.
      * 
      * @return the {@link DirectoryService DirectoryService } object.
      */
     DirectoryService getDirectoryService();
 
     /**
-     * Return the TelephonyService.
+     * Returns the TelephonyService.
      * 
      * @return the {@link TelephonyService TelephonyService } object.
      */
     TelephonyService getTelephonyService();
 
     /**
-     * Return the EventSummaryService.
+     * Returns the EventSummaryService.
      * 
      * @return the {@link EventSummaryService EventSummaryService } object.
      */
     EventSummaryService getEventSummaryService();
 
     /**
-     * Return the MessagingService.
+     * Returns the MessagingService.
      * 
      * @return the {@link MessagingService MessagingService } object.
      */
     MessagingService getMessagingService();
 
     /**
-     * Return the CommunicationLogService.
+     * Returns the CommunicationLogService.
      * 
      * @return the {@link CommunicationLogService CommunicationLogService } object.
      */
     CommunicationLogService getCommunicationLogService();
 
     /**
-     * Return the AnalyticsService.
+     * Returns the AnalyticsService.
      * 
      * @return the {@link AnalyticsService AnalyticsService } object.
      */
     AnalyticsService getAnalyticsService();
 
     /**
-     * Return the RoutingService.
+     * Returns the RoutingService.
      * 
      * @return the {@link RoutingService RoutingService } object.
      */
     RoutingService getRoutingService();
 
     /**
-     * Return the CallCenterAgentService.
+     * Returns the CallCenterAgentService.
      * 
      * @return the {@link CallCenterAgentService CallCenterAgentService } object.
      */
     CallCenterAgentService getCallCenterAgentService();
 
     /**
-     * Return the RsiService.
+     * Returns the RsiService.
      * 
      * @return the {@link RsiService RsiService } object.
      */
-    RsiService getRsiService();
-
+//    RsiService getRsiService();
+    
+    
+    /**
+     * Returns the CallCenterRealtimeService.
+     * @return the {@link CallCenterRealtimeService CallCenterRealtimeService } object.
+     */
+    CallCenterRealtimeService getCallCenterRealtimeService();
+    
+    /**
+     * Returns the CallCenterPilotService.
+     * 
+     * @return the {@link CallCenterPilotService CallCenterPilotService } object.
+     */
+    CallCenterPilotService getCallCenterPilotService();
+    
+    /**
+     * Returns the CallCenterManagementService.
+     * 
+     * @return the {@link CallCenterManagementService CallCenterManagementService } object.
+     */
+    CallCenterManagementService getCallCenterManagementService();
+    
+    
+    /**
+     * Returns the UserManagementService
+     * @return the {@link UserManagementService UserManagementService } object.
+     */
+    UserManagementService getUserManagementService();
+    
+    
+    /**
+     * Returns the RecordingService
+     * @return the {@link RecordingService RecordingService } object.
+     */
+//    RecordingService getRecordingService();
+    
+    
+    /**
+     * Returns the CallCenterStatisticsService
+     * @return the {@link CallCenterStatisticsService CallCenterStatisticsService } object.
+     */
+    CallCenterStatisticsService getCallCenterStatisticsService();
+    
     /**
      * Listen to event notification from the O2G server.
      * <p>

@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -27,11 +26,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ale.o2g.ManagementService;
 import com.ale.o2g.internal.types.management.O2GObjectModel;
 import com.ale.o2g.internal.types.management.O2GPbxAttribute;
 import com.ale.o2g.internal.types.management.O2GPbxObject;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.management.Filter;
@@ -44,6 +47,7 @@ import com.ale.o2g.types.management.PbxObject;
  *
  */
 public class ManagementRest extends AbstractRESTService implements ManagementService {
+	final static Logger logger = LoggerFactory.getLogger(ManagementRest.class);
 
     static class PbxList {
         private Collection<String> nodeIds;
@@ -72,15 +76,18 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
         }
     }
     
+ 
     
-    
-    
-    public ManagementRest(HttpClient httpClient, URI uri) {
+    public ManagementRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
     @Override
     public Collection<Integer> getPbxs() {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getPbxs()");
+		}
+
         HttpRequest request = HttpUtil.GET(uri);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         
@@ -95,6 +102,10 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
 
     @Override
     public Pbx getPbx(int nodeId) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getPbx() called with: nodeId={}", nodeId);
+		}
+
         HttpRequest request = HttpUtil.GET(URIBuilder.appendPath(uri, String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId"))));
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         
@@ -103,6 +114,10 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
 
     @Override
     public Model getObjectModel(int nodeId, String objectName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getObjectModel() called with: nodeId={}, objectName={}", nodeId, objectName);
+		}
+
         URI uriGet = URIBuilder.appendPath(uri, String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")), "model");
         if (objectName != null) {
             uriGet = URIBuilder.appendPath(uriGet, objectName);
@@ -122,7 +137,11 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
 
     @Override
     public PbxObject getNodeObject(int nodeId) {
-        URI uriGet = URIBuilder.appendPath(uri, String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")), "instances");
+		if (logger.isDebugEnabled()) {
+			logger.debug("getNodeObject() called with: nodeId={}", nodeId);
+		}
+
+		URI uriGet = URIBuilder.appendPath(uri, String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")), "instances");
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         
@@ -142,6 +161,10 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
 
     @Override
     public PbxObject getObject(int nodeId, String objectInstanceDefinition, String objectId, String attributes) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getObject() called with: nodeId={}, objectInstanceDefinition={}, objectId={}, attributes={}", 
+					nodeId, objectInstanceDefinition, objectId, objectId);
+		}
 
         URI uriGet = URIBuilder.appendPath(uri, 
                 String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")), 
@@ -180,6 +203,10 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
 
     @Override
     public Collection<String> getObjectInstances(int nodeId, String objectInstanceDefinition, String filter) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getObjectInstances() called with: nodeId={}, objectInstanceDefinition={}, filter={}", 
+					nodeId, objectInstanceDefinition, filter);
+		}
 
         URI uriGet = URIBuilder.appendPath(uri, 
                 String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")), 
@@ -198,7 +225,7 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
             return null;
         }
         else {
-            return objectIds.objectIds;
+            return unmodifiableOrEmpty(objectIds.objectIds);
         }        
     }
 
@@ -210,6 +237,11 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
     @Override
     public boolean setObject(int nodeId, String objectInstanceDefinition, String objectId,
             Collection<PbxAttribute> attributes) {
+    	
+		if (logger.isDebugEnabled()) {
+			logger.debug("setObject() called with: nodeId={}, objectInstanceDefinition={}, objectId={}, attributes={}", 
+					nodeId, objectInstanceDefinition, objectId, attributes);
+		}
 
         URI uriPut = URIBuilder.appendPath(uri, 
                 String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")), 
@@ -218,6 +250,9 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
                 AssertUtil.requireNotEmpty(objectId, "objectId"));
 
         String json = gson.toJson(new O2GPbxAttributeList(attributes));
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
         HttpRequest request = HttpUtil.PUT(uriPut, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -227,14 +262,20 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
 
     @Override
     public boolean deleteObject(int nodeId, String objectInstanceDefinition, String objectId, boolean forceDelete) {
-        URI uriDelete = URIBuilder.appendPath(uri, 
+    	
+		if (logger.isDebugEnabled()) {
+			logger.debug("deleteObject() called with: nodeId={}, objectInstanceDefinition={}, objectId={}, forceDelete={}", 
+					nodeId, objectInstanceDefinition, objectId, forceDelete);
+		}
+
+		URI uriDelete = URIBuilder.appendPath(uri, 
                 String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")), 
                 "instances",
                 AssertUtil.requireNotEmpty(objectInstanceDefinition, "objectInstanceDefinition"),
                 AssertUtil.requireNotEmpty(objectId, "objectId"));
         
         if (forceDelete) {
-            uriDelete = URIBuilder.appendQuery(uriDelete, "force");
+            uriDelete = URIBuilder.appendQuery(uriDelete, "force"); 
         }
         
         HttpRequest request = HttpUtil.DELETE(uriDelete);
@@ -250,6 +291,11 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
 
     @Override
     public boolean createObject(int nodeId, String objectInstanceDefinition, Collection<PbxAttribute> attributes) {
+    	
+		if (logger.isDebugEnabled()) {
+			logger.debug("createObject() called with: nodeId={}, objectInstanceDefinition={}, attributes={}", 
+					nodeId, objectInstanceDefinition, attributes);
+		}
 
         URI uriPost = URIBuilder.appendPath(uri, 
                 String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")), 
@@ -257,6 +303,9 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
                 AssertUtil.requireNotEmpty(objectInstanceDefinition, "objectInstanceDefinition"));
         
         String json = gson.toJson(new O2GPbxAttributeList(attributes));
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());

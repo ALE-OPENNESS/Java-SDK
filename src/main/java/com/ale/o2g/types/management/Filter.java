@@ -130,7 +130,7 @@ public class Filter {
     
     private static Filter combine(String ope, Filter filter1, Filter filter2, Collection<Filter> otherFilters) {
         
-        String result = String.format("%S %s %s",
+        String result = String.format("%s %s %s",
                 AssertUtil.requireNotNull(filter1, "filter1").value,
                 ope,
                 AssertUtil.requireNotNull(filter2, "filter2").value);

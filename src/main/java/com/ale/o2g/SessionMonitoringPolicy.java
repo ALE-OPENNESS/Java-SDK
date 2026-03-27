@@ -27,13 +27,23 @@ import java.util.concurrent.TimeUnit;
 public interface SessionMonitoringPolicy {
 
     /**
-     * Behavior class represents a defense mechanism that will be apply on an
-     * abnormal situation. On an abnormal situation, this behavior allow to retry
-     * the failed operation immediately, after a delay, or to abort.
+     * Represents a defensive behavior to be applied when an abnormal situation occurs.
+     * <p>
+     * In such situations, this behavior determines whether to retry the failed operation
+     * immediately, retry it after a delay, or abort the operation entirely.
+     * <p>
+     * Two standard actions are provided:
+     * <ul>
+     *     <li>{@link #RETRY}: retry the operation</li>
+     *     <li>{@link #ABORT}: abort the operation</li>
+     * </ul>
      */
     public static class Behavior {
 
+        /** Retry the operation. */
         public final static int RETRY = 0;
+        
+        /** Abort the operation. */
         public final static int ABORT = 1;
 
         private int action;
@@ -47,15 +57,19 @@ public interface SessionMonitoringPolicy {
         }
 
         /**
-         * Returns the action associated to this behavior.
-         * @return the action
+         * Returns the action associated with this behavior.
+         *
+         * @return the action, either {@link #RETRY} or {@link #ABORT}
          */
         public final int getAction() {
             return action;
         }
 
         /**
-         * Returns a period associated to this behavior.
+         * Returns the period associated with this behavior.
+         * <p>
+         * This is the delay before retrying the operation if the action is {@link #RETRY}.
+         *
          * @return the period
          */
         public final long getPeriod() {
@@ -63,22 +77,27 @@ public interface SessionMonitoringPolicy {
         }
 
         /**
-         * Returns a time unit associated to this behavior.
-         * @return the unit
+         * Returns the time unit associated with the period.
+         *
+         * @return the time unit
          */
         public final TimeUnit getUnit() {
             return unit;
         }
 
         /**
-         * @return {@code true} if this behavior is a Retry action
+         * Checks whether this behavior is a retry action.
+         *
+         * @return {@code true} if this behavior is {@link #RETRY}; {@code false} otherwise
          */
         public boolean isRetry() {
             return action == RETRY;
         }
 
         /**
-         * @return {@code true} if this behavior is an Abort action
+         * Checks whether this behavior is an abort action.
+         *
+         * @return {@code true} if this behavior is {@link #ABORT}; {@code false} otherwise
          */
         public boolean isAbort() {
             return action == ABORT;
@@ -115,9 +134,16 @@ public interface SessionMonitoringPolicy {
     }
 
     /**
-     * A Behavior to abort the operation
+     * Represents a {@link Behavior} that aborts the operation immediately.
+     * <p>
+     * This behavior does not retry the operation and ignores any period or delay.
      */
     public static class Abort extends Behavior {
+        /**
+         * Creates a new {@code Abort} behavior.
+         * <p>
+         * The operation will be aborted immediately, with no retry or delay.
+         */
         public Abort() {
             super(Behavior.ABORT, 0, TimeUnit.SECONDS);
         }
@@ -178,17 +204,21 @@ public interface SessionMonitoringPolicy {
     void sessionKeepAliveFatalError(Session session);
 
     /**
-     * This method is called by the keep alive thread when an exception is
-     * throwned. For exemple, on a network failure an IOException will be thrown.
+     * This method is called by the keep alive thread when an exception is throwned.
+     * For exemple, on a network failure an IOException will be thrown.
+     * 
      * @param session the session
-     * @param e the exception raised
-     * @return the behavior in reaction to the failure. If an ABORT behavior is returned, the thread is ended.
+     * @param e       the exception raised
+     * @return the behavior in reaction to the failure. If an ABORT behavior is
+     *         returned, the thread is ended.
      */
     Behavior getBehaviorOnKeepAliveFailure(Session session, Exception e);
 
     /**
-     * Called when an exception has been thrown during the treatment of an event by the application
-     * @param e
+     * Called when an exception has been thrown during the treatment of an event by
+     * the application
+     * 
+     * @param e the exception that lead to this specific treatment
      */
     void eventTreatmentException(Exception e);
 }

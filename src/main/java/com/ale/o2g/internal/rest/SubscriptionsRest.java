@@ -19,15 +19,18 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ale.o2g.Subscription;
 import com.ale.o2g.internal.services.ISubscriptions;
 import com.ale.o2g.internal.types.SubscriptionResult;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.URIBuilder;
 
 /**
@@ -36,15 +39,20 @@ import com.ale.o2g.internal.util.URIBuilder;
  */
 public class SubscriptionsRest  extends AbstractRESTService implements ISubscriptions {
 
-	public SubscriptionsRest(HttpClient httpClient, URI uri) {
+	final static Logger logger = LoggerFactory.getLogger(SubscriptionsRest.class);
+
+	public SubscriptionsRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 
 	
 	@Override
 	public SubscriptionResult create(Subscription subscription) {
-		
 		String json = gson.toJson(subscription);
+		
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("create() called with: subscription={}", json);
+    	}
 
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(uri)
@@ -59,6 +67,9 @@ public class SubscriptionsRest  extends AbstractRESTService implements ISubscrip
 
 	@Override
 	public boolean delete(String subscriptionId) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("delete() called with: subscriptionId={}", subscriptionId);
+    	}
 
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URIBuilder.appendPath(uri, subscriptionId))

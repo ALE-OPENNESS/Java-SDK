@@ -21,6 +21,7 @@ package com.ale.o2g.internal.types.routing;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ale.o2g.types.routing.Destination;
 import com.ale.o2g.types.routing.Overflow;
 import com.ale.o2g.types.routing.Overflow.Condition;
 
@@ -37,7 +38,7 @@ public class OverflowRoute {
 			return new Overflow(destinations.get(0).toDestination(), getCondition()) {};
         }
 		else {
-        	return new Overflow(null, getCondition()) {};
+        	return new Overflow(Destination.NONE, getCondition()) {};
 		}
 	}
 

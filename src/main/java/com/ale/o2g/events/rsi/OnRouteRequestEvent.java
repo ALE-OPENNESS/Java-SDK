@@ -23,6 +23,7 @@ import com.ale.o2g.types.rsi.RouteRequest;
 
 /**
  * This event is sent from a Routing point to request a route.
+ * @hidden
  */
 public class OnRouteRequestEvent extends O2GEvent {
 

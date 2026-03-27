@@ -21,10 +21,27 @@ package com.ale.o2g.events.cca;
 import com.ale.o2g.events.O2GEvent;
 
 /**
- * This event is raised when agent has requested the assistance of his
- * supervisor and when the request is canceled by the agent or when the request
- * is rejected by the supervisor. This event is received by both the agent and
- * the supervisor.
+ * Event delivered when a supervisor help request is cancelled or rejected.
+ * <p>
+ * This event occurs in two scenarios:
+ * <ul>
+ *     <li>When an agent cancels a previously requested assistance from a supervisor.</li>
+ *     <li>When a supervisor rejects a help request from an agent.</li>
+ * </ul>
+ * <p>
+ * The event is received by both the agent and the supervisor involved in the request.
+ * It contains the login name of the recipient and the number of the other party.
+ * <p>
+ * Typical usage:
+ * <pre><code>
+ * {@literal @}Override
+ * public void onSupervisorHelpCancelled(OnSupervisorHelpCancelledEvent e) {
+ *     String otherPartyNumber = e.getOtherNumber();
+ *     // handle cancellation or rejection
+ * }
+ * </code></pre>
+ *
+ * @see CallCenterAgentEventListener#onSupervisorHelpCancelled(OnSupervisorHelpCancelledEvent)
  */
 public class OnSupervisorHelpCancelledEvent extends O2GEvent {
 
@@ -32,23 +49,37 @@ public class OnSupervisorHelpCancelledEvent extends O2GEvent {
     private String agentNumber;
 
     /**
-     * Returns the operator login name
+     * Returns the login name of the operator who receives this event.
      * 
-     * @return the loginName
+     * @return the operator's login name
      */
     public final String getLoginName() {
         return loginName;
     }
 
     /**
-     * Returns the agent or supervisor number.
+     * Returns the number of the other party involved in the help request.
      * <p>
-     * If the event is received by the supervisor, returns the agent number. If this
-     * event is received by the agent, returns the supervisor number.
+     * If the event is received by the supervisor, this returns the agent's number.
+     * If the event is received by the agent, this returns the supervisor's number.
      * 
-     * @return the agentNumber
+     * @return the other party's number
+     * @deprecated Use {@link #getPartyNumber()} instead.
      */
+    @Deprecated
     public final String getOtherNumber() {
+        return agentNumber;
+    }
+
+    /**
+     * Returns the number of the other party involved in the help request.
+     * <p>
+     * If the event is received by the supervisor, this returns the agent's number.
+     * If the event is received by the agent, this returns the supervisor's number.
+     * 
+     * @return the other party's number
+     */
+    public final String getPartyNumber() {
         return agentNumber;
     }
 

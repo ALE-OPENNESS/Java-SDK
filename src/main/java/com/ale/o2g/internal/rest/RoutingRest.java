@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -27,12 +26,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ale.o2g.RoutingService;
 import com.ale.o2g.internal.types.routing.ForwardRoute;
 import com.ale.o2g.internal.types.routing.O2GRoutingState;
 import com.ale.o2g.internal.types.routing.OverflowRoute;
 import com.ale.o2g.internal.types.routing.PresentationRoute;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.routing.Destination;
@@ -47,6 +50,7 @@ import com.ale.o2g.types.routing.RoutingState;
  *
  */
 public class RoutingRest extends AbstractRESTService implements RoutingService {
+	final static Logger logger = LoggerFactory.getLogger(RoutingRest.class);
 
 	private static class SetRouteRequest {
 		private Collection<PresentationRoute> presentationRoutes = new ArrayList<PresentationRoute>();
@@ -66,12 +70,15 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 	
 	private static record SetForwardRouteRequest(ForwardRoute forwardRoute) {}
 	
-	public RoutingRest(HttpClient httpClient, URI uri) {
+	public RoutingRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
 
 	@Override
 	public RoutingCapabilities getCapabilities(String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getCapabilities() called with: loginName={}", loginName);
+		}
 
 		URI uriGet = uri;
         if (loginName != null) {
@@ -90,6 +97,9 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 
 	@Override
 	public boolean setRemoteExtensionActivation(boolean active, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("setRemoteExtensionActivation() called with: active={}, loginName={}", active, loginName);
+		}
 
 		URI uriPost = uri;
         if (loginName != null) {
@@ -99,7 +109,13 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
         SetRouteRequest setRouteRequest = new SetRouteRequest();
         setRouteRequest.addPresentationRoute(PresentationRoute.createMobileRouteActivation(active));
 
-		HttpRequest request = HttpUtil.POST(uriPost, gson.toJson(setRouteRequest));
+        String json = gson.toJson(setRouteRequest);
+        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
+        
+		HttpRequest request = HttpUtil.POST(uriPost, json);
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 		return isSucceeded(response);
 	}
@@ -111,6 +127,9 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 
 	@Override
 	public DndState getDndState(String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getDndState() called with: loginName={}", loginName);
+		}
 
 		URI uriGet = URIBuilder.appendPath(uri, "dnd");
         if (loginName != null) {
@@ -130,6 +149,9 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 
 	@Override
 	public boolean activateDnd(String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("activateDnd() called with: loginName={}", loginName);
+		}
 
 		URI uriPost = URIBuilder.appendPath(uri, "dnd");
         if (loginName != null) {
@@ -148,6 +170,9 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 
 	@Override
 	public boolean cancelDnd(String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("cancelDnd() called with: loginName={}", loginName);
+		}
 
 		URI uriDelete = URIBuilder.appendPath(uri, "dnd");
         if (loginName != null) {
@@ -166,6 +191,10 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 
 	@Override
 	public Forward getForward(String loginName) {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("getForward() called with: loginName={}", loginName);
+		}
 
 		URI uriGet = URIBuilder.appendPath(uri, "forwardroute");
         if (loginName != null) {
@@ -191,6 +220,10 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 	@Override
 	public boolean cancelForward(String loginName) {
 
+		if (logger.isDebugEnabled()) {
+			logger.debug("cancelForward() called with: loginName={}", loginName);
+		}
+
 		URI uriDelete = URIBuilder.appendPath(uri, "forwardroute");
         if (loginName != null) {
         	uriDelete = URIBuilder.appendQuery(uriDelete, "loginName", loginName);
@@ -209,12 +242,20 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 	@Override
 	public boolean forwardOnVoiceMail(Condition condition, String loginName) {
 
+		if (logger.isDebugEnabled()) {
+			logger.debug("forwardOnVoiceMail() called with: condition={}, loginName={}", condition, loginName);
+		}
+
 		URI uriPost = URIBuilder.appendPath(uri, "forwardroute");
         if (loginName != null) {
         	uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
 
         String json = gson.toJson(new SetForwardRouteRequest(ForwardRoute.createForwardOnVoiceMail(condition)));
+        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
 		HttpRequest request = HttpUtil.POST(uriPost, json);
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -229,6 +270,10 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 	@Override
 	public boolean forwardOnNumber(String number, Condition condition, String loginName) {
 
+		if (logger.isDebugEnabled()) {
+			logger.debug("forwardOnNumber() called with: number={}, condition={}, loginName={}", number, condition, loginName);
+		}
+
 		URI uriPost = URIBuilder.appendPath(uri, "forwardroute");
         if (loginName != null) {
         	uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
@@ -238,6 +283,10 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
         		ForwardRoute.createForwardOnNumber(
         				AssertUtil.requireNotEmpty(number, "number"), 
         				condition)));
+        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
 
 		HttpRequest request = HttpUtil.POST(uriPost, json);
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
@@ -251,6 +300,9 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 
 	@Override
 	public boolean cancelOverflow(String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("cancelOverflow() called with: loginName={}", loginName);
+		}
 
 		URI uriDelete = URIBuilder.appendPath(uri, "overflowroute");
         if (loginName != null) {
@@ -269,6 +321,9 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 
 	@Override
 	public Overflow getOverflow(String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getOverflow() called with: loginName={}", loginName);
+		}
 
 		URI uriGet = URIBuilder.appendPath(uri, "overflowroute");
         if (loginName != null) {
@@ -293,6 +348,9 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 
 	@Override
 	public boolean overflowOnVoiceMail(Overflow.Condition condition, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("overflowOnVoiceMail() called with: condition={}, loginName={}", condition, loginName);
+		}
 
 		URI uriPost = URIBuilder.appendPath(uri, "overflowroute");
         if (loginName != null) {
@@ -302,7 +360,13 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
         SetOverflowRouteRequest setOverflowRouteRequest = new SetOverflowRouteRequest();
         setOverflowRouteRequest.addRoute(OverflowRoute.createOverflowOnVoiceMail(condition));
         
-		HttpRequest request = HttpUtil.POST(uriPost, gson.toJson(setOverflowRouteRequest));
+        String json = gson.toJson(setOverflowRouteRequest);
+        
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("Request=: {}", json);
+    	}
+        
+		HttpRequest request = HttpUtil.POST(uriPost, json);
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 		return isSucceeded(response);
 	}
@@ -312,31 +376,11 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 		return this.overflowOnVoiceMail(condition, null);
 	}
 
-	/*
-	@Override
-	public boolean overflowOnAssociate(Overflow.Condition condition, String loginName) {
-
-		URI uriPost = URIBuilder.appendPath(uri, "overflowroute");
-        if (loginName != null) {
-        	uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
-        }
-
-        SetOverflowRouteRequest setOverflowRouteRequest = new SetOverflowRouteRequest();
-        setOverflowRouteRequest.addRoute(OverflowRoute.createOverflowOnAssociate(condition));
-        
-		HttpRequest request = HttpUtil.POST(uriPost, gson.toJson(setOverflowRouteRequest));
-		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-		return isSucceeded(response);
-	}
-
-	@Override
-	public boolean overflowOnAssociate(Overflow.Condition condition) {
-		return this.overflowOnAssociate(condition, null);
-	}
-*/
-
 	@Override
 	public RoutingState getRoutingState(String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getRoutingState() called with: loginName={}", loginName);
+		}
 
 		URI uriGet = URIBuilder.appendPath(uri, "state");
         if (loginName != null) {
@@ -366,6 +410,10 @@ public class RoutingRest extends AbstractRESTService implements RoutingService {
 
 	@Override
 	public boolean requestSnapshot(String loginName) {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("requestSnapshot() called with: loginName={}", loginName);
+		}
 
 		URI uriPost = URIBuilder.appendPath(uri, "state/snapshot");
         if (loginName != null) {

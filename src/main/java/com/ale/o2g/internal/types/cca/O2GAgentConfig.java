@@ -50,7 +50,7 @@ public class O2GAgentConfig {
         // Transform the AgentSkills to a SkillSet
         Map<Integer, AgentSkill> mapSkills = new HashMap<Integer, AgentSkill>();
      
-        if (skills.skills != null) {
+        if ((skills != null) && (skills.skills != null)) {
             skills.skills.forEach(s -> mapSkills.put(s.getNumber(), s));
         }
 

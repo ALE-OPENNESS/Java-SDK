@@ -22,6 +22,7 @@ import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 
 /**
  * {@code RoutingReason} represents the possible reason associated to a route request.
+ * @hidden
  */
 @JsonEnumDeserializerFallback(value = "UNKNOWN")
 public enum RoutingReason {

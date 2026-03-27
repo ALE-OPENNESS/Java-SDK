@@ -19,55 +19,154 @@
 package com.ale.o2g.types.cca;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * {@code AgentSkillSet} class represents a set of skills for a CCD operator.
+ * {@code AgentSkillSet} represents the collection of skillsByNumber assigned to
+ * a CCD operator.
+ * <p>
+ * This class provides convenient access to individual skillsByNumber by their
+ * identifier, checks for existence, and exposes all available skillsByNumber or
+ * their identifiers.
  */
 public class AgentSkillSet {
 
-    private Map<Integer, AgentSkill> skills;
+    private final Map<Integer, AgentSkill> skillsByNumber;
+    private final Map<SkillKey, AgentSkill> skillsByDomainAndName;
 
+    /**
+     * Constructs an {@code AgentSkillSet} from a map of skills.
+     * <p>
+     * The map keys are skill numbers. Internally, a secondary index by (domain,
+     * name) is also built for lookups by name.
+     * </p>
+     *
+     * @param skills map of skill numbers to {@link AgentSkill} instances
+     */
+    protected AgentSkillSet(Map<Integer, AgentSkill> skills) {
+
+        this.skillsByNumber = skills;
+
+        this.skillsByDomainAndName = new HashMap<SkillKey, AgentSkill>();
+        skills.values().forEach(skill -> {
+            Integer domain = skill.getDomain(); // assume domain can be null
+            String name = skill.getName(); // name can be null
+            if (domain != null && name != null) {
+                skillsByDomainAndName.put(new SkillKey(domain, name), skill);
+            }
+        });
+    }
+
+    /**
+     * Returns the number of skill in this agent skills set
+     * @return the number of skills
+     */
+    public int size() {
+    	return skillsByNumber.size();
+    }
+    
+    
+    /**
+     * Returns {@code true} if this skill set contains skill.
+     *
+     * @return {@code true} if this skill set contains skill
+     */
+    public boolean isEmpty() {
+    	return skillsByNumber.isEmpty();
+    }
+    
     /**
      * Returns the skill with the specified number.
-     * 
-     * @param number The skill number
-     * @return The agent skill with the specified number or {@code null} if there is
-     *         no skill with such number.
+     *
+     * @param number the skill number (identifier)
+     * @return the {@link AgentSkill} with the given number, or {@code null} if no
+     *         such skill exists
      */
     public AgentSkill get(int number) {
-        return skills.get(number);
+        return skillsByNumber.get(number);
     }
 
     /**
-     * Determines whether the the specified skill exist in this skill set.
-     * @param number the skill number to search
-     * @return {@code true} if the specified skill is present; {@code false} otherwise. 
+     * Returns the skill with the specified name in the given domain.
+     *
+     * @param domain the domain ID
+     * @param name   the skill name
+     * @return the {@link AgentSkill} with the given name in the domain, or
+     *         {@code null} if not found
+     * @since 2.7.4
+     */
+    public AgentSkill get(int domain, String name) {
+        return skillsByDomainAndName.get(new SkillKey(domain, name));
+    }
+
+    /**
+     * Determines whether a skill with the specified number exists in this set.
+     *
+     * @param number the skill number to search for
+     * @return {@code true} if the specified skill is present; {@code false}
+     *         otherwise
      */
     public boolean contains(int number) {
-        return skills.containsKey(number);
-    }
-        
-    /**
-     * Return the set of skill numbers contained in this skills set.
-     * @return A set object containing the skills number.
-     */
-    public Set<Integer> getSkillNumbers() {
-        return skills.keySet();
-    }
-    
-    /**
-     * Returns the skills in this skill set.
-     * @return A collection of AgentSkill.
-     */
-    public Collection<AgentSkill> getSkills() {
-        return skills.values();
+        return skillsByNumber.containsKey(number);
     }
 
-    
-    protected AgentSkillSet(Map<Integer, AgentSkill> skills) {
-        this.skills = skills;
+    /**
+     * Determines whether a skill with the specified name exists in the given
+     * domain.
+     *
+     * @param domain the domain ID
+     * @param name   the skill name
+     * @return {@code true} if the skill exists in the domain, {@code false}
+     *         otherwise
+     * @since 2.7.4
+     */
+    public boolean contains(int domain, String name) {
+        return skillsByDomainAndName.containsKey(new SkillKey(domain, name));
     }
-    
+
+    /**
+     * Returns the set of skill numbers contained in this skill set.
+     *
+     * @return a set of skill identifiers
+     */
+    public Set<Integer> getSkillNumbers() {
+        return Collections.unmodifiableSet(skillsByNumber.keySet());
+    }
+
+    /**
+     * Returns all skillsByNumber contained in this skill set.
+     *
+     * @return a collection of {@link AgentSkill} instances
+     */
+    public Collection<AgentSkill> getSkills() {
+        return Collections.unmodifiableCollection(skillsByNumber.values());
+    }
+
+    /** Internal key for mapping skillsByNumber by (domain, name). */
+    private static final class SkillKey {
+        private final int domain;
+        private final String name;
+
+        private SkillKey(int domain, String name) {
+            this.domain = domain;
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (!(obj instanceof SkillKey other))
+                return false;
+            return domain == other.domain && name.equals(other.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * domain + name.hashCode();
+        }
+    }
 }

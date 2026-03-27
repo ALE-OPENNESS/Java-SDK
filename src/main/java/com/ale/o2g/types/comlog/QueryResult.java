@@ -22,10 +22,15 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * {@code QueryResult} class represents the result of a communication log query.
- * The {@linkplain com.ale.o2g.CommunicationLogService CommunicationLogService}
- * service provides a paging mechanism that allows the application to query the
- * result by pages.
+ * {@code QueryResult} represents the result of a communication log query.
+ * <p>
+ * The {@link com.ale.o2g.CommunicationLogService CommunicationLogService} provides
+ * a paging mechanism, allowing applications to retrieve query results page by page.
+ * <p>
+ * Each instance contains the collection of communication records returned for
+ * a specific query, along with the paging information and the total count of records.
+ *
+ * @see com.ale.o2g.CommunicationLogService#getComRecords(QueryFilter, Page, boolean, String)
  */
 public class QueryResult implements Iterable<ComRecord> {
 
@@ -34,28 +39,46 @@ public class QueryResult implements Iterable<ComRecord> {
     private Integer count;
 
     /**
-     * Returns the number of record in this result.
-     * 
-     * @return the number of record.
+     * Returns the total number of records in this result.
+     *
+     * @return the number of records
      */
     public Integer size() {
         return count;
     }
 
     /**
-     * Returns the page associated to this result.
-     * 
-     * @return the page.
+     * Returns the page information associated with this result.
+     * <p>
+     * The {@link Page} object provides the offset and limit used to retrieve
+     * this set of records and can be used to navigate through the pages.
+     *
+     * @return the page
      */
     public Page getPage() {
         return page;
     }
 
+    /**
+     * Returns an iterator over the communication records contained in this result.
+     *
+     * @return an {@link Iterator} over {@link ComRecord} instances
+     */
     @Override
     public Iterator<ComRecord> iterator() {
         return records.iterator();
     }
 
+    /**
+     * Protected constructor for creating a {@code QueryResult}.
+     * <p>
+     * Instances are typically created by the {@link com.ale.o2g.CommunicationLogService}
+     * and returned to the caller.
+     *
+     * @param records the collection of communication records
+     * @param page the page information
+     * @param count the total number of records
+     */
     protected QueryResult(Collection<ComRecord> records, Page page, Integer count) {
         this.records = records;
         this.page = page;

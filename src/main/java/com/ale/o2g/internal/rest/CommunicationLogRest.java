@@ -19,7 +19,6 @@
 package com.ale.o2g.internal.rest;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -29,8 +28,12 @@ import java.util.EnumSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ale.o2g.CommunicationLogService;
 import com.ale.o2g.internal.util.AssertUtil;
+import com.ale.o2g.internal.util.HttpClientWrapper;
 import com.ale.o2g.internal.util.HttpUtil;
 import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.comlog.ComRecord;
@@ -45,7 +48,9 @@ import com.ale.o2g.types.comlog.Role;
  */
 public class CommunicationLogRest extends AbstractRESTService implements CommunicationLogService {
 
-    private static record UpdateComRecordsRequest(Collection<Long> recordIds) {}    
+	final static Logger logger = LoggerFactory.getLogger(CommunicationLogRest.class);
+
+	private static record UpdateComRecordsRequest(Collection<Long> recordIds) {}    
 
     static class O2GQueryResult {      
         private Collection<ComRecord> records;
@@ -65,12 +70,17 @@ public class CommunicationLogRest extends AbstractRESTService implements Communi
     }
     
     
-    public CommunicationLogRest(HttpClient httpClient, URI uri) {
+    public CommunicationLogRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }
 
     @Override
     public QueryResult getComRecords(QueryFilter filter, Page page, boolean optimized, String loginName) {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("getComRecords() called with: filter=QueryFilter [...], page={}, optimized={}, loginName={}", 
+					filter, page, optimized, loginName);
+		}
 
         URI uriGet = uri;
         if (loginName != null) {
@@ -173,7 +183,11 @@ public class CommunicationLogRest extends AbstractRESTService implements Communi
 
     @Override
     public ComRecord getComRecord(long recordId, String loginName) {
-        URI uriGet = URIBuilder.appendPath(uri, String.valueOf(recordId));
+		if (logger.isDebugEnabled()) {
+			logger.debug("getComRecord() called with: recordId={}, loginName={}", recordId, loginName);
+		}
+
+		URI uriGet = URIBuilder.appendPath(uri, String.valueOf(recordId));
         if (loginName != null)
         {
             uriGet = URIBuilder.appendQuery(uriGet, "loginName", loginName); 
@@ -192,6 +206,9 @@ public class CommunicationLogRest extends AbstractRESTService implements Communi
 
     @Override
     public boolean deleteComRecord(long recordId, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("deleteComRecord() called with: recordId={}, loginName={}", recordId, loginName);
+		}
 
         URI uriDelete = URIBuilder.appendPath(uri, String.valueOf(recordId));
         if (loginName != null)
@@ -211,6 +228,9 @@ public class CommunicationLogRest extends AbstractRESTService implements Communi
 
     @Override
     public boolean deleteComRecords(QueryFilter filter, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("deleteComRecord() called with: filter=QueryFilter [...], loginName={}", filter, loginName);
+		}
 
         URI uriDelete = uri;
         if (loginName != null) {
@@ -279,7 +299,10 @@ public class CommunicationLogRest extends AbstractRESTService implements Communi
 
     @Override
     public boolean deleteComRecords(Collection<Long> recordIds, String loginName) {
-        
+		if (logger.isDebugEnabled()) {
+			logger.debug("deleteComRecord() called with: recordIds={}, loginName={}", recordIds, loginName);
+		}
+
         String sRecordIds = recordIds.stream().map((s)->String.valueOf(s)).collect(Collectors.joining(","));
         
         URI uriDelete = URIBuilder.appendQuery(uri, "recordIdList", sRecordIds);
@@ -314,6 +337,10 @@ public class CommunicationLogRest extends AbstractRESTService implements Communi
     
     @Override
     public boolean acknowledgeComRecords(Collection<Long> recordIds, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("acknowledgeComRecords() called with: recordIds={}, loginName={}", recordIds, loginName);
+		}
+
         return this.ackOrUnAckComRecords(true, recordIds, loginName);
     }
 
@@ -324,7 +351,6 @@ public class CommunicationLogRest extends AbstractRESTService implements Communi
 
     @Override
     public boolean acknowledgeComRecord(long recordId, String loginName) {
-        
         return this.acknowledgeComRecords(Arrays.asList(recordId), loginName);
     }
 
@@ -335,6 +361,9 @@ public class CommunicationLogRest extends AbstractRESTService implements Communi
 
     @Override
     public boolean unacknowledgeComRecords(Collection<Long> recordIds, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("unacknowledgeComRecords() called with: recordIds={}, loginName={}", recordIds, loginName);
+		}
         return this.ackOrUnAckComRecords(false, recordIds, loginName);
     }
 

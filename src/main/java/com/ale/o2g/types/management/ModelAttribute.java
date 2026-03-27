@@ -19,6 +19,7 @@
 package com.ale.o2g.types.management;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * {@code ModelAttribute} represents an attribute in an object model.
@@ -113,7 +114,7 @@ public class ModelAttribute {
      * @return the allowed values.
      */
     public final Collection<String> getAllowedValues() {
-        return allowedValues;
+        return (allowedValues == null) ? Collections.emptyList() : Collections.unmodifiableCollection(allowedValues);
     }
     
     /**

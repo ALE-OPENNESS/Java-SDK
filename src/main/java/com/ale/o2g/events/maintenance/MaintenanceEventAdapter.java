@@ -26,6 +26,14 @@ package com.ale.o2g.events.maintenance;
 public abstract class MaintenanceEventAdapter implements MaintenanceEventListener {
 
 	@Override
+    public void onPbxLinkDown(OnPbxLinkDownEvent e) {
+    }
+
+    @Override
+    public void onPbxLinkUp(OnPbxLinkUpEvent e) {
+    }
+
+    @Override
 	public void onCtiLinkDown(OnCtiLinkDownEvent ev) {
 	}
 
@@ -35,9 +43,17 @@ public abstract class MaintenanceEventAdapter implements MaintenanceEventListene
 
 	@Override
 	public void onPbxLoaded(OnPbxLoadedEvent ev) {
+	}	
+
+    @Override
+	public void onRemoteServerLinkDown(OnRemoteServerLinkDownEvent e) {
 	}
 
-    protected MaintenanceEventAdapter() {
+	@Override
+	public void onRemoteServerLinkUp(OnRemoteServerLinkUpEvent e) {
+	}
+
+	protected MaintenanceEventAdapter() {
     }
 
 }

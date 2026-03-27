@@ -19,5 +19,6 @@
 
 /**
  * Contains classes and interfaces to use the rsi service.
+ * @hidden
  */
 package com.ale.o2g.types.rsi;

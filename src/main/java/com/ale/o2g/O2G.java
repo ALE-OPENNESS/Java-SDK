@@ -24,7 +24,7 @@ import com.ale.o2g.types.Host;
 import com.ale.o2g.types.ServerInfo;
 
 /**
- * {@code O2G} is the basic class to bootstarp the SDK and create a
+ * {@code O2G} is the basic class to bootstrap the SDK and create a
  * {@linkplain ServiceEndPoint} object.
  */
 public final class O2G {
@@ -33,23 +33,6 @@ public final class O2G {
      * The O2G Api version
      */
     public static String ApiVersion = "1.0";
-
-    /**
-     * Attemps to establish a connection on the specified Host.
-     * 
-     * @param host the host
-     * @return the connected endpoint
-     * @throws O2GException when the service end point can not be reached.
-     * @deprecated use connect method instead.
-     */
-    @Deprecated
-    public static ServiceEndPoint Connect(Host host) throws O2GException {
-
-        ServiceFactory serviceFactory = new ServiceFactory(ApiVersion);
-        ServerInfo serverInfo = serviceFactory.bootstrap(host);
-
-        return new ServiceEndPointImpl(serviceFactory, serverInfo);
-    }
 
     /**
      * Attemps to establish a connection on the specified Host.
