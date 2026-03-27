@@ -194,12 +194,9 @@ public class Criteria {
     public final String getField() {
         return field;
     }
-<<<<<<< HEAD
 
 	@Override
 	public String toString() {
 		return "Criteria [operation=" + operation + ", field=" + field + ", operand=" + operand + "]";
 	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

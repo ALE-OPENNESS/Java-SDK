@@ -39,11 +39,8 @@ import com.ale.o2g.internal.util.URIBuilder;
  */
 public class SubscriptionsRest  extends AbstractRESTService implements ISubscriptions {
 
-<<<<<<< HEAD
 	final static Logger logger = LoggerFactory.getLogger(SubscriptionsRest.class);
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 	public SubscriptionsRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}

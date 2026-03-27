@@ -59,7 +59,6 @@ public class UsersRest extends AbstractRESTService implements UsersService {
 
     @Override
     public Collection<String> getLogins(int[] nodeIds, boolean onlyACD) {
-<<<<<<< HEAD
     	
     	if (logger.isDebugEnabled()) {
     		logger.debug("getLogins() called with: nodeIds={}, onlyACD={}",
@@ -67,30 +66,6 @@ public class UsersRest extends AbstractRESTService implements UsersService {
     	}
     	
         URI uriGet = URI.create(uri.toString().replace("/users", "/logins"));
-=======
-        URI uriGet = URI.create(uri.toString().replace("/users", "/logins"));
-        if (nodeIds != null) {
-            uriGet = URIBuilder.appendQuery(uriGet, "nodeIds", MakeNodeQuery(nodeIds));
-        }
-
-        if (onlyACD) {
-            uriGet = URIBuilder.appendQuery(uriGet, "onlyACD");
-        }
-        
-        HttpRequest request = HttpUtil.GET(uriGet);
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-        
-        return unmodifiableOrEmpty(getOptionalResult(response, LoginsResponse.class)
-                .map(LoginsResponse::getLoginNames)
-                .orElse(null));
-    }
-	
-	
-	@Override
-	public Collection<String> getLogins(String[] nodeIds, boolean onlyACD) {
-		
-		URI uriGet = URI.create(uri.toString().replace("/users", "/logins"));
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         if (nodeIds != null) {
             uriGet = URIBuilder.appendQuery(uriGet, "nodeIds", Arrays.stream(nodeIds)
         	        .mapToObj(Integer::toString)
@@ -101,45 +76,12 @@ public class UsersRest extends AbstractRESTService implements UsersService {
             uriGet = URIBuilder.appendQuery(uriGet, "onlyACD");
         }
         
-<<<<<<< HEAD
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         
         return unmodifiableOrEmpty(getOptionalResult(response, LoginsResponse.class)
                 .map(LoginsResponse::getLoginNames)
                 .orElse(null));
-=======
-		HttpRequest request = HttpUtil.GET(uriGet);
-		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
-		
-		return unmodifiableOrEmpty(getOptionalResult(response, LoginsResponse.class)
-				.map(LoginsResponse::getLoginNames)
-				.orElse(null));
-	}
-
-    private String MakeNodeQuery(int[] nodeIds) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < nodeIds.length; i++) {
-            if (i > 0) {
-                sb.append(';');
-            }
-            sb.append(nodeIds[i]);
-        }
-
-        return sb.toString();
-    }
-
-    private String MakeNodeQuery(String[] nodeIds) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < nodeIds.length; i++) {
-            if (i > 0) {
-                sb.append(';');
-            }
-            sb.append(nodeIds[i]);
-        }
-
-        return sb.toString();
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     }
 	
 	

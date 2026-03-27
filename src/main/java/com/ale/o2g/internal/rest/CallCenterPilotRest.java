@@ -24,12 +24,9 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
 
-<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 import com.ale.o2g.CallCenterPilotService;
 import com.ale.o2g.internal.util.AssertUtil;
 import com.ale.o2g.internal.util.HttpClientWrapper;
@@ -38,11 +35,8 @@ import com.ale.o2g.internal.util.URIBuilder;
 
 public class CallCenterPilotRest extends AbstractRESTService implements CallCenterPilotService {
 
-<<<<<<< HEAD
 	final static Logger logger = LoggerFactory.getLogger(CallCenterPilotRest.class);
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 	public CallCenterPilotRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}
@@ -54,13 +48,10 @@ public class CallCenterPilotRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean monitorStart(String pilotNumber) {
-<<<<<<< HEAD
     	
     	if (logger.isDebugEnabled()) {
     		logger.debug("monitorStart() called with: pilotNumber={}", pilotNumber);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         
         URI uriPost = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(pilotNumber, "pilotNumber"));
         
@@ -76,17 +67,11 @@ public class CallCenterPilotRest extends AbstractRESTService implements CallCent
 
     @Override
     public boolean monitorStop(String pilotNumber) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("monitorStop() called with: pilotNumber={}", pilotNumber);
     	}
 
     	URI uriDelete = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(pilotNumber, "pilotNumber"));
-=======
-        
-        URI uriDelete = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(pilotNumber, "pilotNumber"));
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         
         HttpRequest request = HttpUtil.DELETE(uriDelete);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());

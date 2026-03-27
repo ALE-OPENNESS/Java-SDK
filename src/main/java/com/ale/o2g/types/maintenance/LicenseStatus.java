@@ -113,10 +113,7 @@ public class LicenseStatus {
     public Collection<License> getLics() {
         return (lics == null) ? Collections.emptyList() : Collections.unmodifiableCollection(lics);
     }
-<<<<<<< HEAD
 
 	protected LicenseStatus() {   
     }
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

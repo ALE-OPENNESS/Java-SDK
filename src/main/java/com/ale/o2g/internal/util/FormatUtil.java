@@ -56,7 +56,6 @@ public class FormatUtil {
         return Double.valueOf(value);
     }
     
-<<<<<<< HEAD
     public static boolean asBoolean(String value) {
         if (value == null) {
             return false;
@@ -65,8 +64,6 @@ public class FormatUtil {
         return Boolean.valueOf(value);
     }
     
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public static LocalDate asLocalDate(String value) {
         if (value == null) {
             return null;

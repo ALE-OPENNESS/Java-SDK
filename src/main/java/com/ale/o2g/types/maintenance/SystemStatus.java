@@ -159,39 +159,6 @@ public class SystemStatus {
          */
         UNKNOWN
     }
-
-    
-    /**
-     * Defines how O2G automatically loads users from OXE subscribers.
-     *
-     * Controls which OXE subscribers are automatically imported or filtered
-     * when provisioning users in the O2G system.
-     */
-    @JsonEnumDeserializerFallback(value = "UNKNOWN")
-    public enum SubscriberFilter {
-        /** 
-         * Only OXE subscribers with the **A4980 attribute** are automatically loaded. 
-         * Useful when selective subscriber provisioning is required.
-         */
-        A4980,
-
-        /**
-         * All OXE subscribers are automatically loaded.
-         * Use this for full subscriber synchronization.
-         */
-        ALL,
-
-        /**
-         * No OXE subscribers are automatically loaded.
-         * Users must be created manually or through another provisioning process.
-         */
-        NONE,
-        
-        /**
-         * Unable to identify the filtering
-         */
-        UNKNOWN
-    }
     
     
     private ServerAddress logicalAddress;
@@ -205,15 +172,11 @@ public class SystemStatus {
     private SystemServices secondaryServicesStatus;
     private Collection<PbxStatus> pbxs;
     private LicenseStatus license;
-<<<<<<< HEAD
     private ServerAddress systemResources;
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     private Configuration configurationType;
     private String applicationId;
     private SubscriberFilter subscriberFilter;
 
-<<<<<<< HEAD
     /**
      * Creates a new {@code SystemStatus} instance.
      * <p>
@@ -234,14 +197,10 @@ public class SystemStatus {
      *
      * @return the logical {@link ServerAddress} of this O2G server
      */
-=======
-    /** @return the logical address of this O2G server */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public ServerAddress getLogicalAddress() {
         return logicalAddress;
     }
 
-<<<<<<< HEAD
     /**
      * Returns the system resource address of this O2G server.
      * <p>
@@ -262,14 +221,10 @@ public class SystemStatus {
      *
      * @return the server start {@link Date}
      */
-=======
-    /** @return the start date of the server */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public Date getStartDate() {
         return startDate;
     }
 
-<<<<<<< HEAD
     /**
      * Returns whether this O2G server is deployed in high-availability (HA) mode.
      * <p>
@@ -280,14 +235,10 @@ public class SystemStatus {
      *
      * @return {@code true} if the server is in HA mode; {@code false} otherwise
      */
-=======
-    /** @return true if the server is deployed in high availability (HA) mode */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public boolean isHa() {
         return ha;
     }
 
-<<<<<<< HEAD
     /**
      * Returns the fully qualified domain name (FQDN) of the primary server node.
      * <p>
@@ -297,14 +248,10 @@ public class SystemStatus {
      *
      * @return the FQDN of the primary server node, or {@code null} if not in HA mode
      */
-=======
-    /** @return the FQDN of the primary server in HA mode */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public String getPrimary() {
         return primary;
     }
 
-<<<<<<< HEAD
     /**
      * Returns the software version of the primary server node.
      * <p>
@@ -314,14 +261,10 @@ public class SystemStatus {
      *
      * @return the version string of the primary server node, or {@code null} if not in HA mode
      */
-=======
-    /** @return the version of the primary server in HA mode */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public String getPrimaryVersion() {
         return primaryVersion;
     }
 
-<<<<<<< HEAD
     /**
      * Returns the status of services running on the primary server node.
      * <p>
@@ -331,14 +274,10 @@ public class SystemStatus {
      *
      * @return the {@link SystemServices} status of the primary node, or {@code null} if not in HA mode
      */
-=======
-    /** @return the status of services running on the primary server */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public SystemServices getPrimaryServicesStatus() {
         return primaryServicesStatus;
     }
 
-<<<<<<< HEAD
     /**
      * Returns the fully qualified domain name (FQDN) of the secondary server node.
      * <p>
@@ -348,14 +287,10 @@ public class SystemStatus {
      *
      * @return the FQDN of the secondary server node, or {@code null} if not in HA mode
      */
-=======
-    /** @return the FQDN of the secondary server in HA mode */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public String getSecondary() {
         return secondary;
     }
 
-<<<<<<< HEAD
     /**
      * Returns the software version of the secondary server node.
      * <p>
@@ -365,14 +300,10 @@ public class SystemStatus {
      *
      * @return the version string of the secondary server node, or {@code null} if not in HA mode
      */
-=======
-    /** @return the version of the secondary server in HA mode */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public String getSecondaryVersion() {
         return secondaryVersion;
     }
 
-<<<<<<< HEAD
     /**
      * Returns the status of services running on the secondary server node.
      * <p>
@@ -382,14 +313,10 @@ public class SystemStatus {
      *
      * @return the {@link SystemServices} status of the secondary node, or {@code null} if not in HA mode
      */
-=======
-    /** @return the status of services running on the secondary server */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public SystemServices getSecondaryServicesStatus() {
         return secondaryServicesStatus;
     }
 
-<<<<<<< HEAD
     /**
      * Returns the OmniPCX Enterprise nodes currently connected to this O2G server.
      * <p>
@@ -400,14 +327,10 @@ public class SystemStatus {
      * @return an unmodifiable {@link Collection} of {@link PbxStatus} objects;
      *         never {@code null}, but may be empty if no nodes are connected
      */
-=======
-    /** @return an unmodifiable collection of connected OmniPCX Enterprise nodes */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public Collection<PbxStatus> getPbxs() {
         return (pbxs == null) ? Collections.emptyList() : Collections.unmodifiableCollection(pbxs);
     }
 
-<<<<<<< HEAD
     /**
      * Returns the license status of this O2G server.
      * <p>
@@ -417,14 +340,10 @@ public class SystemStatus {
      *
      * @return the {@link LicenseStatus} of this O2G server
      */
-=======
-    /** @return the license status of this O2G server */
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public LicenseStatus getLicense() {
         return license;
     }
 
-<<<<<<< HEAD
     /**
      * Returns the configuration type of this O2G server.
      * <p>
@@ -467,53 +386,3 @@ public class SystemStatus {
         return subscriberFilter;
     }
 }
-=======
-    /** @return the configuration type of the server */
-    public Configuration getConfiguration() {
-        return configurationType;
-    }
-
-    /** @return the application ID of this O2G instance */
-    public String getApplicationId() {
-        return applicationId;
-    }
-
-
-    /**
-     * @return the configuration type of this O2G.
-     */
-    public Configuration getConfigurationType() {
-        return configurationType;
-    }
-
-    /**
-     * @return the subscriber'sfilter applied by this O2G
-     */
-    public SubscriberFilter getSubscriberFilter() {
-        return subscriberFilter;
-    }
-    
-    /*
-    protected SystemStatus(ServerAddress logicalAddress, Date startDate, boolean ha, String primary,
-            String primaryVersion, SystemServices primaryServicesStatus, String secondary, String secondaryVersion,
-            SystemServices secondaryServicesStatus, Collection<PbxStatus> pbxs, LicenseStatus license,
-            Configuration configurationType, String applicationId, SubscriberFilter subscriberFilter) {
-        this.logicalAddress = logicalAddress;
-        this.startDate = startDate;
-        this.ha = ha;
-        this.primary = primary;
-        this.primaryVersion = primaryVersion;
-        this.primaryServicesStatus = primaryServicesStatus;
-        this.secondary = secondary;
-        this.secondaryVersion = secondaryVersion;
-        this.secondaryServicesStatus = secondaryServicesStatus;
-        this.pbxs = pbxs;
-        this.license = license;
-        this.configurationType = configurationType;
-        this.applicationId = applicationId;
-        this.subscriberFilter = subscriberFilter;
-    }
-    */
-
-}
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73

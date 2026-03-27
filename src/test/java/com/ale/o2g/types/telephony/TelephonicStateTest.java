@@ -25,14 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-<<<<<<< HEAD
 import com.ale.o2g.internal.types.telephony.O2GTelephonicState;
 import com.ale.o2g.test.AbstractJsonTest;
 import com.ale.o2g.types.telephony.device.DeviceState;
 import com.ale.o2g.types.telephony.device.OperationalState;
-=======
-import com.ale.o2g.test.AbstractJsonTest;
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 import com.ale.o2g.types.telephony.user.UserState;
 
 class TelephonicStateTest extends AbstractJsonTest {
@@ -56,7 +52,6 @@ class TelephonicStateTest extends AbstractJsonTest {
                         "makePrivateCall": true
                     }
                 ],
-<<<<<<< HEAD
                 "userState": "BUSY",
                 "deviceStates": {
         			"deviceStates": [{
@@ -72,13 +67,6 @@ class TelephonicStateTest extends AbstractJsonTest {
 
         O2GTelephonicState o2gState = gson.fromJson(json, O2GTelephonicState.class);
         TelephonicState state = o2gState.toTelephonicState();
-=======
-                "userState": "BUSY"
-            }
-        """;
-
-        TelephonicState state = gson.fromJson(json, TelephonicState.class);
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         // Calls
         assertNotNull(state.getCalls());
@@ -91,7 +79,6 @@ class TelephonicStateTest extends AbstractJsonTest {
 
         // User state
         assertEquals(UserState.BUSY, state.getUserState());
-<<<<<<< HEAD
         
         assertNotNull(state.getDevicesState());
         assertEquals(2, state.getDevicesState().size());
@@ -100,20 +87,14 @@ class TelephonicStateTest extends AbstractJsonTest {
         
         assertEquals("2000", ds.getDeviceId());
         assertEquals(OperationalState.IN_SERVICE, ds.getState());
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     }
 
     @Test
     void testDeserializationMin() {
         String json = "{}";
 
-<<<<<<< HEAD
         O2GTelephonicState o2gState = gson.fromJson(json, O2GTelephonicState.class);
         TelephonicState state = o2gState.toTelephonicState();
-=======
-        TelephonicState state = gson.fromJson(json, TelephonicState.class);
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         assertNotNull(state.getCalls());
         assertTrue(state.getCalls().isEmpty());
@@ -123,11 +104,8 @@ class TelephonicStateTest extends AbstractJsonTest {
 
         // userState defaults to UNKNOWN if null
         assertEquals(UserState.UNKNOWN, state.getUserState());
-<<<<<<< HEAD
 
         assertNotNull(state.getDevicesState());
         assertTrue(state.getDevicesState().isEmpty());
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     }
 }

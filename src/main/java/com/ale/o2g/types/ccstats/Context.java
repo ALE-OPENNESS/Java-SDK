@@ -70,7 +70,6 @@ public interface Context {
      * @return {@code true} if the context is scheduled; {@code false} otherwise
      */
     boolean isScheduled();
-<<<<<<< HEAD
     
     /**
      * Indicates whether the statistics results are returned using a short headers.
@@ -85,9 +84,6 @@ public interface Context {
      */
     void setShortHeader(boolean value);    
     
-=======
-
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     /**
      * Returns the filter associated with this context.
      * <p>

@@ -76,8 +76,6 @@ public class TelephonicState {
     public final UserState getUserState() {
         return (userState == null) ? UserState.UNKNOWN : userState;
     }
-
-<<<<<<< HEAD
     
     /**
      * Returns the collection of the user's devices' state.
@@ -107,15 +105,4 @@ public class TelephonicState {
 		this.userState = userState;
 		this.deviceStates = deviceStates;
 	}
-=======
-    /**
-     * Protected constructor to prevent direct instantiation.
-     * <p>
-     * Instances are typically created internally by the system to reflect
-     * the current telephonic state of a user.
-     * </p>
-     */
-    protected TelephonicState() {
-    }
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

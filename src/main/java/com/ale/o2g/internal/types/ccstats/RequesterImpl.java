@@ -28,12 +28,7 @@ import com.ale.o2g.types.ccstats.Requester;
  *
  */
 public class RequesterImpl implements Requester {
-<<<<<<< HEAD
 	private final String identifier;
-=======
-
-    private final String identifier;
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     private final Language language;
     private final String timezone;
     
@@ -62,13 +57,10 @@ public class RequesterImpl implements Requester {
             return null;
         }
     }
-<<<<<<< HEAD
 
     @Override
 	public String toString() {
 		return "RequesterImpl [identifier=" + identifier + ", language=" + language + ", timezone=" + timezone + "]";
 	}
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

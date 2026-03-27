@@ -39,12 +39,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 import com.ale.o2g.CallCenterStatisticsService;
 import com.ale.o2g.O2GRuntimeException;
 import com.ale.o2g.events.ccstats.ProgressCallback;
@@ -81,13 +78,9 @@ import com.ale.o2g.types.common.DateRange;
  *
  */
 public class CallCenterStatisticsRest extends AbstractRESTService implements CallCenterStatisticsService, CallCenterStatisticsEventListener {
-<<<<<<< HEAD
 
 	final static Logger logger = LoggerFactory.getLogger(CallCenterStatisticsRest.class);
 
-=======
-    
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");        
     
     // A helper class to retrieve statistics files
@@ -169,16 +162,12 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public Requester createRequester(String id, Language language, ZoneOffset timezone, String[] agents) {
-<<<<<<< HEAD
     	
     	if (logger.isDebugEnabled()) {
     		logger.debug("createRequester() called with: id={}, language={}, timezone={}, agents", 
     				id, language, timezone, Arrays.toString(agents));
     	}
 
-=======
-        
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         URI uriPost = URIBuilder.appendPath(uri, "scope");
 
         Supervised[] supervised = Arrays.stream(AssertUtil.requireNotEmpty(agents, "agents")).map(Supervised::new)
@@ -190,13 +179,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
         String json = gson.toJson(statsScope);
 
-<<<<<<< HEAD
 		if (logger.isDebugEnabled()) {
 			logger.debug("Request=: {}", json);
 		}
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         if (isSucceeded(response)) {
@@ -214,15 +200,11 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
     
     @Override
     public boolean deleteRequester(Requester requester) {
-<<<<<<< HEAD
     	
     	if (logger.isDebugEnabled()) {
     		logger.debug("deleteRequester() called with: deleteRequester={}", requester);
     	}
 
-=======
-        
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         String encoded = URLEncoder.encode(AssertUtil.requireNotNull(requester, "requester").getId(), StandardCharsets.UTF_8);
         URI uriDelete = URIBuilder.appendPath(uri, "scope", encoded);
 
@@ -234,15 +216,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public Requester getRequester(String requesterId) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("getRequester() called with: requesterId={}", requesterId);
     	}
 
-=======
-        
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         URI uriGet = URIBuilder.appendPath(
                 uri, 
                 "scope", 
@@ -256,14 +233,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public Context createContext(Requester requester, String label, String description, Filter filter) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("createContext() called with: requester={}, label={}, description={}, filter=...", 
     				requester, label, description);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         URI uriPost = URIBuilder.appendPath(
                 uri, 
@@ -285,13 +258,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
         String json = gson.toJson(statContext);
 
-<<<<<<< HEAD
 		if (logger.isDebugEnabled()) {
 			logger.debug("Request=: {}", json);
 		}
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 
@@ -311,13 +281,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public Collection<Context> getContexts(Requester requester) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("getContexts() called with: requester={}", requester);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         URI uriGet = URIBuilder.appendPath(
                 uri, 
@@ -340,13 +306,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public boolean deleteContexts(Requester requester) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("deleteContexts() called with: requester={}", requester);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         URI uriDelete = URIBuilder.appendPath(
                 uri, 
@@ -361,13 +323,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public Context getContext(Requester requester, String contextId) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("getContext() called with: requester={}, contextId={}", requester, contextId);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         URI uriGet = URIBuilder.appendPath(
                 uri, 
@@ -384,15 +342,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public boolean deleteContext(Context context) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("deleteContext() called with: context={}", context);
     	}
 
-=======
-        
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         URI uriDelete = URIBuilder.appendPath(
                 uri, 
                 "scope", 
@@ -407,13 +360,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public boolean updateContext(Context context) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("updateContext() called with: context={}", context);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         URI uriPut = URIBuilder.appendPath(
                 uri, 
@@ -436,13 +385,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
         String json = gson.toJson(statContext);
 
-<<<<<<< HEAD
 		if (logger.isDebugEnabled()) {
 			logger.debug("Request=: {}", json);
 		}
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         HttpRequest request = HttpUtil.PUT(uriPut, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);
@@ -450,13 +396,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public StatisticsData getData(Context context, DateRange range) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("getData() called with: context={}, range={}", context, range);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         URI uriGet = URIBuilder.appendPath(
                 uri, 
@@ -471,13 +413,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
         uriGet = URIBuilder.appendQuery(uriGet, "begindate", range.getFrom().format(DATE_FORMATTER));
         uriGet = URIBuilder.appendQuery(uriGet, "enddate", range.getTo().format(DATE_FORMATTER));
         uriGet = URIBuilder.appendQuery(uriGet, "format", "json");
-<<<<<<< HEAD
-        
+
         if (context.hasShortHeaders()) {
         	uriGet = URIBuilder.appendQuery(uriGet, "shortHeader");
         }
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());            
@@ -519,13 +458,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
     
     @Override
     public StatisticsData getData(Context context, LocalDate date, TimeInterval timeInterval) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("getData() called with: context={}, date={}, timeInterval={}", context, date, timeInterval);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         URI uriGet = URIBuilder.appendPath(
                 uri, 
@@ -542,12 +477,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
             uriGet = URIBuilder.appendQuery(uriGet, "slotType", getSlotType(timeInterval));            
         }
         uriGet = URIBuilder.appendQuery(uriGet, "format", "json");
-<<<<<<< HEAD
         if (context.hasShortHeaders()) {
         	uriGet = URIBuilder.appendQuery(uriGet, "shortHeader");
         }
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         HttpRequest request = HttpUtil.GET(uriGet);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());            
@@ -567,13 +499,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public boolean cancelRequest(Context context) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("cancelRequest() called with: context={}", context);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         URI uriDelete = URIBuilder.appendPath(
                 uri, 
@@ -589,14 +517,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
     @Override
     public CompletableFuture<Path> getFileData(Context context, DateRange range, Format format, Path directory,
             ProgressCallback progressCallback) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("getFileData() called with: context={}, range={}, format={}, directory={}", 
     				context, range, format, directory);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         try {
             // Control the access
@@ -650,14 +574,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
     @Override
     public CompletableFuture<Path> getFileData(Context context, LocalDate date, TimeInterval timeInterval,
             Format format, Path directory, ProgressCallback progressCallback) {
-<<<<<<< HEAD
-    	
     	if (logger.isDebugEnabled()) {
     		logger.debug("getFileData() called with: context={}, date={}, timeInterval={}, format={}, directory={}", 
     				context, date, timeInterval, format, directory);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         
         try {
             // Control the access
@@ -795,13 +715,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
                 Format format,
                 String[] recipients) {
         
-<<<<<<< HEAD
     	if (logger.isDebugEnabled()) {
     		logger.debug("createScheduledReport() called with: context={}, date={}, id={}, description={}, observationPeriod={}, recurrence={}, format={}, recipients={}", 
     				context, id, description, observationPeriod, recurrence, format, Arrays.toString(recipients));
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         URI uriPost = URIBuilder.appendPath(
                 uri, 
@@ -826,14 +743,11 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
         String json = gson.toJson(statSchedule);
 
-<<<<<<< HEAD
 		if (logger.isDebugEnabled()) {
 			logger.debug("Request=: {}", json);
 		}
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
-        HttpRequest request = HttpUtil.POST(uriPost, json);
+		HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 
         RespId respId = getResult(response, RespId.class);
@@ -850,15 +764,12 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
     public ScheduledReport createScheduledReport(Context context, String id, String description,
             ReportObservationPeriod observationPeriod, Format format, String[] recipients) {
         
-<<<<<<< HEAD
     	if (logger.isDebugEnabled()) {
     		logger.debug("createScheduledReport() called with: context={}, description={}, observationPeriod={}, format={}, recipients={}", 
     				context, observationPeriod, format, Arrays.toString(recipients));
     	}
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
-        URI uriPost = URIBuilder.appendPath( 
+    	URI uriPost = URIBuilder.appendPath( 
                 uri, 
                 "scope", 
                 URLEncoder.encode(AssertUtil.requireNotNull(context, "context").getRequesterId(), StandardCharsets.UTF_8),
@@ -881,13 +792,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
         String json = gson.toJson(statSchedule);
 
-<<<<<<< HEAD
 		if (logger.isDebugEnabled()) {
 			logger.debug("Request=: {}", json);
 		}
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
 
@@ -902,13 +810,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public boolean deleteScheduledReport(ScheduledReport report) {
-<<<<<<< HEAD
-        
     	if (logger.isDebugEnabled()) {
     		logger.debug("deleteScheduledReport() called with: report={}", report);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         Context context = AssertUtil.requireNotNull(report, "report").getContext();
         
@@ -928,14 +832,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
     
     @Override
     public Collection<ScheduledReport> getScheduledReports(Context context) {
-        
-<<<<<<< HEAD
     	if (logger.isDebugEnabled()) {
     		logger.debug("getScheduledReports() called with: context={}", context);
     	}
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         URI uriGet = URIBuilder.appendPath(
                 uri, 
                 "scope", 
@@ -961,13 +861,9 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public boolean setScheduledReportEnabled(ScheduledReport report, boolean enabled) {
-<<<<<<< HEAD
-        
     	if (logger.isDebugEnabled()) {
     		logger.debug("setScheduledReportEnabled() called with: report={}, enabled={}", report, enabled);
     	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         Context context = AssertUtil.requireNotNull(report, "report").getContext();
         
@@ -990,14 +886,10 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public ScheduledReport getScheduledReport(Context context, String scheduleReportId) {
-<<<<<<< HEAD
-        
     	if (logger.isDebugEnabled()) {
     		logger.debug("getScheduledReport() called with: context={}, scheduleReportId={}", context, scheduleReportId);
     	}
     	
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         URI uriGet = URIBuilder.appendPath(
                 uri, 
                 "scope", 
@@ -1021,16 +913,11 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
 
     @Override
     public boolean updateScheduledReport(ScheduledReport report) {
-<<<<<<< HEAD
-        
     	if (logger.isDebugEnabled()) {
     		logger.debug("getScheduledReport() called with: report={}", report);
     	}
 
     	Context context = AssertUtil.requireNotNull(report, "report").getContext();
-=======
-        Context context = AssertUtil.requireNotNull(report, "report").getContext();
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         
         URI uriPut = URIBuilder.appendPath(
                 uri, 
@@ -1064,15 +951,11 @@ public class CallCenterStatisticsRest extends AbstractRESTService implements Cal
                 );
         
         String json = gson.toJson(statSchedule);
-<<<<<<< HEAD
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Request=: {}", json);
 		}
 
-=======
-        
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         HttpRequest request = HttpUtil.PUT(uriPut, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         return isSucceeded(response);

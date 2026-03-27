@@ -43,10 +43,7 @@ public class ScheduledReportImpl implements ScheduledReport {
     private State state;
     private String lastExecDate;
     private boolean enable;
-<<<<<<< HEAD
     private boolean shortHeader;
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     
     private transient Context context;
     
@@ -73,12 +70,7 @@ public class ScheduledReportImpl implements ScheduledReport {
         this.lastExecDate = null;
     }
     
-<<<<<<< HEAD
 	public void setContext(Context context) {
-=======
-    
-    public void setContext(Context context) {
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         this.context = context;
     }
     
@@ -161,10 +153,6 @@ public class ScheduledReportImpl implements ScheduledReport {
         }
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     @Override
     public void setFormat(Format format) {
         this.fileType = format;
@@ -176,7 +164,6 @@ public class ScheduledReportImpl implements ScheduledReport {
         this.recipients = Arrays.asList(recipients);
     }
 
-<<<<<<< HEAD
 	@Override
 	public boolean hasShortHeaders() {
 		return this.shortHeader;
@@ -193,6 +180,4 @@ public class ScheduledReportImpl implements ScheduledReport {
 		return "ScheduledReportImpl [name=" + name + ", description=" + description + "]";
 	}
 
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

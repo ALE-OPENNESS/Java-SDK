@@ -37,12 +37,8 @@ import com.ale.o2g.types.maintenance.SystemStatus;
  *
  */
 public class MaintenanceRest extends AbstractRESTService implements MaintenanceService {
-<<<<<<< HEAD
 	final static Logger logger = LoggerFactory.getLogger(MaintenanceRest.class);
 
-=======
-    
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 	public MaintenanceRest(HttpClientWrapper httpClient, URI uri) {
 		super(httpClient, uri);
 	}

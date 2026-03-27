@@ -29,11 +29,7 @@ package com.ale.o2g.types.ccrt;
  */
 public class Context {
 
-<<<<<<< HEAD
 	private boolean active;
-=======
-    private boolean active;
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     private int obsPeriod;
     private int notifFrequency;
     private Filter filter;
@@ -101,12 +97,9 @@ public class Context {
         return filter;
     }
 
-<<<<<<< HEAD
 
     @Override
 	public String toString() {
 		return "Context [obsPeriod=" + obsPeriod + ", notifFrequency=" + notifFrequency + "]";
 	}
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

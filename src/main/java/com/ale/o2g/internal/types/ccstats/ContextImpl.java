@@ -26,12 +26,7 @@ import com.ale.o2g.types.ccstats.PilotFilter;
 /**
  */
 public class ContextImpl implements Context {
-<<<<<<< HEAD
 	private static record StatsFilter(AgentFilterImpl agentFilter, PilotFilterImpl pilotFilter) {}
-=======
-    
-    private static record StatsFilter(AgentFilterImpl agentFilter, PilotFilterImpl pilotFilter) {}
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     
     private String ctxId;
     private String supervisorId;
@@ -39,10 +34,7 @@ public class ContextImpl implements Context {
     private String description;
     private boolean isScheduled;
     private StatsFilter filter;
-<<<<<<< HEAD
     private boolean shortHeader;
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     
     public ContextImpl(String ctxId, String supervisorId) {
         this.ctxId = ctxId;
@@ -111,7 +103,6 @@ public class ContextImpl implements Context {
     public String getRequesterId() {
         return this.supervisorId;
     }
-<<<<<<< HEAD
 
 	@Override
 	public boolean hasShortHeaders() {
@@ -128,7 +119,4 @@ public class ContextImpl implements Context {
 		return "ContextImpl [ctxId=" + ctxId + ", supervisorId=" + supervisorId + ", label=" + label + ", description="
 				+ description + "]";
 	}
-
-=======
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }
