@@ -103,7 +103,10 @@ public class SystemServices {
     public String getDrbdStatus() {
         return drbd;
     }
+<<<<<<< HEAD
 
 	protected SystemServices() {   
     }
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

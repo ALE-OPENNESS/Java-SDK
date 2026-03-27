@@ -1299,8 +1299,11 @@ public class AgentStatisticsRow extends StatisticsRow<AgentAttributes> {
     public final List<AgentByPilotStatisticsRow> getByPilotRows() {
         return pilotAgentStatsRows;
     }
+<<<<<<< HEAD
 
     protected AgentStatisticsRow() {
         
     }
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

@@ -28,6 +28,7 @@ import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 /**
  * Represents the full status of an O2G server and its connections.
  * <p>
+<<<<<<< HEAD
  * Provides detailed information about the server, including:
  * <ul>
  *   <li>Network addresses (logical and system resources)</li>
@@ -42,37 +43,58 @@ import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
  * @see SubscriberFilter
  * @see PbxStatus
  * @see LicenseStatus
+=======
+ * Provides detailed information including server addresses, versions,
+ * high-availability status, connected OmniPCX Enterprise nodes, license status,
+ * and server configuration type.
+ * </p>
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
  */
 public class SystemStatus {
 
     /**
+<<<<<<< HEAD
      * Defines the operational mode of an O2G server.
      * <p>
      * The configuration type determines which features and services are available.
      * In particular, only a server configured with {@link #FULL_SERVICES} monitors
      * devices on the OmniPCX Enterprise in real time.
      * </p>
+=======
+     * Represents possible O2G server configurations.
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      */
     @JsonEnumDeserializerFallback(value = "UNKNOWN")
     public enum Configuration {
 
         /**
+<<<<<<< HEAD
          * The O2G server is configured for PBX management only.
          * <p>
          * In this mode, the server provides administrative and configuration
          * capabilities but does <strong>not</strong> monitor devices or telephony
          * events on the OmniPCX Enterprise.
+=======
+         * O2G Server is configured for management.
+         * <p>
+         * An O2G server in management mode does not monitor devices on the OmniPCX
+         * Enterprise.
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
          * </p>
          */
         PBX_MANAGEMENT,
 
         /**
+<<<<<<< HEAD
          * The O2G server is configured with full services enabled.
          * <p>
          * In this mode, the server provides both management and real-time telephony
          * services, including device monitoring and event notification on the
          * OmniPCX Enterprise.
          * </p>
+=======
+         * O2G Server is configured with full services enabled.
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
          */
         FULL_SERVICES,
 
@@ -138,6 +160,40 @@ public class SystemStatus {
         UNKNOWN
     }
 
+    
+    /**
+     * Defines how O2G automatically loads users from OXE subscribers.
+     *
+     * Controls which OXE subscribers are automatically imported or filtered
+     * when provisioning users in the O2G system.
+     */
+    @JsonEnumDeserializerFallback(value = "UNKNOWN")
+    public enum SubscriberFilter {
+        /** 
+         * Only OXE subscribers with the **A4980 attribute** are automatically loaded. 
+         * Useful when selective subscriber provisioning is required.
+         */
+        A4980,
+
+        /**
+         * All OXE subscribers are automatically loaded.
+         * Use this for full subscriber synchronization.
+         */
+        ALL,
+
+        /**
+         * No OXE subscribers are automatically loaded.
+         * Users must be created manually or through another provisioning process.
+         */
+        NONE,
+        
+        /**
+         * Unable to identify the filtering
+         */
+        UNKNOWN
+    }
+    
+    
     private ServerAddress logicalAddress;
     private Date startDate;
     private boolean ha;
@@ -149,11 +205,15 @@ public class SystemStatus {
     private SystemServices secondaryServicesStatus;
     private Collection<PbxStatus> pbxs;
     private LicenseStatus license;
+<<<<<<< HEAD
     private ServerAddress systemResources;
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     private Configuration configurationType;
     private String applicationId;
     private SubscriberFilter subscriberFilter;
 
+<<<<<<< HEAD
     /**
      * Creates a new {@code SystemStatus} instance.
      * <p>
@@ -174,10 +234,14 @@ public class SystemStatus {
      *
      * @return the logical {@link ServerAddress} of this O2G server
      */
+=======
+    /** @return the logical address of this O2G server */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public ServerAddress getLogicalAddress() {
         return logicalAddress;
     }
 
+<<<<<<< HEAD
     /**
      * Returns the system resource address of this O2G server.
      * <p>
@@ -198,10 +262,14 @@ public class SystemStatus {
      *
      * @return the server start {@link Date}
      */
+=======
+    /** @return the start date of the server */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public Date getStartDate() {
         return startDate;
     }
 
+<<<<<<< HEAD
     /**
      * Returns whether this O2G server is deployed in high-availability (HA) mode.
      * <p>
@@ -212,10 +280,14 @@ public class SystemStatus {
      *
      * @return {@code true} if the server is in HA mode; {@code false} otherwise
      */
+=======
+    /** @return true if the server is deployed in high availability (HA) mode */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public boolean isHa() {
         return ha;
     }
 
+<<<<<<< HEAD
     /**
      * Returns the fully qualified domain name (FQDN) of the primary server node.
      * <p>
@@ -225,10 +297,14 @@ public class SystemStatus {
      *
      * @return the FQDN of the primary server node, or {@code null} if not in HA mode
      */
+=======
+    /** @return the FQDN of the primary server in HA mode */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public String getPrimary() {
         return primary;
     }
 
+<<<<<<< HEAD
     /**
      * Returns the software version of the primary server node.
      * <p>
@@ -238,10 +314,14 @@ public class SystemStatus {
      *
      * @return the version string of the primary server node, or {@code null} if not in HA mode
      */
+=======
+    /** @return the version of the primary server in HA mode */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public String getPrimaryVersion() {
         return primaryVersion;
     }
 
+<<<<<<< HEAD
     /**
      * Returns the status of services running on the primary server node.
      * <p>
@@ -251,10 +331,14 @@ public class SystemStatus {
      *
      * @return the {@link SystemServices} status of the primary node, or {@code null} if not in HA mode
      */
+=======
+    /** @return the status of services running on the primary server */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public SystemServices getPrimaryServicesStatus() {
         return primaryServicesStatus;
     }
 
+<<<<<<< HEAD
     /**
      * Returns the fully qualified domain name (FQDN) of the secondary server node.
      * <p>
@@ -264,10 +348,14 @@ public class SystemStatus {
      *
      * @return the FQDN of the secondary server node, or {@code null} if not in HA mode
      */
+=======
+    /** @return the FQDN of the secondary server in HA mode */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public String getSecondary() {
         return secondary;
     }
 
+<<<<<<< HEAD
     /**
      * Returns the software version of the secondary server node.
      * <p>
@@ -277,10 +365,14 @@ public class SystemStatus {
      *
      * @return the version string of the secondary server node, or {@code null} if not in HA mode
      */
+=======
+    /** @return the version of the secondary server in HA mode */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public String getSecondaryVersion() {
         return secondaryVersion;
     }
 
+<<<<<<< HEAD
     /**
      * Returns the status of services running on the secondary server node.
      * <p>
@@ -290,10 +382,14 @@ public class SystemStatus {
      *
      * @return the {@link SystemServices} status of the secondary node, or {@code null} if not in HA mode
      */
+=======
+    /** @return the status of services running on the secondary server */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public SystemServices getSecondaryServicesStatus() {
         return secondaryServicesStatus;
     }
 
+<<<<<<< HEAD
     /**
      * Returns the OmniPCX Enterprise nodes currently connected to this O2G server.
      * <p>
@@ -304,10 +400,14 @@ public class SystemStatus {
      * @return an unmodifiable {@link Collection} of {@link PbxStatus} objects;
      *         never {@code null}, but may be empty if no nodes are connected
      */
+=======
+    /** @return an unmodifiable collection of connected OmniPCX Enterprise nodes */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public Collection<PbxStatus> getPbxs() {
         return (pbxs == null) ? Collections.emptyList() : Collections.unmodifiableCollection(pbxs);
     }
 
+<<<<<<< HEAD
     /**
      * Returns the license status of this O2G server.
      * <p>
@@ -317,10 +417,14 @@ public class SystemStatus {
      *
      * @return the {@link LicenseStatus} of this O2G server
      */
+=======
+    /** @return the license status of this O2G server */
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public LicenseStatus getLicense() {
         return license;
     }
 
+<<<<<<< HEAD
     /**
      * Returns the configuration type of this O2G server.
      * <p>
@@ -363,3 +467,53 @@ public class SystemStatus {
         return subscriberFilter;
     }
 }
+=======
+    /** @return the configuration type of the server */
+    public Configuration getConfiguration() {
+        return configurationType;
+    }
+
+    /** @return the application ID of this O2G instance */
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+
+    /**
+     * @return the configuration type of this O2G.
+     */
+    public Configuration getConfigurationType() {
+        return configurationType;
+    }
+
+    /**
+     * @return the subscriber'sfilter applied by this O2G
+     */
+    public SubscriberFilter getSubscriberFilter() {
+        return subscriberFilter;
+    }
+    
+    /*
+    protected SystemStatus(ServerAddress logicalAddress, Date startDate, boolean ha, String primary,
+            String primaryVersion, SystemServices primaryServicesStatus, String secondary, String secondaryVersion,
+            SystemServices secondaryServicesStatus, Collection<PbxStatus> pbxs, LicenseStatus license,
+            Configuration configurationType, String applicationId, SubscriberFilter subscriberFilter) {
+        this.logicalAddress = logicalAddress;
+        this.startDate = startDate;
+        this.ha = ha;
+        this.primary = primary;
+        this.primaryVersion = primaryVersion;
+        this.primaryServicesStatus = primaryServicesStatus;
+        this.secondary = secondary;
+        this.secondaryVersion = secondaryVersion;
+        this.secondaryServicesStatus = secondaryServicesStatus;
+        this.pbxs = pbxs;
+        this.license = license;
+        this.configurationType = configurationType;
+        this.applicationId = applicationId;
+        this.subscriberFilter = subscriberFilter;
+    }
+    */
+
+}
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73

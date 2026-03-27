@@ -24,6 +24,10 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+<<<<<<< HEAD
+=======
+import java.time.ZoneId;
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
@@ -44,6 +48,10 @@ import com.ale.o2g.internal.util.URIBuilder;
 import com.ale.o2g.types.analytics.ChargingFile;
 import com.ale.o2g.types.analytics.ChargingResult;
 import com.ale.o2g.types.analytics.Incident;
+<<<<<<< HEAD
+=======
+import com.ale.o2g.types.analytics.TimeRange;
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 import com.ale.o2g.types.common.DateRange;
 
 /**
@@ -157,6 +165,7 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
 
 
     private Collection<ChargingFile> getChargingFiles(int nodeId, LocalDateTime from, LocalDateTime to) {
+<<<<<<< HEAD
 
     	if (logger.isDebugEnabled()) {
     		logger.debug("getIncidents() called with: nodeId={}, from={}, to={}", nodeId, from, to);
@@ -169,6 +178,15 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
         if ((from != null) && (to != null)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+=======
+        URI uriGet = URIBuilder.appendPath(uri, "charging", "files");
+        uriGet = URIBuilder.appendQuery(uriGet, "nodeId", String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")));
+        
+        // From and to can be null if called from getChargingFiles(int nodeId)
+        if ((from != null) && (to != null)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
             uriGet = URIBuilder.appendQuery(uriGet, "fromDate", formatter.format(from));
             uriGet = URIBuilder.appendQuery(uriGet, "toDate", formatter.format(to));
         }
@@ -184,6 +202,31 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
             return unmodifiableOrEmpty(chargingFiles.toChargingFiles());
         }
     }
+<<<<<<< HEAD
+=======
+    
+    /*
+     * TimeRange has been deprecated to make DateRange (replacement) a common class in the SDK
+     */
+    @Override
+    public Collection<ChargingFile> getChargingFiles(int nodeId, TimeRange filter) {
+        AssertUtil.requireNotNull(filter, "filter");
+        
+        LocalDateTime from = LocalDateTime.ofInstant(filter.getFrom().toInstant(), ZoneId.systemDefault());
+        LocalDateTime to = LocalDateTime.ofInstant(filter.getTo().toInstant(), ZoneId.systemDefault());
+
+        return this.getChargingFiles(nodeId, from, to);
+    }
+
+    
+    @Override
+    public Collection<ChargingFile> getChargingFiles(int nodeId, DateRange filter) {
+        AssertUtil.requireNotNull(filter, "filter");
+        return this.getChargingFiles(nodeId, filter.getFrom(), filter.getTo());
+    }
+    
+    private ChargingResult getChargings(int nodeId, LocalDateTime from, LocalDateTime to, Integer topResults, boolean all) {
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         
     @Override
     public Collection<ChargingFile> getChargingFiles(int nodeId, DateRange filter) {
@@ -227,6 +270,22 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
     }
 
     
+<<<<<<< HEAD
+=======
+    /*
+     * TimeRange has been deprecated to make DateRange (replacement) a common class in the SDK
+     */
+    @Override
+    public ChargingResult getChargings(int nodeId, TimeRange filter, Integer topResults, boolean all) {
+        AssertUtil.requireNotNull(filter, "filter");
+        
+        LocalDateTime from = LocalDateTime.ofInstant(filter.getFrom().toInstant(), ZoneId.systemDefault());
+        LocalDateTime to = LocalDateTime.ofInstant(filter.getTo().toInstant(), ZoneId.systemDefault());
+        
+        return this.getChargings(nodeId, from, to, topResults, all);
+    }
+
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     @Override
     public ChargingResult getChargings(int nodeId, DateRange filter, Integer topResults, boolean all) {
         AssertUtil.requireNotNull(filter, "filter");
@@ -269,6 +328,12 @@ public class AnalyticsRest extends AbstractRESTService implements AnalyticsServi
     @Override
     public ChargingResult getChargings(int nodeId, Collection<ChargingFile> files, boolean all) {
         return this.getChargings(nodeId, files, null, all);
+    }
+
+
+    @Override
+    public ChargingResult getChargings(int nodeId, DateRange filter, boolean all) {
+        return this.getChargings(nodeId, filter, null, all);
     }
 
 

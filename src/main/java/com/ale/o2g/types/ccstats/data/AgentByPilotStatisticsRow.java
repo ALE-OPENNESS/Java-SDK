@@ -335,9 +335,12 @@ public class AgentByPilotStatisticsRow extends StatisticsRow<AgentByPilotAttribu
     public final Duration getPauseADur() {
         return FormatUtil.asDuration(pauseADur);
     }
+<<<<<<< HEAD
 
     
     protected AgentByPilotStatisticsRow() {
         
     }
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

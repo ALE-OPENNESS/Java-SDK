@@ -257,6 +257,7 @@ class CallCenterStatisticsRestTest extends AbstractRestServiceTest<CallCenterSta
 	}
 
 	@Test
+<<<<<<< HEAD
 	void testGetDataRangeShortHeader() throws Exception {
 
 		defineResponse(200, "{ }");
@@ -275,6 +276,8 @@ class CallCenterStatisticsRestTest extends AbstractRestServiceTest<CallCenterSta
 	}
 
 	@Test
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 	void testGetDataOneDayWithSlot() throws Exception {
 
 		defineResponse(200, "{ }");
@@ -288,6 +291,7 @@ class CallCenterStatisticsRestTest extends AbstractRestServiceTest<CallCenterSta
 		assertNotNull(data);
 	}
 
+<<<<<<< HEAD
 	@Test
 	void testGetDataOneDayWithSlotShortHeader() throws Exception {
 
@@ -303,6 +307,8 @@ class CallCenterStatisticsRestTest extends AbstractRestServiceTest<CallCenterSta
 		assertNotNull(data);
 	}
 	
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 // --------------------------------------------------
 // Scheduled reports
 // --------------------------------------------------

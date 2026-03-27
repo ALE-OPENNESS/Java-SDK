@@ -39,7 +39,11 @@ public final class AgentSkill {
      * Returns the domain identifier this skill belongs to.
      *
      * @return the domain ID of the skill
+<<<<<<< HEAD
      * @since 2.7.5
+=======
+     * @since 2.7.4
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      */
     public final Integer getDomain() {
         return domain;
@@ -49,7 +53,11 @@ public final class AgentSkill {
      * Returns the full name of this skill.
      *
      * @return the skill name
+<<<<<<< HEAD
      * @since 2.7.5
+=======
+     * @since 2.7.4
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      */
     public final String getName() {
         return name;
@@ -59,7 +67,11 @@ public final class AgentSkill {
      * Returns the abbreviated name of this skill.
      *
      * @return the abbreviated skill name
+<<<<<<< HEAD
      * @since 2.7.5
+=======
+     * @since 2.7.4
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      */
     public final String getAbvName() {
         return abvName;

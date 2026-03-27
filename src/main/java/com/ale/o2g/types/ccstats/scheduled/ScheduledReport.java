@@ -138,6 +138,7 @@ public interface ScheduledReport {
      * @param format the format to set
      */    
     void setFormat(Format format);
+<<<<<<< HEAD
         
     /**
      * Indicates whether the statistics results are returned using a short headers.
@@ -152,6 +153,8 @@ public interface ScheduledReport {
      * @param value {@code true} to use a short header; {@code false} otherwise
      */
     void setShortHeader(boolean value);    
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     
     /**
      * Returns the collection of recipients who will receive the report.

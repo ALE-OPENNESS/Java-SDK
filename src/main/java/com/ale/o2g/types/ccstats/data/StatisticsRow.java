@@ -168,6 +168,7 @@ public abstract class StatisticsRow<E extends Enum<E>> {
             if (value instanceof String s) {
                 return FormatUtil.asDouble(s);
             }
+<<<<<<< HEAD
             throw new IllegalStateException("Cannot convert to Double: " + value);
         }
         
@@ -185,6 +186,9 @@ public abstract class StatisticsRow<E extends Enum<E>> {
                 return FormatUtil.asBoolean(s);
             }
             throw new IllegalStateException("Cannot convert to Boolean: " + value);
+=======
+            throw new IllegalStateException("Cannot convert to Duration: " + value);
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         }
         
         /**
@@ -220,7 +224,11 @@ public abstract class StatisticsRow<E extends Enum<E>> {
     }
     
     protected LocalDateTime asLocalDateTime(String value) {
+<<<<<<< HEAD
     	return (value == null) ? null : LocalDateTime.parse(value, DATE_FORMATER);
+=======
+    	return LocalDateTime.parse(value, DATE_FORMATER);
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     }
     
     

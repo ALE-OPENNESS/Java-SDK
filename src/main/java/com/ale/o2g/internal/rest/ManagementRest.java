@@ -78,6 +78,11 @@ public class ManagementRest extends AbstractRESTService implements ManagementSer
     
  
     
+<<<<<<< HEAD
+=======
+    
+    
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     public ManagementRest(HttpClientWrapper httpClient, URI uri) {
         super(httpClient, uri);
     }

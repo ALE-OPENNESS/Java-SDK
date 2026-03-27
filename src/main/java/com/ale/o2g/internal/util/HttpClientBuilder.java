@@ -47,8 +47,11 @@ public class HttpClientBuilder {
 
 	
 	static class DefaultHttpClientWrapper implements HttpClientWrapper {
+<<<<<<< HEAD
 		final static Logger logger = LoggerFactory.getLogger(DefaultHttpClientWrapper.class);
 		
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 		private HttpClient httpClient;
 		
 		public DefaultHttpClientWrapper(HttpClient httpClient) {
@@ -58,11 +61,14 @@ public class HttpClientBuilder {
 		@Override
 		public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request,
 				BodyHandler<T> responseBodyHandler) {
+<<<<<<< HEAD
 			
 	    	if (logger.isDebugEnabled()) {
 	    		logger.debug("sendAsync: {}", request);
 	    	}
 
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 			return this.httpClient.sendAsync(request, responseBodyHandler);
 		}
 

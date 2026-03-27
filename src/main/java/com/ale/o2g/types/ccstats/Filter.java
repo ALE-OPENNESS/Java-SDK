@@ -19,7 +19,10 @@
 package com.ale.o2g.types.ccstats;
 
 import com.ale.o2g.internal.types.ccstats.AgentFilterImpl;
+<<<<<<< HEAD
 import com.ale.o2g.internal.types.ccstats.PilotAbandonedCallsFilterImpl;
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 import com.ale.o2g.internal.types.ccstats.PilotFilterImpl;
 
 /**
@@ -35,8 +38,13 @@ import com.ale.o2g.internal.types.ccstats.PilotFilterImpl;
  * <pre>
  * {
  *     &#64;code
+<<<<<<< HEAD
  *     AgentFilter agentFilter = Filter.createAgentFilter();
  *     PilotFilter pilotFilter = Filter.createPilotFilter();
+=======
+ *     AgentFilterImpl agentFilter = Filter.createAgentFilter();
+ *     PilotFilterImpl pilotFilter = Filter.createPilotFilter();
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
  * }
  * </pre>
  * 
@@ -47,7 +55,11 @@ public interface Filter {
     /**
      * Creates a new filter for selecting agents.
      * 
+<<<<<<< HEAD
      * @return a new {@link AgentFilter} instance
+=======
+     * @return a new {@link AgentFilterImpl} instance
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      */
     static AgentFilter createAgentFilter() {
         return new AgentFilterImpl();
@@ -56,11 +68,16 @@ public interface Filter {
     /**
      * Creates a new filter for selecting pilots.
      * 
+<<<<<<< HEAD
      * @return a new {@link PilotFilter} instance
+=======
+     * @return a new {@link PilotFilterImpl} instance
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      */
     static PilotFilter createPilotFilter() {
         return new PilotFilterImpl();
     }
+<<<<<<< HEAD
     
     /**
      * Creates a new filter for selecting pilots in the context of abandoned calls statistics.
@@ -70,4 +87,6 @@ public interface Filter {
     static PilotAbandonedCallsFilter createPilotAbandonedCallsFilter() {
     	return new PilotAbandonedCallsFilterImpl();
     }
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

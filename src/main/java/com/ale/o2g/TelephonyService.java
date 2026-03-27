@@ -1410,7 +1410,10 @@ public interface TelephonyService extends IService {
      * @return {@code true} in case of success; {@code false} otherwise.
      * @deprecated Use {@link #removeMeFromHuntingGroup(String)} instead.
      */
+<<<<<<< HEAD
 	@Deprecated
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     boolean deleteHuntingGroupMember(String hgNumber);
 
     

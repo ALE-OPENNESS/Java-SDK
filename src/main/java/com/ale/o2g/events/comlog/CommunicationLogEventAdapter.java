@@ -32,7 +32,6 @@ public abstract class CommunicationLogEventAdapter implements CommunicationLogEv
 	protected CommunicationLogEventAdapter() {   
     }
 
-	/** {@inheritDoc} */
     @Override
     public void onComRecordCreated(OnComRecordCreatedEvent e) {
         // Default implementation does nothing

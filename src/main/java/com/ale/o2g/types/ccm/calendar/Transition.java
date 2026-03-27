@@ -33,7 +33,11 @@ package com.ale.o2g.types.ccm.calendar;
  */
 public class Transition {
 
+<<<<<<< HEAD
 	/**
+=======
+    /**
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      * Represents the starting time of a transition in a CCD pilot calendar.
      * <p>
      * Time is expressed in 24-hour format (hour and minute).
@@ -154,9 +158,12 @@ public class Transition {
         this.time = time;
     }
 
+<<<<<<< HEAD
 
     @Override
 	public String toString() {
 		return "Transition [ruleNumber=" + ruleNumber + ", mode=" + mode + ", time=" + time + "]";
 	}
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 }

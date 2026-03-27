@@ -57,6 +57,7 @@ import com.ale.o2g.internal.util.FormatUtil;
 public final class StatisticsData {
 
     /**
+<<<<<<< HEAD
      * Represents the statistical results for a specific observation period.
      * <p>
      * Each {@code BasicObjectStatistics} instance groups the data rows collected for a given
@@ -65,16 +66,48 @@ public final class StatisticsData {
      * <p>The class is generic and can represent pilot abandoned calls statistics:
      * <ul>
      *   <li>{@code BasicObjectStatistics<PilotAbandonedCallsStatisticsRow>} for pilot abandoned calls statistics.</li>
+=======
+     * Represents the statistical results for a specific observation period and time slot.
+     * <p>
+     * Each {@code ObjectStatistics} instance groups the data rows collected for a given
+     * {@link SelectedPeriod} and an optional time slot (e.g., 15-minute or hourly interval).
+     *
+     * <p>The class is generic and can represent either agent-level or pilot-level statistics:
+     * <ul>
+     *   <li>{@code ObjectStatistics<AgentStatisticsRow>} for agent statistics.</li>
+     *   <li>{@code ObjectStatistics<PilotStatisticsRow>} for pilot statistics.</li>
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      * </ul>
      *
      * @param <T> the type of the statistics row, typically {@link AgentStatisticsRow} or {@link PilotStatisticsRow}
      */
+<<<<<<< HEAD
     public static class BasicObjectStatistics<T> {
 
+=======
+    public static class ObjectStatistics<T> {
+
+        private String timeSlot;
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         private SelectedPeriod selectedPeriod;
         private List<T> rows;
 
         /**
+<<<<<<< HEAD
+=======
+         * Returns the start date and time of this time slot.
+         * <p>
+         * The time slot represents the period during which the statistics were aggregated
+         * (e.g., 2025-09-02T10:00 for a 15-minute interval starting at 10:00).
+         *
+         * @return the {@link LocalDateTime} representing the time slot start
+         */
+        public final LocalDateTime getTimeSlot() {
+            return FormatUtil.asLocalDateTime(timeSlot);
+        }
+
+        /**
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
          * Returns the selected period during which these statistics were collected.
          *
          * @return the {@link SelectedPeriod} defining the observation range
@@ -92,6 +125,7 @@ public final class StatisticsData {
             return rows;
         }
         
+<<<<<<< HEAD
         protected BasicObjectStatistics() {
             
         }
@@ -128,6 +162,8 @@ public final class StatisticsData {
             return FormatUtil.asLocalDateTime(timeSlot);
         }
         
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         protected ObjectStatistics() {
             
         }
@@ -136,7 +172,10 @@ public final class StatisticsData {
     private String supervisor;
     private List<ObjectStatistics<AgentStatisticsRow>> agentsStats;
     private List<ObjectStatistics<PilotStatisticsRow>> pilotsStats;
+<<<<<<< HEAD
     private BasicObjectStatistics<PilotAbandonedCallsStatisticsRow> pilotAbandonedCalls;
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
     /**
      * Returns the identifier of the requester (typically the supervisor) who initiated the query.
@@ -169,6 +208,7 @@ public final class StatisticsData {
         return pilotsStats;
     }
     
+<<<<<<< HEAD
 
     /**
      * Returns the list of statistical results related to abandoned calls on a pilots.
@@ -181,6 +221,8 @@ public final class StatisticsData {
         return pilotAbandonedCalls;
     }
     
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     protected StatisticsData() {
         
     }

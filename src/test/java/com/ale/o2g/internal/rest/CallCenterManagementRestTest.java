@@ -129,6 +129,7 @@ class CallCenterManagementRestTest extends AbstractRestServiceTest<CallCenterMan
         assertTrue(result);
     }
 
+<<<<<<< HEAD
 
     @Test
     void testDeleteExceptionTransition() throws Exception {
@@ -167,6 +168,8 @@ class CallCenterManagementRestTest extends AbstractRestServiceTest<CallCenterMan
     }
 
 
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
     // --------------------------------------------------
     // Normal Transitions
     // --------------------------------------------------

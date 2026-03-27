@@ -50,10 +50,13 @@ public class DirectoryRest extends AbstractRESTService implements DirectoryServi
 
 	@Override
 	public boolean search(Criteria filter, int limit, String loginName) {
+<<<<<<< HEAD
 		if (logger.isDebugEnabled()) {
 			logger.debug("getComRecords() called with: filter={}, page={}, limit={}, loginName={}", 
 					filter, limit, loginName);
 		}
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
 		URI uriPost = URIBuilder.appendPath(uri, "search");
         if (loginName != null) {
@@ -61,9 +64,12 @@ public class DirectoryRest extends AbstractRESTService implements DirectoryServi
         }
 
 		String json = gson.toJson(new SearchRequest((limit > 0) ? limit : null, AssertUtil.requireNotNull(filter, "filter")));
+<<<<<<< HEAD
     	if (logger.isDebugEnabled()) {
     		logger.debug("Request=: {}", json);
     	}
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
 		HttpRequest request = HttpUtil.POST(uriPost, json);
 		CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());

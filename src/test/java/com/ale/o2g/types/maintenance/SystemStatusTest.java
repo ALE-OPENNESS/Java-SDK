@@ -42,12 +42,21 @@ public class SystemStatusTest extends AbstractJsonTest {
 		String json = """
 				      {
 						  "logicalAddress": {
+<<<<<<< HEAD
 						    "fqdn": "roxe1.alcatel-lucent.com",
 						    "ip": "10.2.20.12"
 						  },
 						  "startDate": "2025-12-19T16:26:23.940Z",
 						  "ha": true,
 						  "primary": "roxe1.alcatel-lucent.com",
+=======
+						    "fqdn": "roxe-inst-2.bstlabrd.fr.alcatel-lucent.com",
+						    "ip": "172.25.152.114"
+						  },
+						  "startDate": "2025-12-19T16:26:23.940Z",
+						  "ha": true,
+						  "primary": "roxe-inst-2.bstlabrd.fr.alcatel-lucent.com",
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 						  "primaryVersion": "14.7.005.000",
 						  "primaryServicesStatus": {
 						    "services": [
@@ -66,8 +75,13 @@ public class SystemStatusTest extends AbstractJsonTest {
 						      "name": "bsbice29",
 						      "nodeId": 7,
 						      "mainAddress": {
+<<<<<<< HEAD
 						        "fqdn": "oxe1.alcatel-lucent.com",
 						        "ip": "10.2.20.13"
+=======
+						        "fqdn": "bsbice29.bstlabrd.fr.alcatel-lucent.com",
+						        "ip": "172.25.152.29"
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 						      },
 						      "secondaryAddress": {},
 						      "version": "n4.513.9",
@@ -95,10 +109,13 @@ public class SystemStatusTest extends AbstractJsonTest {
 						      }
 						    ]
 						  },
+<<<<<<< HEAD
 						  "systemResources": {
 						    "fqdn": "roxe2.alcatel-lucent.com",
 						    "ip": "111.13.1.114"
 						  },
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 						  "configurationType": "FULL_SERVICES",
 						  "subscriberFilter": "ALL"
 						}
@@ -106,6 +123,7 @@ public class SystemStatusTest extends AbstractJsonTest {
 
 		SystemStatus status = gson.fromJson(json, SystemStatus.class);
 
+<<<<<<< HEAD
 		assertEquals("roxe1.alcatel-lucent.com", status.getLogicalAddress().getFqdn());
 		assertEqualsUtc("2025-12-19T16:26:23.940Z", status.getStartDate());
 		assertTrue(status.isHa());
@@ -114,11 +132,24 @@ public class SystemStatusTest extends AbstractJsonTest {
 		assertEquals(2, status.getPrimaryServicesStatus().getServices().size());
 		assertEquals(1, status.getPbxs().size());
 		assertEquals("oxe1.alcatel-lucent.com", status.getPbxs().iterator().next().getMainAddress().getFqdn());
+=======
+		assertEquals("roxe-inst-2.bstlabrd.fr.alcatel-lucent.com", status.getLogicalAddress().getFqdn());
+		assertEqualsUtc("2025-12-19T16:26:23.940Z", status.getStartDate());
+		assertTrue(status.isHa());
+		assertEquals("roxe-inst-2.bstlabrd.fr.alcatel-lucent.com", status.getPrimary());
+		assertEquals("14.7.005.000", status.getPrimaryVersion());
+		assertEquals(2, status.getPrimaryServicesStatus().getServices().size());
+		assertEquals(1, status.getPbxs().size());
+		assertEquals("bsbice29.bstlabrd.fr.alcatel-lucent.com", status.getPbxs().iterator().next().getMainAddress().getFqdn());
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 		assertEquals(7, status.getPbxs().iterator().next().getNodeId());
 		assertEquals("NORMAL", status.getLicense().getStatus());
 		assertEquals(Configuration.FULL_SERVICES, status.getConfigurationType());
 		assertEquals(SubscriberFilter.ALL, status.getSubscriberFilter());
+<<<<<<< HEAD
 		assertEquals("roxe2.alcatel-lucent.com", status.getSystemResources().getFqdn());
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 	}
 
 	@Test

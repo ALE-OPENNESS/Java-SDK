@@ -45,8 +45,8 @@ public abstract class CallCenterRealtimeEventAdapter implements CallCenterRealti
     
 	protected CallCenterRealtimeEventAdapter() {   
     }
-	
-    /**
+
+	/**
      * {@inheritDoc} Default empty implementation.
      */
     @Override

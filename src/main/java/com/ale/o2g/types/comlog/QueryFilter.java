@@ -125,7 +125,11 @@ public final class QueryFilter {
     private String remotePartyId;
     private Role role;
 
+<<<<<<< HEAD
 	/**
+=======
+    /**
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      * Returns the start date of the query filter.
      *
      * @return the start date

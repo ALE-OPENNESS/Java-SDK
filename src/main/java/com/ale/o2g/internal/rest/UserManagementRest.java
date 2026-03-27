@@ -26,10 +26,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+<<<<<<< HEAD
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
 import com.ale.o2g.UserManagementService;
 import com.ale.o2g.internal.util.AssertUtil;
@@ -40,8 +43,11 @@ import com.ale.o2g.types.users.User;
 
 public class UserManagementRest extends AbstractRESTService implements UserManagementService {
 
+<<<<<<< HEAD
 	final static Logger logger = LoggerFactory.getLogger(UserManagementRest.class);
 
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 	static class LoginsResponse {
         private Collection<String> loginNames;
 
@@ -67,6 +73,7 @@ public class UserManagementRest extends AbstractRESTService implements UserManag
 
 	@Override
     public Collection<String> getLogins(int[] nodeIds) {
+<<<<<<< HEAD
     	
     	if (logger.isDebugEnabled()) {
     		logger.debug("getLogins() called with: nodeIds={}", Arrays.toString(nodeIds));
@@ -77,6 +84,12 @@ public class UserManagementRest extends AbstractRESTService implements UserManag
             uriGet = URIBuilder.appendQuery(uriGet, "nodeIds", Arrays.stream(nodeIds)
                     .mapToObj(Integer::toString)
                     .collect(Collectors.joining(";")));
+=======
+
+	    URI uriGet = uri;
+	    if (nodeIds != null) {
+            uriGet = URIBuilder.appendQuery(uriGet, "nodeIds", MakeNodeQuery(nodeIds));
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         }
 
         HttpRequest request = HttpUtil.GET(uriGet);
@@ -90,11 +103,14 @@ public class UserManagementRest extends AbstractRESTService implements UserManag
 
     @Override
     public String getLogin(String deviceNumber) {
+<<<<<<< HEAD
 
     	if (logger.isDebugEnabled()) {
     		logger.debug("getLogin() called with: deviceNumber={}", deviceNumber);
     	}
     	
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         URI uriGet = URIBuilder.appendQuery(uri, "deviceNumber", AssertUtil.requireNotEmpty(deviceNumber, "deviceNumber"));
 
         HttpRequest request = HttpUtil.GET(uriGet);
@@ -109,6 +125,7 @@ public class UserManagementRest extends AbstractRESTService implements UserManag
         }
     }
 
+<<<<<<< HEAD
 
     @Override
     public User getUser(String loginName) {
@@ -117,6 +134,23 @@ public class UserManagementRest extends AbstractRESTService implements UserManag
     		logger.debug("getUser() called with: loginName={}", loginName);
     	}
     	
+=======
+    private String MakeNodeQuery(int[] nodeIds) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < nodeIds.length; i++) {
+            if (i > 0) {
+                sb.append(';');
+            }
+            sb.append(nodeIds[i]);
+        }
+
+        return sb.toString();
+    }
+
+
+    @Override
+    public User getUser(String loginName) {
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         URI uriGet = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(loginName, "loginName"));
 
         HttpRequest request = HttpUtil.GET(uriGet);
@@ -127,22 +161,29 @@ public class UserManagementRest extends AbstractRESTService implements UserManag
 
     @Override
     public Collection<User> createUsers(int nodeId, String[] deviceNumbers) {
+<<<<<<< HEAD
         
     	if (logger.isDebugEnabled()) {
     		logger.debug("createUsers() called with: nodeId={}, deviceNumbers={}", nodeId, Arrays.toString(deviceNumbers));
     	}
 
     	URI uriPost = uri;
+=======
+        URI uriPost = uri;
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
                 
         String json = gson.toJson(new UserCreateRequest(
                 String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")),
                 Arrays.asList(AssertUtil.requireNotNull(deviceNumbers, "deviceNumbers")),
                 false));
         
+<<<<<<< HEAD
     	if (logger.isDebugEnabled()) {
     		logger.debug("Request=: {}", json);
     	}
                 
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         
@@ -153,20 +194,27 @@ public class UserManagementRest extends AbstractRESTService implements UserManag
 
     @Override
     public Collection<User> createUsers(int nodeId) {
+<<<<<<< HEAD
     	if (logger.isDebugEnabled()) {
     		logger.debug("createUsers() called with: nodeId={}", nodeId);
     	}
 
     	URI uriPost = uri;
+=======
+        URI uriPost = uri;
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         
         String json = gson.toJson(new UserCreateRequest(
                 String.valueOf(AssertUtil.requirePositive(nodeId, "nodeId")),
                 null, true));
         
+<<<<<<< HEAD
     	if (logger.isDebugEnabled()) {
     		logger.debug("Request=: {}", json);
     	}
                 
+=======
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
         HttpRequest request = HttpUtil.POST(uriPost, json);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
         
@@ -177,12 +225,16 @@ public class UserManagementRest extends AbstractRESTService implements UserManag
 
     @Override
     public boolean deleteUser(String loginName) {
+<<<<<<< HEAD
 
     	if (logger.isDebugEnabled()) {
     		logger.debug("deleteUser() called with: loginName={}", loginName);
     	}
 
     	URI uriDelete = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(loginName, "loginName"));
+=======
+        URI uriDelete = URIBuilder.appendPath(uri, AssertUtil.requireNotEmpty(loginName, "loginName"));
+>>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 
         HttpRequest request = HttpUtil.DELETE(uriDelete);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
