@@ -28,7 +28,6 @@ import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
 /**
  * Represents the full status of an O2G server and its connections.
  * <p>
-<<<<<<< HEAD
  * Provides detailed information about the server, including:
  * <ul>
  *   <li>Network addresses (logical and system resources)</li>
@@ -43,58 +42,37 @@ import com.ale.o2g.internal.util.JsonEnumDeserializerFallback;
  * @see SubscriberFilter
  * @see PbxStatus
  * @see LicenseStatus
-=======
- * Provides detailed information including server addresses, versions,
- * high-availability status, connected OmniPCX Enterprise nodes, license status,
- * and server configuration type.
- * </p>
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
  */
 public class SystemStatus {
 
     /**
-<<<<<<< HEAD
      * Defines the operational mode of an O2G server.
      * <p>
      * The configuration type determines which features and services are available.
      * In particular, only a server configured with {@link #FULL_SERVICES} monitors
      * devices on the OmniPCX Enterprise in real time.
      * </p>
-=======
-     * Represents possible O2G server configurations.
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
      */
     @JsonEnumDeserializerFallback(value = "UNKNOWN")
     public enum Configuration {
 
         /**
-<<<<<<< HEAD
          * The O2G server is configured for PBX management only.
          * <p>
          * In this mode, the server provides administrative and configuration
          * capabilities but does <strong>not</strong> monitor devices or telephony
          * events on the OmniPCX Enterprise.
-=======
-         * O2G Server is configured for management.
-         * <p>
-         * An O2G server in management mode does not monitor devices on the OmniPCX
-         * Enterprise.
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
          * </p>
          */
         PBX_MANAGEMENT,
 
         /**
-<<<<<<< HEAD
          * The O2G server is configured with full services enabled.
          * <p>
          * In this mode, the server provides both management and real-time telephony
          * services, including device monitoring and event notification on the
          * OmniPCX Enterprise.
          * </p>
-=======
-         * O2G Server is configured with full services enabled.
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
          */
         FULL_SERVICES,
 

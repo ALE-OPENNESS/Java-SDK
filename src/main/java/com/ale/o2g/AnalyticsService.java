@@ -129,6 +129,7 @@ public interface AnalyticsService extends IService {
      *         does not return any result.
      * @deprecated Use {@link #getChargings(int, DateRange, boolean)} instead.
      */
+    @Deprecated
     ChargingResult getChargings(int nodeId, DateRange filter, boolean all);
 
     /**

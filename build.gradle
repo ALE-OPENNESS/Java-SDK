@@ -28,21 +28,13 @@ plugins {
 group = 'io.github.ale-openness.o2g'
 
 // Version rule
-<<<<<<< HEAD
 // O2G 2.7.5
-=======
-// O2G 2.7.4
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
 //     ---
 // SDK  3  4 1
 // 3 = 2.7 incremented with each O2G version
 // 4 = minor O2G version
 // 1 = patch version SDK
-<<<<<<< HEAD
-version = '3.5.0'
-=======
-version = '3.4.3'
->>>>>>> 668ec6157fe65d65bc91c1ca3bc1fc8e8d236d73
+version = '3.5.1'
 
 repositories {
     mavenLocal()

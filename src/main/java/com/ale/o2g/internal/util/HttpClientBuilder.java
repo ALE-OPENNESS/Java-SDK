@@ -69,7 +69,7 @@ public class HttpClientBuilder {
 		@Override
 		public <T> HttpResponse<T> send(HttpRequest request, BodyHandler<T> responseBodyHandler)
 				throws IOException, InterruptedException {
-			return this.send(request, responseBodyHandler);
+			return httpClient.send(request, responseBodyHandler);
 		}
 	}
 	

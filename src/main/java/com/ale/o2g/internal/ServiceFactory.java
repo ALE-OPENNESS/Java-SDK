@@ -19,7 +19,6 @@
 package com.ale.o2g.internal;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
