@@ -183,7 +183,13 @@ public abstract class AbstractRESTService {
                 }
 
                 try {
-                    lastError = Optional.of(gson.fromJson(body, RestErrorInfo.class));
+                	RestErrorInfo errorInfo = gson.fromJson(body, RestErrorInfo.class);
+                	if (errorInfo != null) {
+                		lastError = Optional.of(errorInfo);
+                	}
+                	else {
+                        lastError = Optional.empty();                		
+                	}
                 }
                 catch (JsonSyntaxException e) {
                     lastError = Optional.empty();
@@ -205,9 +211,14 @@ public abstract class AbstractRESTService {
                 return true;
             }
             else {
-
                 try {
-                    lastError = Optional.of(gson.fromJson(httpResponse.body(), RestErrorInfo.class));
+                	RestErrorInfo errorInfo = gson.fromJson(httpResponse.body(), RestErrorInfo.class);
+                	if (errorInfo != null) {
+                		lastError = Optional.of(errorInfo);
+                	}
+                	else {
+                        lastError = Optional.empty();                		
+                	}
                 }
                 catch (JsonSyntaxException e) {
                     lastError = Optional.empty();
@@ -216,6 +227,7 @@ public abstract class AbstractRESTService {
             }
         }
         catch (Exception e) {
+            lastError = Optional.empty();
             throw new O2GRuntimeException(e);
         }
     }

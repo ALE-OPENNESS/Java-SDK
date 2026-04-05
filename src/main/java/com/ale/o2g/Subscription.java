@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ale.o2g.events.EventPackage;
+import com.ale.o2g.events.WebHook;
 import com.ale.o2g.events.cca.CallCenterAgentEventListener;
 import com.ale.o2g.events.ccp.CallCenterPilotEventListener;
 import com.ale.o2g.events.ccrt.CallCenterRealtimeEventListener;
@@ -208,7 +209,11 @@ public abstract class Subscription {
      */
     public abstract Filter getFilter();
 
-//    public abstract String getWebHookUrl();
+    /**
+     * Returns the WebHook that will manage this subscription
+     * @return the web hook
+     */
+    public abstract WebHook getWebHook();
 
     /**
      * Creates a {@code Builder} builder.
@@ -402,6 +407,14 @@ public abstract class Subscription {
          */
         Builder setVersion(String version);
 
+        /**
+         * Sets the webhook to use for event notification instead of the default chunked HTTP connection.
+         * @param webHook the webhook configuration
+         * @return this builder
+         */
+        Builder setWebHook(WebHook webHook);
+        
+        
         /**
          * Set the timeout which specifies that after that time the chunk may be closed
          * by the server.

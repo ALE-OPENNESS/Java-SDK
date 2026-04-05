@@ -27,6 +27,7 @@ import com.ale.o2g.events.ccp.CallCenterPilotEventListener;
 import com.ale.o2g.events.ccrt.CallCenterRealtimeEventListener;
 import com.ale.o2g.events.comlog.CommunicationLogEventListener;
 import com.ale.o2g.events.common.ChannelInformationEventListener;
+import com.ale.o2g.events.eventsummary.EventSummaryEventListener;
 import com.ale.o2g.events.maintenance.MaintenanceEventListener;
 import com.ale.o2g.events.management.ManagementEventListener;
 import com.ale.o2g.events.routing.RoutingEventListener;
@@ -87,6 +88,9 @@ public class EventBuilder {
 
         eventRegistrar.registerEventListener(CallCenterRealtimeEventListener.class);
         eventRegistrar.registerEventListener(CallCenterStatisticsEventListener.class);
+
+        eventRegistrar.registerEventListener(EventSummaryEventListener.class);
+
 	}
 
 	protected static Gson gson = new GsonBuilder().

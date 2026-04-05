@@ -150,6 +150,39 @@ public interface SessionMonitoringPolicy {
     }
 
     /**
+     * Called when the initial connection or a recovery attempt to the O2G server
+     * fails — for example when the server is not yet started or unreachable.
+     *
+     * <p>Return a {@link Retry} or {@link RetryAfter} behavior to retry the
+     * connection after a delay, or an {@link Abort} behavior to fail immediately.
+     *
+     * <p>Default: retry after 5 seconds.
+     *
+     * @param e the exception raised
+     * @return the behavior in reaction to the failure
+     */
+    Behavior getBehaviorOnConnectFailure(Exception e);
+    
+    /**
+     * Called when the session has been lost due to a server failure or network
+     * outage. The SDK will automatically attempt to recover the session.
+     *
+     * <p>Use this notification to update your UI — for example show a
+     * "reconnecting" indicator.
+     *
+     * @param reason a short description of why the session was lost
+     */
+    void onSessionLost(String reason);
+    
+    /**
+     * Called when the session has been successfully recovered after a loss.
+     * All services are available again.
+     *
+     * <p>Use this notification to resume application activity or re-sync state.
+     */
+    void onSessionRecovered();
+    
+    /**
      * This method is called by the chunk listening thread when an exception is
      * throwned. For exemple, on a network failure an IOException will be thrown.
      * 

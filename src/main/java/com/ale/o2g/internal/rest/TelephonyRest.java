@@ -901,11 +901,12 @@ public class TelephonyRest extends AbstractRESTService implements TelephonyServi
         }
 
         URI uriPost = URIBuilder.appendPath(uri, "calls", AssertUtil.requireNotEmpty(callRef, "callRef"), "recording");
+        
+        uriPost = URIBuilder.appendQuery(uriPost, "action", AssertUtil.requireNotNull(action, "action").toString().toLowerCase());
+        
         if (loginName != null) {
             uriPost = URIBuilder.appendQuery(uriPost, "loginName", loginName);
         }
-
-        uriPost = URIBuilder.appendQuery(uriPost, "action", action.toString().toLowerCase());
 
         HttpRequest request = HttpUtil.POST(uriPost);
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());

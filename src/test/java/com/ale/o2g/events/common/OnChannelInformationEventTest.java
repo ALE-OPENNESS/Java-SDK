@@ -17,44 +17,43 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package com.ale.o2g.internal.rest;
+package com.ale.o2g.events.common;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.ale.o2g.test.AbstractRestServiceTest;
-import com.ale.o2g.types.maintenance.SystemStatus;
+import com.ale.o2g.test.AbstractJsonTest;
 
-class MaintenanceRestTest extends AbstractRestServiceTest<MaintenanceRest> {
+/**
+ * 
+ */
+public class OnChannelInformationEventTest extends AbstractJsonTest {
 
-    protected MaintenanceRestTest() {
-        super(MaintenanceRest.class, "https://o2g/rest/api/maintenance");
+    @Test
+    void testEventDeserialization() {
+        String json = """
+        {
+          "name": "SkillChangedEvent",
+          "text": "Channel started"
+        }
+        """;
+
+        // Deserialize the JSON
+        OnChannelInformationEvent event = gson.fromJson(json, OnChannelInformationEvent.class);
+
+        assertEquals("Channel started", event.getText());
     }
 
     @Test
-    void testGetSystemStatus() throws Exception {
+    void testEmptySkills() {
+        String json = "{}";
 
-        // Define mock response
-        defineResponse(200, "{"
-                + "\"logicalAddress\":{"
-                	+ "\"fqdn\":\"o2g.com.server.main\", "
-                	+ "\"ip\": \"10.2.2.123\""
-                	+ "}"
-                + "}");
+        // Deserialize the JSON
+        OnChannelInformationEvent event = gson.fromJson(json, OnChannelInformationEvent.class);
 
-        
-        
-        // Call method
-        SystemStatus result = service.getSystemStatus();
-
-        // Verify correct endpoint was called
-        assertCalledWith(GET, "/status");
-
-        // Validate result
-        assertNotNull(result);
-        assertEquals("10.2.2.123", result.getLogicalAddress().getIp());
-        
-        assertLogDebug("getSystemStatus()");
+        assertNull(event.getText());
     }
+
 }

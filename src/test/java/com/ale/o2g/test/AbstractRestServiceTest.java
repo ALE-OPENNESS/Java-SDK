@@ -46,6 +46,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow;
 import java.util.function.Consumer;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -56,6 +57,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jayway.jsonpath.JsonPath;
+
+import ch.qos.logback.classic.Level;
 
 /**
  * Fully optimized base class for REST service tests.
@@ -78,6 +81,8 @@ public abstract class AbstractRestServiceTest<T> {
     protected T service;
     protected String baseUri;
 
+    private LogCaptor captor;
+    
     private final Class<T> restClass;
 
     @Mock
@@ -89,12 +94,14 @@ public abstract class AbstractRestServiceTest<T> {
     protected AbstractRestServiceTest(Class<T> restClass, String uri) {
         this.restClass = restClass;
         this.baseUri = uri;
+        this.captor = LogCaptor.forClass(restClass);
     }
 
     @BeforeEach
     void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
-
+        captor.setLevel(Level.DEBUG);
+        
         Constructor<T> constructor =
                 restClass.getConstructor(HttpClientWrapper.class, URI.class);
         service = constructor.newInstance(httpClientMock, new URI(baseUri));
@@ -102,6 +109,11 @@ public abstract class AbstractRestServiceTest<T> {
         capturedRequests = null;
     }
 
+    @AfterEach
+    void tearDown() {
+        captor.detach();
+    }    
+    
     protected <R> R makeFrom(String jsonDef, Class<R> objClass) {
         return gson.fromJson(jsonDef, objClass);
     }
@@ -129,6 +141,18 @@ public abstract class AbstractRestServiceTest<T> {
                 .thenAnswer(i -> CompletableFuture.completedFuture(iterator.next()));
     }
 
+    protected void assertLog(Level level, String log) {
+    	assertTrue(captor.contains(level, log));
+    }
+    
+    protected void assertLogDebug(String log) {
+    	assertTrue(captor.contains(Level.DEBUG, log));
+    }
+
+    protected void assertLogInfo(String log) {
+    	assertTrue(captor.contains(Level.INFO, log));
+    }
+    
     /* -------------------------------
      * Backward compatible assertions
      * ------------------------------- */

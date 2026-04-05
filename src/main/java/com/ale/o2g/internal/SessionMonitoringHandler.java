@@ -21,24 +21,37 @@ package com.ale.o2g.internal;
 import com.ale.o2g.Session;
 import com.ale.o2g.SessionMonitoringPolicy;
 
-/**
- *
- */
 public class SessionMonitoringHandler {
-    
+
     private Session session;
     private SessionMonitoringPolicy sessionMonitoringPolicy;
-    
-    public SessionMonitoringHandler(SessionMonitoringPolicy sessionMonitoringPolicy, Session session) {
+    private Runnable onSessionLostCallback;
+
+    public SessionMonitoringHandler(
+            SessionMonitoringPolicy sessionMonitoringPolicy,
+            Session session,
+            Runnable onSessionLostCallback) {
         this.session = session;
         this.sessionMonitoringPolicy = sessionMonitoringPolicy;
+        this.onSessionLostCallback = onSessionLostCallback;
     }
-    
+
     public SessionMonitoringPolicy getPolicy() {
         return this.sessionMonitoringPolicy;
     }
-    
+
     public Session getSession() {
         return this.session;
+    }
+
+    /**
+     * Called by KeepAlive or ChunkEventListener when the session is
+     * definitively lost. Notifies the policy and triggers recovery.
+     */
+    public void signalSessionLost(String reason) {
+        sessionMonitoringPolicy.onSessionLost(reason);
+        if (onSessionLostCallback != null) {
+            onSessionLostCallback.run();
+        }
     }
 }

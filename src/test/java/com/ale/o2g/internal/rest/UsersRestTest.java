@@ -46,6 +46,8 @@ class UsersRestTest extends AbstractRestServiceTest<UsersRest> {
 
         Collection<String> result = service.getLogins(new int[]{1, 2}, true);
 
+        assertLogDebug("getLogins() called with: nodeIds=[1, 2], onlyACD=true");
+        
         assertCalledWith(GET, "https://o2g/rest/api/logins?nodeIds=1%3B2&onlyACD");
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -59,6 +61,8 @@ class UsersRestTest extends AbstractRestServiceTest<UsersRest> {
 
         Collection<String> result = service.getLogins(new String[]{"2", "3"}, false);
 
+        assertLogDebug("getLogins() called with: nodeIds=[2, 3], onlyACD=false");
+        
         assertCalledWith(GET, "https://o2g/rest/api/logins?nodeIds=2%3B3");
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -71,7 +75,8 @@ class UsersRestTest extends AbstractRestServiceTest<UsersRest> {
         defineResponse(200, "{ \"companyPhone\": \"12000\", \"loginName\": \"oxe12000\" }");
 
         User result = service.getByLoginName("user1");
-
+        
+        assertLogDebug("getByLoginName() called with: loginName=user1");
         assertCalledWith(GET, "/user1");
         assertNotNull(result);
         assertEquals("oxe12000", result.getLoginName());
@@ -84,6 +89,7 @@ class UsersRestTest extends AbstractRestServiceTest<UsersRest> {
 
         User result = service.getByCompanyPhone("12000");
 
+        assertLogDebug("getByCompanyPhone() called with: companyPhone=12000");
         assertCalledWith(GET, "?companyPhone=12000");
         assertNotNull(result);
         assertEquals("oxe12000", result.getLoginName());
@@ -96,6 +102,7 @@ class UsersRestTest extends AbstractRestServiceTest<UsersRest> {
 
         Preferences result = service.getPreferences("oxe12000");
 
+        assertLogDebug("getPreferences() called with: loginName=oxe12000");
         assertCalledWith(GET, "/oxe12000/preferences");
         assertNotNull(result);
         assertEquals("fr", result.getGuiLanguage());
@@ -107,7 +114,8 @@ class UsersRestTest extends AbstractRestServiceTest<UsersRest> {
         defineResponse(200, "");
 
         boolean result = service.changePassword("oxe12000", "oldPass", "newPass");
-
+        
+        assertLogDebug("changePassword() called with: loginName=oxe12000");
         assertCalledWith(PUT, "/oxe12000/password", "{"
                 + "\"oldPassword\":\"oldPass\","
                 + "\"newPassword\":\"newPass\""
@@ -122,6 +130,7 @@ class UsersRestTest extends AbstractRestServiceTest<UsersRest> {
 
         SupportedLanguages result = service.getSupportedLanguages("oxe12000");
 
+        assertLogDebug("getSupportedLanguages() called with: loginName=oxe12000");
         assertCalledWith(GET, "/oxe12000/preferences/supportedLanguages");
         assertNotNull(result);
         

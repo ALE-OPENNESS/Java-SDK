@@ -1,5 +1,5 @@
 /*
-* Copyright 2021 ALE International
+* Copyright 2026 ALE International
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 * software and associated documentation files (the "Software"), to deal in the Software 
@@ -16,49 +16,54 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package com.ale.o2g.internal.events;
 
-import java.net.URI;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ale.o2g.internal.SessionMonitoringHandler;
-import com.ale.o2g.internal.util.EventListenersMap;
+import com.ale.o2g.events.EventProcessor;
+import com.ale.o2g.events.O2GEvent;
+import com.ale.o2g.events.common.OnChannelInformationEvent;
 
 /**
  * 
- *
  */
-public class ChunkEventing {
+public class EventProcessorImpl implements EventProcessor {
 
-    final static Logger logger = LoggerFactory.getLogger(ChunkEventing.class);
+	final static Logger logger = LoggerFactory.getLogger(EventProcessorImpl.class);
 
-    private Semaphore signalReady = new Semaphore(0);
+	private BlockingQueue<O2GEventDescriptor> queue;
+	private Semaphore signalReady;
 
-    private ChunkEventListener chunkEventListener = null;
-    private ChunkEventDispatcher chunkEventDispatcher = null;
+	public EventProcessorImpl(BlockingQueue<O2GEventDescriptor> queue, Semaphore signalReady) {
+		this.queue = queue;
+		this.signalReady = signalReady;
+	}
 
-    public ChunkEventing(URI chunkUri, EventListenersMap listeners, SessionMonitoringHandler sessionMonitoringHandler) throws Exception {
-        BlockingQueue<O2GEventDescriptor> eventQueue = new ArrayBlockingQueue<O2GEventDescriptor>(1000);
+	@Override
+	public void process(String rawEvent) throws InterruptedException {
 
-        chunkEventDispatcher = new ChunkEventDispatcher(eventQueue, listeners, sessionMonitoringHandler);
-        chunkEventListener = new ChunkEventListener(eventQueue, chunkUri, signalReady, sessionMonitoringHandler);
-    }
+		O2GEventDescriptor eventDescriptor = EventBuilder.get(rawEvent);
+		if (eventDescriptor == null) {
+			
+			// Unable to create an event descriptor from the event string, do nothing,
+			// ignore the event
+			logger.error("Unable to create Event from {event}", rawEvent);
+		} 
+		else {
+			O2GEvent o2gEvent = eventDescriptor.event();
 
-    public void start() throws InterruptedException {
-        chunkEventDispatcher.start();
-        chunkEventListener.start();
+			if (o2gEvent instanceof OnChannelInformationEvent) {
+				// Signal the channel has been established
+				signalReady.release();
+			}
 
-        signalReady.acquire();
-    }
-
-    public void stop() {
-        chunkEventDispatcher.stop();
-        chunkEventListener.stop();
-    }
-
+			// Push event for dispatching
+			queue.put(eventDescriptor);
+		}
+	}
 }

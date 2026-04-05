@@ -35,13 +35,13 @@ import com.ale.o2g.internal.util.EventListenersMap;
 /**
  *
  */
-public class ChunkEventDispatcher extends AbstractQueuedThread<O2GEventDescriptor> {
+public class EventDispatcher extends AbstractQueuedThread<O2GEventDescriptor> {
 
-    final static Logger logger = LoggerFactory.getLogger(ChunkEventDispatcher.class);
+    final static Logger logger = LoggerFactory.getLogger(EventDispatcher.class);
     private EventListenersMap listeners;
     private SessionMonitoringHandler sessionMonitoringHandler;
 
-    public ChunkEventDispatcher(BlockingQueue<O2GEventDescriptor> queue, EventListenersMap listeners, SessionMonitoringHandler sessionMonitoringHandler) {
+    public EventDispatcher(BlockingQueue<O2GEventDescriptor> queue, EventListenersMap listeners, SessionMonitoringHandler sessionMonitoringHandler) {
         super(queue, "ChunkEventDispatcher");
         this.listeners = listeners;
         this.sessionMonitoringHandler = sessionMonitoringHandler;
@@ -102,7 +102,7 @@ public class ChunkEventDispatcher extends AbstractQueuedThread<O2GEventDescripto
 
         O2GEventDescriptor o2gEventDescriptor = get();
         Class<? extends EventListener> listenerClass = o2gEventDescriptor.listener();
-        if (listenerClass != null) {
+       if (listenerClass != null) {
 
             List<EventListener> ll = listeners.getListeners(listenerClass);
             if ((ll != null) && !ll.isEmpty()) {

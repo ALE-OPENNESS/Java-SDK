@@ -20,9 +20,12 @@
 package com.ale.o2g.internal.rest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -352,6 +355,235 @@ class CallCenterStatisticsRestTest extends AbstractRestServiceTest<CallCenterSta
 		assertTrue(result);
 	}
 
+	// --------------------------------------------------
+	// Scheduled reports
+	// --------------------------------------------------
+
+	@Test
+	void testCreateScheduledReport_Once() throws Exception {
+	    defineResponse(200, "{ \"id\":\"rep2\" }");
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReport report = service.createScheduledReport(
+	            context,
+	            "Monthly report",
+	            "A one-time report",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            Format.CSV,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    assertRequest().method(POST).uri("/scope/sup1/ctx/ctx1/schedule").jsonBody(json -> {
+	        json.assertValue("$.name", "Monthly report");
+	        json.assertValue("$.description", "A one-time report");
+	        json.assertValue("$.obsPeriod.periodType", "currentMonth");
+	        json.assertValue("$.fileType", "csv");
+	        json.assertArrayContains("$.recipients", List.of("john.doe@mycompany.com"));
+	    });
+
+	    assertNotNull(report);
+	    assertEquals("rep2", report.getId());
+	    assertTrue(report.isOnce());
+	    assertEquals(Format.CSV, report.getFormat());
+	    assertEquals(ScheduledReport.State.NOT_EXECUTED, report.getState());
+	    assertFalse(report.isEnable());
+	}
+
+	@Test
+	void testCreateScheduledReport_Weekly() throws Exception {
+	    defineResponse(200, "{ \"id\":\"rep3\" }");
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReport report = service.createScheduledReport(
+	            context,
+	            "Weekly report",
+	            "A weekly report",
+	            ReportObservationPeriod.onCurrentWeek(),
+	            Recurrence.weekly(DayOfWeek.WEDNESDAY),   // Wednesday
+	            Format.EXCEL,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    assertRequest().method(POST).uri("/scope/sup1/ctx/ctx1/schedule").jsonBody(json -> {
+	        json.assertValue("$.name", "Weekly report");
+	        json.assertValue("$.description", "A weekly report");
+	        json.assertValue("$.fileType", "xls");
+	        json.assertValue("$.frequency.periodicity", "weekly");
+	        json.assertArrayContains("$.recipients", List.of("john.doe@mycompany.com"));
+	    });
+
+	    assertNotNull(report);
+	    assertFalse(report.isOnce());
+	}
+
+	@Test
+	void testGetScheduledReports() throws Exception {
+	    defineResponse(200, """
+	            {
+	                "schedules": [
+	                    {
+	                        "name": "rep1",
+	                        "description": "First report",
+	                        "fileType": "xls",
+	                        "enable": true
+	                    },
+	                    {
+	                        "name": "rep2",
+	                        "description": "Second report",
+	                        "fileType": "csv",
+	                        "enable": false
+	                    }
+	                ]
+	            }
+	            """);
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    Collection<ScheduledReport> reports = service.getScheduledReports(context);
+
+	    assertCalledWith(GET, "/scope/sup1/ctx/ctx1/schedule");
+	    assertNotNull(reports);
+	    assertEquals(2, reports.size());
+
+	    // Verify context is set on each report
+	    reports.forEach(r -> assertEquals(context, r.getContext()));
+	}
+
+	@Test
+	void testGetScheduledReports_ReturnsNullWhenEmpty() throws Exception {
+	    defineResponse(200, "{}");
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    Collection<ScheduledReport> reports = service.getScheduledReports(context);
+
+	    assertNull(reports);
+	}
+
+	@Test
+	void testGetScheduledReport() throws Exception {
+	    defineResponse(200, """
+	            {
+	                "name": "rep1",
+	                "description": "First report",
+	                "fileType": "xls",
+	                "enable": true,
+	                "state": "EXECUTED"
+	            }
+	            """);
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReport report = service.getScheduledReport(context, "rep1");
+
+	    assertCalledWith(GET, "/scope/sup1/ctx/ctx1/schedule/rep1");
+	    assertNotNull(report);
+	    assertEquals("rep1", report.getId());
+	    assertEquals("First report", report.getDescription());
+	    assertEquals(Format.EXCEL, report.getFormat());
+	    assertTrue(report.isEnable());
+	    assertEquals(context, report.getContext());
+	}
+
+	@Test
+	void testGetScheduledReport_ReturnsNullWhenNotFound() throws Exception {
+	    defineResponse(404, "");
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReport report = service.getScheduledReport(context, "unknown");
+
+	    assertCalledWith(GET, "/scope/sup1/ctx/ctx1/schedule/unknown");
+	    assertNull(report);
+	}
+
+	@Test
+	void testUpdateScheduledReport_WithRecurrence() throws Exception {
+	    defineResponse(200, "");
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(
+	            context,
+	            "rep1",
+	            "Updated description",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            Recurrence.monthly(1),
+	            Format.EXCEL,
+	            new String[] { "john.doe@mycompany.com", "jane.smith@mycompany.com" });
+
+	    boolean result = service.updateScheduledReport(report);
+
+	    assertRequest().method(PUT).uri("/scope/sup1/ctx/ctx1/schedule/rep1").jsonBody(json -> {
+	        json.assertValue("$.name", "rep1");
+	        json.assertValue("$.description", "Updated description");
+	        json.assertValue("$.obsPeriod.periodType", "currentMonth");
+	        json.assertValue("$.frequency.periodicity", "monthly");
+	        json.assertValue("$.frequency.dayInMonth", 1);
+	        json.assertValue("$.fileType", "xls");
+	        json.assertArrayContains("$.recipients",
+	                List.of("john.doe@mycompany.com", "jane.smith@mycompany.com"));
+	    });
+
+	    assertTrue(result);
+	}
+
+	@Test
+	void testUpdateScheduledReport_Once() throws Exception {
+	    defineResponse(200, "");
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    // null recurrence → isOnce() = true
+	    ScheduledReportImpl report = new ScheduledReportImpl(
+	            context,
+	            "rep1",
+	            "One-time updated",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            null,
+	            Format.CSV,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    boolean result = service.updateScheduledReport(report);
+
+	    assertRequest().method(PUT).uri("/scope/sup1/ctx/ctx1/schedule/rep1").jsonBody(json -> {
+	        json.assertValue("$.name", "rep1");
+	        json.assertValue("$.description", "One-time updated");
+	        json.assertValue("$.fileType", "csv");
+	        json.assertArrayContains("$.recipients", List.of("john.doe@mycompany.com"));
+	    });
+
+	    assertTrue(result);
+	    assertTrue(report.isOnce());
+	}
+
+	@Test
+	void testUpdateScheduledReport_ChangeFormat() throws Exception {
+	    defineResponse(200, "");
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(
+	            context,
+	            "rep1",
+	            "Report",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            Recurrence.monthly(15),
+	            Format.CSV,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    // Change format to EXCEL
+	    report.setFormat(Format.EXCEL);
+
+	    boolean result = service.updateScheduledReport(report);
+
+	    assertRequest().method(PUT).uri("/scope/sup1/ctx/ctx1/schedule/rep1").jsonBody(json -> {
+	        json.assertValue("$.fileType", "xls");
+	    });
+
+	    assertTrue(result);
+	}
+
 	@Test
 	void testSetScheduledReportEnabled() throws Exception {
 
@@ -369,4 +601,132 @@ class CallCenterStatisticsRestTest extends AbstractRestServiceTest<CallCenterSta
 
 		assertTrue(result);
 	}
+	
+
+	@Test
+	void testSetScheduledReportEnabled_2() throws Exception {
+	    defineResponse(200, "");
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(context, "report1", "description 1",
+	            ReportObservationPeriod.onCurrentMonth(), null, Format.CSV,
+	            new String[] { "john.doe@test.com" });
+
+	    assertTrue(service.setScheduledReportEnabled(report, true));
+	    assertCalledWith(POST, "/scope/sup1/ctx/ctx1/schedule/report1/enable?enable=true");
+	}
+
+	@Test
+	void testSetScheduledReportDisabled() throws Exception {
+	    defineResponse(200, "");
+
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(context, "report1", "description 1",
+	            ReportObservationPeriod.onCurrentMonth(), null, Format.CSV,
+	            new String[] { "john.doe@test.com" });
+
+	    assertTrue(service.setScheduledReportEnabled(report, false));
+	    assertCalledWith(POST, "/scope/sup1/ctx/ctx1/schedule/report1/enable?enable=false");
+	}
+
+	// --------------------------------------------------
+	// ScheduledReportImpl unit tests
+	// --------------------------------------------------
+
+	@Test
+	void testScheduledReportImpl_DefaultState() {
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(
+	            context, "rep1", "description",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            null, Format.CSV,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    assertEquals(ScheduledReport.State.NOT_EXECUTED, report.getState());
+	    assertFalse(report.isEnable());
+	    assertNull(report.getLastExecutionDate());
+	    assertFalse(report.hasShortHeaders());
+	}
+
+	@Test
+	void testScheduledReportImpl_SetShortHeader() {
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(
+	            context, "rep1", "description",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            null, Format.CSV,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    assertFalse(report.hasShortHeaders());
+	    report.setShortHeader(true);
+	    assertTrue(report.hasShortHeaders());
+	}
+
+	@Test
+	void testScheduledReportImpl_SetRecurrence() {
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(
+	            context, "rep1", "description",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            null, Format.CSV,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    assertTrue(report.isOnce());
+
+	    report.setRecurrence(Recurrence.monthly(15));
+	    assertFalse(report.isOnce());
+	    assertNotNull(report.getRecurrence());
+	}
+
+	@Test
+	void testScheduledReportImpl_SetRecurrenceToNull() {
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(
+	            context, "rep1", "description",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            Recurrence.monthly(15), Format.CSV,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    assertFalse(report.isOnce());
+
+	    report.setRecurrence(null);
+	    assertTrue(report.isOnce());
+	}
+
+	@Test
+	void testScheduledReportImpl_SetRecipients() {
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(
+	            context, "rep1", "description",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            null, Format.CSV,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    assertEquals(1, report.getRecipients().size());
+
+	    report.setRecipients(new String[] { "a@b.com", "c@d.com", "e@f.com" });
+	    assertEquals(3, report.getRecipients().size());
+	}
+
+	@Test
+	void testScheduledReportImpl_ToString() {
+	    ContextImpl context = new ContextImpl("ctx1", "sup1");
+
+	    ScheduledReportImpl report = new ScheduledReportImpl(
+	            context, "myReport", "my description",
+	            ReportObservationPeriod.onCurrentMonth(),
+	            null, Format.CSV,
+	            new String[] { "john.doe@mycompany.com" });
+
+	    String str = report.toString();
+	    assertTrue(str.contains("myReport"));
+	    assertTrue(str.contains("my description"));
+	}	
 }

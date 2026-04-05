@@ -22,6 +22,7 @@ import com.ale.o2g.Subscription;
 import com.ale.o2g.Subscription.Builder;
 import com.ale.o2g.Subscription.Filter;
 import com.ale.o2g.events.EventPackage;
+import com.ale.o2g.events.WebHook;
 import com.ale.o2g.events.cca.CallCenterAgentEventListener;
 import com.ale.o2g.events.ccp.CallCenterPilotEventListener;
 import com.ale.o2g.events.ccrt.CallCenterRealtimeEventListener;
@@ -46,6 +47,7 @@ public class SubscriptionBuilderImpl implements Subscription.Builder {
 	private Filter filter = new Filter();
 	private String version = "1.0";
 	private int timeout = 10;
+	private WebHook webHook = null;
 
 	@Override
 	public Builder addUsersEventListener(UsersEventListener listener) {
@@ -202,6 +204,12 @@ public class SubscriptionBuilderImpl implements Subscription.Builder {
 	}
 
 	@Override
+	public Builder setWebHook(WebHook webHook) {
+		this.webHook = webHook;
+		return this;
+	}	
+	
+	@Override
 	public Subscription build() {
 		SubscriptionImpl subscription = new SubscriptionImpl();
 
@@ -209,6 +217,7 @@ public class SubscriptionBuilderImpl implements Subscription.Builder {
 		subscription.setListeners(listeners);
 		subscription.setVersion(version);
 		subscription.setTimeout(timeout);
+		subscription.setWebHook(webHook);
 
 		return subscription;
 	}

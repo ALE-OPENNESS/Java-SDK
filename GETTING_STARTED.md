@@ -1,6 +1,8 @@
-# Getting Started with java o2g-sdk
+# Getting Started with the Java o2g-sdk
 
-This guide walks you through everything you need — from installing the required tools to successfully logging in to an O2G server — with no prior programming experience required.
+This guide walks you through everything you need — from installing the required
+tools to successfully logging in to an O2G server — with no prior programming
+experience required.
 
 ---
 
@@ -20,7 +22,6 @@ Java is the runtime that allows you to run Java programs on your computer.
 2. Download the **LTS** version (recommended for most users) — Java 16 (minimum) or later
 3. Run the installer and follow the on-screen instructions
 4. Verify the installation by opening a terminal and running:
-
 ```bash
 java --version
 ```
@@ -36,7 +37,8 @@ The command should print a version number (e.g. `openjdk 21.0.2`).
 
 ## Step 2 — Install an IDE (optional but recommended)
 
-An IDE makes writing Java much easier with code completion, error highlighting and project management.
+An IDE makes writing Java much easier with code completion, error highlighting
+and project management.
 
 **Option A — IntelliJ IDEA (recommended)**
 1. Go to [https://www.jetbrains.com/idea](https://www.jetbrains.com/idea)
@@ -52,7 +54,8 @@ An IDE makes writing Java much easier with code completion, error highlighting a
 
 ## Step 3 — Install a build tool
 
-You can use either **Maven** or **Gradle** — both are widely used in the Java ecosystem. Pick one.
+You can use either **Maven** or **Gradle** — both are widely used in the Java
+ecosystem. Pick one.
 
 ### Option A — Maven
 
@@ -61,12 +64,12 @@ You can use either **Maven** or **Gradle** — both are widely used in the Java 
 3. Unzip it to a folder of your choice (e.g. `C:\maven` on Windows)
 4. Add the `bin` folder to your system `PATH`
 5. Verify the installation:
-
 ```bash
 mvn --version
 ```
 
-> **Note:** IntelliJ IDEA includes a bundled Maven — you can skip this step if you use IntelliJ.
+> **Note:** IntelliJ IDEA includes a bundled Maven — you can skip this step
+> if you use IntelliJ.
 
 ### Option B — Gradle
 
@@ -75,12 +78,12 @@ mvn --version
 3. Unzip it to a folder of your choice (e.g. `C:\gradle` on Windows)
 4. Add the `bin` folder to your system `PATH`
 5. Verify the installation:
-
 ```bash
 gradle --version
 ```
 
-> **Note:** IntelliJ IDEA also includes a bundled Gradle — you can skip this step if you use IntelliJ.
+> **Note:** IntelliJ IDEA also includes a bundled Gradle — you can skip this
+> step if you use IntelliJ.
 
 ---
 
@@ -119,7 +122,8 @@ Follow the prompts — accept the defaults when asked.
 
 ### With Maven
 
-Open the `pom.xml` file in your project folder and add the following inside the `<dependencies>` section:
+Open the `pom.xml` file in your project folder and add the following inside
+the `<dependencies>` section:
 
 ```xml
 <dependency>
@@ -153,7 +157,8 @@ mvn dependency:resolve
 
 ### With Gradle
 
-Open the `app/build.gradle` file and add the SDK inside the `dependencies` block:
+Open the `app/build.gradle` file and add the SDK inside the `dependencies`
+block:
 
 ```groovy
 dependencies {
@@ -173,7 +178,8 @@ gradle dependencies
 
 ### With Maven
 
-Open the file `src/main/java/com/mycompany/App.java` and replace its content with the following:
+Open the file `src/main/java/com/mycompany/App.java` and replace its content
+with the following:
 
 ```java
 package com.mycompany;
@@ -182,21 +188,25 @@ import com.ale.o2g.O2G;
 import com.ale.o2g.O2GException;
 import com.ale.o2g.ServiceEndPoint;
 import com.ale.o2g.Session;
-import com.ale.o2g.types.common.Credential;
-import com.ale.o2g.types.common.Host;
+import com.ale.o2g.types.Credential;
+import com.ale.o2g.types.Host;
+import com.ale.o2g.types.O2GServers;
 
 public class App {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println("Logging in...");
+        System.out.println("Connecting to O2G server...");
 
         try {
-            // 1. Create a new O2G service endpoint, configure the O2G IP address or FQDN
-            ServiceEndPoint o2gServer = O2G.Connect(new Host("YOUR_O2G_SERVER_ADDRESS"));
+            // 1. Configure the O2G server
+            //    The SDK automatically retries if the server is not yet reachable
+            ServiceEndPoint endPoint = O2G.connect(O2GServers.newBuilder()
+                .primaryHost(new Host("YOUR_O2G_SERVER_ADDRESS"))
+                .build());
 
             // 2. Open a session with your credentials
-            Session session = o2gServer.openSession(
+            Session session = endPoint.openSession(
                 new Credential("YOUR_LOGIN", "YOUR_PASSWORD"),
                 "MyApplication"
             );
@@ -219,10 +229,12 @@ public class App {
 
 ### With Gradle
 
-Open the file `app/src/main/java/com/mycompany/App.java` and replace its content with the same code as above.
+Open the file `app/src/main/java/com/mycompany/App.java` and replace its
+content with the same code as above.
 
 Replace the following placeholders in both cases:
-- `YOUR_O2G_SERVER_ADDRESS` — the hostname or IP address of your O2G server (e.g. `192.168.1.100`)
+- `YOUR_O2G_SERVER_ADDRESS` — the hostname or IP address of your O2G server
+  (e.g. `192.168.1.100`)
 - `YOUR_LOGIN` — your O2G user login name
 - `YOUR_PASSWORD` — your O2G user password
 
@@ -231,13 +243,11 @@ Replace the following placeholders in both cases:
 ## Step 7 — Run your program
 
 ### With Maven
-
 ```bash
 mvn compile exec:java -Dexec.mainClass="com.mycompany.App"
 ```
 
 ### With Gradle
-
 ```bash
 gradle run
 ```
@@ -245,9 +255,67 @@ gradle run
 If everything is configured correctly, you should see:
 
 ```
-Logging in...
+Connecting to O2G server...
 Login successful!
 Logged out.
+```
+
+> **Note:** If the O2G server is not yet reachable when you start the program,
+> the SDK will automatically retry every 5 seconds until it connects. You will
+> see retry messages in the console. Start the server and the program will
+> connect automatically.
+
+---
+
+## Step 8 — Add session monitoring (recommended)
+
+In production, you should add a monitoring policy to be notified when the
+session is lost and recovered. Create a new file
+`src/main/java/com/mycompany/MyMonitoringPolicy.java`:
+
+```java
+package com.mycompany;
+
+import com.ale.o2g.Session;
+import com.ale.o2g.internal.DefaultSessionMonitoringPolicy;
+import com.ale.o2g.SessionMonitoringPolicy;
+
+import java.util.concurrent.TimeUnit;
+
+public class MyMonitoringPolicy extends DefaultSessionMonitoringPolicy {
+
+    @Override
+    public void onSessionLost(String reason) {
+        System.out.println("⚠️  Session lost (" + reason + ") — SDK is recovering...");
+    }
+
+    @Override
+    public void onSessionRecovered() {
+        System.out.println("✅ Session recovered — back online.");
+    }
+
+    @Override
+    public Behavior getBehaviorOnConnectFailure(Exception e) {
+        System.out.println("⚠️  Connection failed: " + e.getMessage() + " — retrying in 5s...");
+        return new RetryAfter(5, TimeUnit.SECONDS);
+    }
+}
+```
+
+Then set it before opening the session in `App.java`:
+
+```java
+ServiceEndPoint endPoint = O2G.connect(O2GServers.newBuilder()
+    .primaryHost(new Host("YOUR_O2G_SERVER_ADDRESS"))
+    .build());
+
+// Set monitoring policy before opening the session
+endPoint.setSessionMonitoringPolicy(new MyMonitoringPolicy());
+
+Session session = endPoint.openSession(
+    new Credential("YOUR_LOGIN", "YOUR_PASSWORD"),
+    "MyApplication"
+);
 ```
 
 ---
@@ -256,20 +324,25 @@ Logged out.
 
 **`Login failed`**
 - Double-check the server address, login name and password
-- Make sure the O2G server is reachable from your computer (try opening the address in a browser)
-- If the server uses a self-signed SSL certificate, you may need to disable certificate verification for testing. Add the following JVM argument when running your program:
+- Make sure the O2G server is reachable from your computer (try opening the
+  address in a browser)
+- If the server uses a self-signed SSL certificate, you may need to disable
+  certificate verification for testing. Add the following JVM argument when
+  running your program:
 
   With Maven:
-  ```bash
+
+```bash
   mvn compile exec:java -Dexec.mainClass="com.mycompany.App" -Do2g.disable.ssl=true
-  ```
+```
 
   With Gradle, add this to your `app/build.gradle`:
-  ```groovy
+
+```groovy
   run {
       jvmArgs '-Do2g.disable.ssl=true'
   }
-  ```
+```
 
   Remove this option in production.
 
@@ -283,39 +356,57 @@ Logged out.
 - Maven: try `mvn clean compile`
 - Gradle: try `gradle clean build`
 
+**Program keeps retrying and never connects**
+- The SDK retries automatically when the server is unreachable — this is
+  normal behaviour. Check that the server address is correct and the server
+  is running.
+- To abort immediately instead of retrying, override `getBehaviorOnConnectFailure`
+  in your monitoring policy and return `new Abort()`.
+
 ---
 
 ## What's next?
 
-Once logged in, you can start using the SDK services through the `session` object. Here are a few examples:
+Once logged in, you can start using the SDK services through the `session`
+object. Here are a few examples:
 
 ### Make a phone call
-
 ```java
 session.getTelephonyService().makeCall("myDeviceId", "1234");
 ```
 
 ### Get your active calls
-
 ```java
 var calls = session.getTelephonyService().getCalls();
 System.out.println(calls);
 ```
 
 ### Subscribe to telephony events and listen for incoming calls
-
 ```java
+import com.ale.o2g.Subscription;
+import com.ale.o2g.events.telephony.TelephonyEventListener;
+import com.ale.o2g.events.telephony.OnCallCreatedEvent;
+
 Subscription subscription = Subscription.newBuilder()
     .addTelephonyEventListener(new TelephonyEventListener() {
         @Override
         public void onCallCreated(OnCallCreatedEvent event) {
-            System.out.println("New call:" + event.getCallRef());
+            System.out.println("New call: " + event.getCallRef());
         }
-        ...
     }, new String[] {"*"})
     .build();
-session.listenEvents(subscription);
 
+session.listenEvents(subscription);
 ```
 
-For a full list of available services and methods, see the [O2G REST API Reference](https://api.dspp.al-enterprise.com/o2g/).
+### Configure geographic HA
+```java
+ServiceEndPoint endPoint = O2G.connect(O2GServers.newBuilder()
+    .primaryHost(new Host("10.0.0.1"))
+    .secondaryHost(new Host("10.0.0.2"))
+    .build());
+```
+
+For a full list of available services and methods, see the
+[README](README.md) and the
+[O2G REST API Reference](https://api.dspp.al-enterprise.com/o2g/).

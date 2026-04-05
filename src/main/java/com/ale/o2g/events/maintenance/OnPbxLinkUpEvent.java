@@ -40,7 +40,4 @@ public class OnPbxLinkUpEvent extends O2GEvent {
     public final int getNodeId() {
         return nodeId;
     }
-
-    protected OnPbxLinkUpEvent() {
-    }
 }

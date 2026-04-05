@@ -17,7 +17,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package com.ale.o2g.types;
+package com.ale.o2g.types.telephony;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 
 import com.ale.o2g.test.AbstractJsonTest;
-import com.ale.o2g.types.telephony.Call;
 import com.ale.o2g.types.telephony.call.MediaState;
 
 class CallTest extends AbstractJsonTest {

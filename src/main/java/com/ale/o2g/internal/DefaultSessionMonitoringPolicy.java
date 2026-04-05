@@ -16,22 +16,35 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package com.ale.o2g.internal;
 
 import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.ale.o2g.Session;
 import com.ale.o2g.SessionMonitoringPolicy;
 
-/**
- *
- */
 public class DefaultSessionMonitoringPolicy implements SessionMonitoringPolicy {
 
     final static Logger logger = LoggerFactory.getLogger(DefaultSessionMonitoringPolicy.class);
+
+    @Override
+    public Behavior getBehaviorOnConnectFailure(Exception e) {
+        logger.error("Connection to O2G server failed: {}", e.getMessage());
+        logger.error("Retrying in 5 seconds...");
+        return new RetryAfter(5, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void onSessionLost(String reason) {
+        logger.warn("Session lost: {}. SDK is recovering...", reason);
+    }
+
+    @Override
+    public void onSessionRecovered() {
+        logger.info("Session successfully recovered.");
+    }
 
     @Override
     public void chunkChannelEstablished(Session session) {
@@ -56,8 +69,8 @@ public class DefaultSessionMonitoringPolicy implements SessionMonitoringPolicy {
     @Override
     public Behavior getBehaviorOnChunkChannelFailure(Session session, Exception e) {
         logger.error("Chunk channel is disconnected due to an exception", e);
-        logger.error("Try to restablish the chunk channel");
-        return new RetryAfter(2, TimeUnit.SECONDS);
+        logger.error("Aborting chunk — triggering session recovery.");
+        return new Abort();
     }
 
     @Override
@@ -71,5 +84,4 @@ public class DefaultSessionMonitoringPolicy implements SessionMonitoringPolicy {
     public void eventTreatmentException(Exception e) {
         logger.error("Exception raised during treatment of an event", e);
     }
-
 }

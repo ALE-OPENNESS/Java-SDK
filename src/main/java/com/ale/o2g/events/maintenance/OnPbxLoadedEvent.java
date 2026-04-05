@@ -40,7 +40,4 @@ public class OnPbxLoadedEvent extends O2GEvent {
     public final int getNodeId() {
         return nodeId;
     }
-
-    protected OnPbxLoadedEvent() {
-    }
 }

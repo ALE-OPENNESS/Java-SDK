@@ -18,7 +18,10 @@
 */
 package com.ale.o2g.internal.events;
 
+import java.net.URI;
+
 import com.ale.o2g.Subscription;
+import com.ale.o2g.events.WebHook;
 import com.ale.o2g.internal.util.EventListenersMap;
 import com.ale.o2g.internal.util.JsonIgnore;
 
@@ -31,7 +34,12 @@ public class SubscriptionImpl extends Subscription {
 	private String version;
 	private int timeout;
 	private Filter filter;
-//	private String webHookUrl;
+	
+	@SuppressWarnings("unused")
+	private URI webHookUrl;
+	
+	@JsonIgnore
+	private WebHook webHook;
 
 	@JsonIgnore
 	private EventListenersMap listeners;
@@ -69,5 +77,20 @@ public class SubscriptionImpl extends Subscription {
 
 	public void setListeners(EventListenersMap listeners) {
 		this.listeners = listeners;
+	}
+
+	public void setWebHook(WebHook webHook) {
+		this.webHook = webHook;
+		if (this.webHook != null) {
+			this.webHookUrl = webHook.getURI();
+		}
+		else {
+			this.webHookUrl = null;
+		}
+	}
+	
+	@Override
+	public WebHook getWebHook() {
+		return this.webHook;
 	}
 }

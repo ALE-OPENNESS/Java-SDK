@@ -104,7 +104,40 @@ public class MaintenanceEventsTest extends AbstractJsonTest {
         assertEquals("PBX_LOADED", event.getName());
         assertEquals(200, event.getNodeId());
     }
+    
+    @Test
+    void testOnRemoteServerLinkDownEvent() {
+        String json = """
+        {
+            "eventName": "REMOTE_SERVER_LINK_DOWN",
+            "host": "o2g.remote.com"
+        }
+        """;
 
+        OnRemoteServerLinkDownEvent event = gson.fromJson(json, OnRemoteServerLinkDownEvent.class);
+
+        assertEquals("REMOTE_SERVER_LINK_DOWN", event.getName());
+        assertEquals("o2g.remote.com", event.getRemoteHost());
+    	
+    }
+    
+    @Test
+    void testOnRemoteServerLinkUpEvent() {
+        String json = """
+        {
+            "eventName": "REMOTE_SERVER_LINK_UP",
+            "host": "o2g.remote.com"
+        }
+        """;
+
+        OnRemoteServerLinkUpEvent event = gson.fromJson(json, OnRemoteServerLinkUpEvent.class);
+
+        assertEquals("REMOTE_SERVER_LINK_UP", event.getName());
+        assertEquals("o2g.remote.com", event.getRemoteHost());
+    	
+    }
+
+    
     @Test
     void testEmptyOnPbxLoadedEvent() {
         String json = "{}";
@@ -149,4 +182,24 @@ public class MaintenanceEventsTest extends AbstractJsonTest {
         assertNull(event.getName());
         assertEquals(-1, event.getNodeId());
    }
+
+    @Test
+    void testEmptyOnRemoteServerLinkDownEvent() {
+        String json = "{}";
+
+        OnRemoteServerLinkDownEvent event = gson.fromJson(json, OnRemoteServerLinkDownEvent.class);
+
+        assertNull(event.getName());
+        assertNull(event.getRemoteHost());
+    }
+    
+    @Test
+    void testEmptyOnRemoteServerLinkUpEvent() {
+        String json = "{}";
+
+        OnRemoteServerLinkUpEvent event = gson.fromJson(json, OnRemoteServerLinkUpEvent.class);
+
+        assertNull(event.getName());
+        assertNull(event.getRemoteHost());
+    }
 }

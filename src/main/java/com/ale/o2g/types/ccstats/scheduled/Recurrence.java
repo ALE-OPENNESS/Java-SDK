@@ -154,6 +154,6 @@ public final class Recurrence {
      * @return the day of the month (1-31) or -1 if not monthly
      */
     public final int getDayInMonth() {
-        return dayInMonth;
+        return (dayInMonth == null) ? -1 : dayInMonth;
     }
 }

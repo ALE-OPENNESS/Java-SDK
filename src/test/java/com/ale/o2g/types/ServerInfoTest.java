@@ -17,44 +17,47 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package com.ale.o2g.internal.rest;
+package com.ale.o2g.types;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 
-import com.ale.o2g.test.AbstractRestServiceTest;
-import com.ale.o2g.types.maintenance.SystemStatus;
+import com.ale.o2g.test.AbstractJsonTest;
+import com.ale.o2g.types.users.Device;
+import com.ale.o2g.types.users.User;
+import com.ale.o2g.types.users.Voicemail.Type;
 
-class MaintenanceRestTest extends AbstractRestServiceTest<MaintenanceRest> {
+/**
+ * 
+ */
+public class ServerInfoTest extends AbstractJsonTest {
 
-    protected MaintenanceRestTest() {
-        super(MaintenanceRest.class, "https://o2g/rest/api/maintenance");
-    }
+	@Test
+	void testDeserializationFull() {
+		// JSON with all fields
+		String json = """
+				{
+				"productName": "O2G Solution",
+				"productType": "O2G",
+				"productVersion": {
+					"major": "2.6",
+					"minor": "000.000"
+				},
+				"haMode": true
+		}
+		""";
 
-    @Test
-    void testGetSystemStatus() throws Exception {
+		ServerInfo info = gson.fromJson(json, ServerInfo.class);
 
-        // Define mock response
-        defineResponse(200, "{"
-                + "\"logicalAddress\":{"
-                	+ "\"fqdn\":\"o2g.com.server.main\", "
-                	+ "\"ip\": \"10.2.2.123\""
-                	+ "}"
-                + "}");
-
-        
-        
-        // Call method
-        SystemStatus result = service.getSystemStatus();
-
-        // Verify correct endpoint was called
-        assertCalledWith(GET, "/status");
-
-        // Validate result
-        assertNotNull(result);
-        assertEquals("10.2.2.123", result.getLogicalAddress().getIp());
-        
-        assertLogDebug("getSystemStatus()");
-    }
+		assertEquals("O2G Solution", info.getProductName());
+		assertEquals("O2G", info.getProductType());
+		assertEquals("2.6.000.000", info.getProductVersion());
+		assertTrue(info.isHaMode());
+	}
 }
