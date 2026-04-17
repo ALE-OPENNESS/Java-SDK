@@ -105,43 +105,40 @@ import com.ale.o2g.types.routing.RoutingState;
 public interface RoutingService extends IService {
 
     /**
-     * Allows to know what the specified user is allowed to do.
+     * Returns the routing capabilities available to the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the user login name
-     * @return the {@link RoutingCapabilities RoutingCapabilities} in case of
-     *         success; {@code null} otherwise.
+     * @return The {@link RoutingCapabilities} in case of success; {@code null} otherwise.
      */
     RoutingCapabilities getCapabilities(String loginName);
 
     /**
-     * Allows to know what the user who has opened the session is allowed to do.
+     * Returns the routing capabilities available to the user who has opened the session.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
-     * 
-     * @return the {@link RoutingCapabilities RoutingCapabilities} in case of
-     *         success; {@code null} otherwise.
+     *
+     * @return The {@link RoutingCapabilities} in case of success; {@code null} otherwise.
      * @see #getCapabilities(String)
      */
     RoutingCapabilities getCapabilities();
 
     /**
-     * Sets the activation state of the remote extension device for the specified
-     * user.
+     * Sets the activation state of the remote extension device for the specified user.
      * <p>
-     * When the remote extension is activated, it rings on incoming call on the user
-     * company phone. When it is deactivated, it never rings, but it can be used to
-     * place an outgoing call.
+     * When the remote extension is activated, it rings on incoming calls on the user's
+     * company phone. When it is deactivated, it never rings, but it can still be used to
+     * place outgoing calls.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
-     * @param active    the remote extension device state
+     *
+     * @param active    {@code true} to activate the remote extension; {@code false} to deactivate it
      * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
@@ -151,14 +148,14 @@ public interface RoutingService extends IService {
      * Sets the activation state of the remote extension device for the user who has
      * opened the session.
      * <p>
-     * When the remote extension is activated, it rings on incoming call on the user
-     * company phone. When it is deactivated, it never rings, but it can be used to
-     * place an outgoing call.
+     * When the remote extension is activated, it rings on incoming calls on the user's
+     * company phone. When it is deactivated, it never rings, but it can still be used to
+     * place outgoing calls.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
-     * @param active the remote extension device state
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param active {@code true} to activate the remote extension; {@code false} to deactivate it
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #setRemoteExtensionActivation(boolean, String)
      */
@@ -170,10 +167,9 @@ public interface RoutingService extends IService {
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the user login name
-     * @return the {@link DndState DndState} in case of success; {@code null}
-     *         otherwise.
+     * @return The {@link DndState} in case of success; {@code null} otherwise.
      */
     DndState getDndState(String loginName);
 
@@ -182,9 +178,8 @@ public interface RoutingService extends IService {
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
-     * 
-     * @return the {@link DndState DndState} in case of success; {@code null}
-     *         otherwise.
+     *
+     * @return The {@link DndState} in case of success; {@code null} otherwise.
      * @see #getDndState(String)
      */
     DndState getDndState();
@@ -192,267 +187,286 @@ public interface RoutingService extends IService {
     /**
      * Activates the Do Not Disturb for the specified user.
      * <p>
-     * This method does nothing and return {@code true} if the Do Not Disturb is
-     * already activated.
+     * When active, no calls are presented to the user. This method does nothing and
+     * returns {@code true} if the Do Not Disturb is already activated.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #cancelDnd(String)
      */
     boolean activateDnd(String loginName);
 
     /**
      * Activates the Do Not Disturb for the user who has opened the session.
      * <p>
-     * This method does nothing and return {@code true} if the Do Not Disturb is
-     * already activated.
+     * When active, no calls are presented to the user. This method does nothing and
+     * returns {@code true} if the Do Not Disturb is already activated.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #activateDnd(String)
+     * @see #cancelDnd()
      */
     boolean activateDnd();
 
     /**
      * Cancels the Do Not Disturb for the specified user.
      * <p>
-     * This method does nothing and return {@code true} if the Do Not Disturb was
+     * This method does nothing and returns {@code true} if the Do Not Disturb was
      * not activated.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #activateDnd(String)
      */
     boolean cancelDnd(String loginName);
 
     /**
      * Cancels the Do Not Disturb for the user who has opened the session.
      * <p>
-     * This method does nothing and return {@code true} if the Do Not Disturb was
+     * This method does nothing and returns {@code true} if the Do Not Disturb was
      * not activated.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #cancelDnd(String)
+     * @see #activateDnd()
      */
     boolean cancelDnd();
 
     /**
-     * Gets the forward state of the specified user.
+     * Gets the forward currently configured for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the user login name
-     * @return the {@link Forward Forward} in case of success; {@code null}
-     *         otherwise.
+     * @return The {@link Forward} in case of success; {@code null} otherwise.
      */
     Forward getForward(String loginName);
 
     /**
-     * Gets the forward state of the user who has opened the session.
+     * Gets the forward currently configured for the user who has opened the session.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
-     * @return the {@link Forward Forward} in case of success; {@code null}
-     *         otherwise.
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @return The {@link Forward} in case of success; {@code null} otherwise.
      * @see #getForward(String)
      */
     Forward getForward();
 
     /**
-     * Cancels the forward for the specified user.
+     * Cancels the active forward for the specified user.
      * <p>
-     * This method does nothing and return {@code true} if there is no forward
+     * This method does nothing and returns {@code true} if there is no forward
      * activated.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #forwardOnNumber(String, Forward.Condition, String)
+     * @see #forwardOnVoiceMail(Forward.Condition, String)
      */
     boolean cancelForward(String loginName);
 
     /**
-     * Cancels the forward for the user who has opened the session.
+     * Cancels the active forward for the user who has opened the session.
      * <p>
-     * This method does nothing and return {@code true} if there is no forward
+     * This method does nothing and returns {@code true} if there is no forward
      * activated.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #cancelForward(String)
+     * @see #forwardOnNumber(String, Forward.Condition)
+     * @see #forwardOnVoiceMail(Forward.Condition)
      */
     boolean cancelForward();
 
     /**
-     * Sets a forward on voice mail with the specified condition, for the specified
-     * user.
+     * Activates a forward to the voice mail with the specified condition, for the specified user.
      * <p>
      * This method will fail and return {@code false} if the user does not have a
-     * voice mail. This can be check by using
-     * {@link UsersService#getByLoginName(String)}.
+     * voice mail. This can be checked by using {@link UsersService#getByLoginName(String)}.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param condition the forward condition
      * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #forwardOnNumber(String, Forward.Condition, String)
+     * @see #cancelForward(String)
      */
     boolean forwardOnVoiceMail(Forward.Condition condition, String loginName);
 
     /**
-     * Sets a forward on voice mail with the specified condition, for the user who
+     * Activates a forward to the voice mail with the specified condition, for the user who
      * has opened the session.
      * <p>
      * This method will fail and return {@code false} if the user does not have a
-     * voice mail. This can be check by using
-     * {@link UsersService#getByLoginName(String)}.
+     * voice mail. This can be checked by using {@link UsersService#getByLoginName(String)}.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param condition the forward condition
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #forwardOnVoiceMail(com.ale.o2g.types.routing.Forward.Condition, String)
+     * @see #forwardOnVoiceMail(Forward.Condition, String)
+     * @see #forwardOnNumber(String, Forward.Condition)
+     * @see #cancelForward()
      */
     boolean forwardOnVoiceMail(Forward.Condition condition);
 
     /**
-     * Sets a forward on the specified number, with the specified condition, for the
-     * specified user.
+     * Activates a forward to the specified number, with the specified condition, for the specified user.
+     * <p>
+     * The number must be authorized by the OmniPCX Enterprise numbering policy.
+     * If a forward is already active, it is replaced by the new one.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param number    the phone number on which the forward is activated
      * @param condition the forward condition
      * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #forwardOnVoiceMail(Forward.Condition, String)
+     * @see #cancelForward(String)
      */
     boolean forwardOnNumber(String number, Forward.Condition condition, String loginName);
 
     /**
-     * Sets a forward on the specified number, with the specified condition, for the
+     * Activates a forward to the specified number, with the specified condition, for the
      * user who has opened the session.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
+     * The number must be authorized by the OmniPCX Enterprise numbering policy.
+     * If a forward is already active, it is replaced by the new one.
+     * <p>
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param number    the phone number on which the forward is activated
      * @param condition the forward condition
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #forwardOnNumber(String, com.ale.o2g.types.routing.Forward.Condition,
-     *      String)
+     * @see #forwardOnNumber(String, Forward.Condition, String)
+     * @see #forwardOnVoiceMail(Forward.Condition)
+     * @see #cancelForward()
      */
     boolean forwardOnNumber(String number, Forward.Condition condition);
 
     /**
-     * Cancels the overflow for the specified user.
+     * Cancels the active overflow for the specified user.
      * <p>
-     * This method does nothing and return {@code true} if there is no overflow
+     * This method does nothing and returns {@code true} if there is no overflow
      * activated.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #overflowOnVoiceMail(Overflow.Condition, String)
      */
     boolean cancelOverflow(String loginName);
 
     /**
-     * Cancels the overflow for the user who has opened the session.
+     * Cancels the active overflow for the user who has opened the session.
      * <p>
-     * This method does nothing and return {@code true} if there is no overflow
+     * This method does nothing and returns {@code true} if there is no overflow
      * activated.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #cancelOverflow(String)
+     * @see #overflowOnVoiceMail(Overflow.Condition)
      */
     boolean cancelOverflow();
 
     /**
-     * Gets the overflow state for the specified user.
+     * Gets the overflow currently configured for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the user login name
-     * @return the {@link Overflow Overflow} in case of success; {@code null}
-     *         otherwise.
+     * @return The {@link Overflow} in case of success; {@code null} otherwise.
      */
     Overflow getOverflow(String loginName);
 
     /**
-     * Gets the overflow state for the user who has opened the session.
+     * Gets the overflow currently configured for the user who has opened the session.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
-     * @return the {@link Overflow Overflow} in case of success; {@code null}
-     *         otherwise.
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @return The {@link Overflow} in case of success; {@code null} otherwise.
      * @see #getOverflow(String)
      */
     Overflow getOverflow();
 
     /**
-     * Activates an overflow on voice mail with the specified condition, for the
-     * specified user.
+     * Activates an overflow to the voice mail with the specified condition, for the specified user.
+     * <p>
+     * The overflow only applies when no forward is active. If an overflow is already active,
+     * it is replaced by the new one.
      * <p>
      * This method will fail and return {@code false} if the user does not have a
-     * voice mail. This can be check by using
-     * {@link UsersService#getByLoginName(String)}.
+     * voice mail. This can be checked by using {@link UsersService#getByLoginName(String)}.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param condition the overflow condition
      * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #cancelOverflow(String)
      */
     boolean overflowOnVoiceMail(Overflow.Condition condition, String loginName);
 
     /**
-     * Activates an overflow on voice mail with the specified condition, for the user
+     * Activates an overflow to the voice mail with the specified condition, for the user
      * who has opened the session.
      * <p>
-     * This method will fail and return {@code false} if the user does not have a
-     * voice mail. This can be check by using
-     * {@link UsersService#getByLoginName(String)}.
+     * The overflow only applies when no forward is active. If an overflow is already active,
+     * it is replaced by the new one.
      * <p>
-     * This method will fail and return {@code false} if it is invoked from a
-     * session opened by an administrator.
-     * 
+     * This method will fail and return {@code false} if the user does not have a
+     * voice mail. This can be checked by using {@link UsersService#getByLoginName(String)}.
+     * <p>
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param condition the overflow condition
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #overflowOnVoiceMail(com.ale.o2g.types.routing.Overflow.Condition,
-     *      String)
+     * @see #overflowOnVoiceMail(Overflow.Condition, String)
+     * @see #cancelOverflow()
      */
     boolean overflowOnVoiceMail(Overflow.Condition condition);
 
@@ -485,54 +499,61 @@ public interface RoutingService extends IService {
 //    boolean overflowOnAssociate(Overflow.Condition condition);
 
     /**
-     * Gets the routing state of the specified user.
+     * Gets the complete routing state of the specified user.
+     * <p>
+     * The routing state includes the forward, overflow, Do Not Disturb and remote
+     * extension activation status in a single call.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the user login name
-     * @return the {@link RoutingState} in case of success; {@code null} otherwise.
+     * @return The {@link RoutingState} in case of success; {@code null} otherwise.
      */
     RoutingState getRoutingState(String loginName);
 
     /**
-     * Gets the routing state of the user who has opened the session.
+     * Gets the complete routing state of the user who has opened the session.
+     * <p>
+     * The routing state includes the forward, overflow, Do Not Disturb and remote
+     * extension activation status in a single call.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
-     * 
-     * @return the {@link RoutingState} in case of success; {@code null} otherwise.
+     *
+     * @return The {@link RoutingState} in case of success; {@code null} otherwise.
      * @see #getRoutingState(String)
      */
     RoutingState getRoutingState();
 
     /**
-     * Asks a snapshot event on the specified user.
+     * Requests a snapshot event to be fired with the current routing state of the specified user.
      * <p>
-     * The event OnRoutingStateChanged will contain the DynamicState
-     * (forward/overflow/dnd state). If a second request is asked since the previous
-     * one is still in progress, it has no effect.
+     * The {@code OnRoutingStateChanged} event will contain the {@link RoutingState}
+     * (forward/overflow/DND state). If a second request is made while the previous one is still
+     * in progress, it has no effect.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
-     * ignored.
-     * 
-     * @param loginName the login name
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     *
+     * @param loginName the user login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean requestSnapshot(String loginName);
 
     /**
-     * Ask a snapshot event.
+     * Requests a snapshot event to be fired with the current routing state.
      * <p>
-     * The event OnRoutingStateChanged will contain the DynamicState
-     * (forward/overflow/dnd state). If a second request is asked since the previous
-     * one is still in progress, it has no effect.
+     * The {@code OnRoutingStateChanged} event will contain the {@link RoutingState}
+     * (forward/overflow/DND state). If a second request is made while the previous one is still
+     * in progress, it has no effect.
      * <p>
-     * If the session has been opened for an administrator, the snapshot event
-     * request is done for all the users. This request is immediately acknowledged
-     * but the processing may take a long time if the number of users is huge.
-     * 
+     * If the session has been opened by an administrator, the snapshot is requested for all users.
+     * The request is immediately acknowledged but processing may take a long time if the number
+     * of users is large.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean requestSnapshot();

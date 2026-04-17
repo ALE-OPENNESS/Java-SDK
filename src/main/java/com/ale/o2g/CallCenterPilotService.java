@@ -21,22 +21,26 @@ package com.ale.o2g;
 import com.ale.o2g.internal.services.IService;
 
 /**
- * The {@code CallCenterPilotService} allows an administrator to monitor CCD
- * pilots.
+ * The {@code CallCenterPilotService} allows an administrator to monitor CCD pilots.
+ * <p>
+ * Monitoring a pilot consists of starting the monitoring with
+ * {@link #monitorStart(String)}, then receiving events on calls arriving on the
+ * pilot, calls being queued, and calls being removed from the queue. When
+ * monitoring is no longer needed, stop it with {@link #monitorStop(String)}.
  * <p>
  * Using this service requires having a <b>CONTACTCENTER_SERVICE</b> license in
- * CAPEX mode, or 40 api-tel-f subscription in OPEX mode (Purple On Demand).
- * 
+ * CAPEX mode, or 40 api-tel-f subscriptions in OPEX mode (Purple On Demand).
+ *
  * @since 2.7
  */
 public interface CallCenterPilotService extends IService {
 
     /**
-     * Start the monitoring on the specified pilot. If a
-     * {@code CallCenterStatisticsEventListener} has been configured. Notifications are
-     * received on this listener on calls on the pilot.
-     * 
-     * @param nodeId      the PCX Enterprise node id
+     * Starts the monitoring of the specified pilot.
+     * <p>
+     * If the pilot is already being monitored, no error is returned.
+     *
+     * @param nodeId      the OmniPCX Enterprise node identifier
      * @param pilotNumber the pilot number
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #monitorStop(int, String)
@@ -46,34 +50,38 @@ public interface CallCenterPilotService extends IService {
     boolean monitorStart(int nodeId, String pilotNumber);
 
     /**
-     * Start the monitoring on the specified pilot. If a
-     * {@code CallCenterStatisticsEventListener} has been configured. Notifications are
-     * received on this listener on calls on the pilot.
-     * 
+     * Starts the monitoring of the specified pilot.
+     * <p>
+     * If the pilot is already being monitored, no error is returned.
+     *
      * @param pilotNumber the pilot number
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #monitorStop(int, String)
+     * @see #monitorStop(String)
      */
     boolean monitorStart(String pilotNumber);
 
     /**
-     * Stop the monitoring on the specified pilot.
-     * 
-     * @param nodeId      the PCX Enterprise node id
+     * Stops the monitoring of the specified pilot.
+     * <p>
+     * If the pilot is not being monitored, no error is returned.
+     *
+     * @param nodeId      the OmniPCX Enterprise node identifier
      * @param pilotNumber the pilot number
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #monitorStart(int, String)
      * @deprecated Use {@link #monitorStop(String)} instead.
-     */    
+     */
 	@Deprecated
     boolean monitorStop(int nodeId, String pilotNumber);
 
     /**
-     * Stop the monitoring on the specified pilot.
-     * 
+     * Stops the monitoring of the specified pilot.
+     * <p>
+     * If the pilot is not being monitored, no error is returned.
+     *
      * @param pilotNumber the pilot number
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #monitorStart(int, String)
-     */    
+     * @see #monitorStart(String)
+     */
     boolean monitorStop(String pilotNumber);
 }

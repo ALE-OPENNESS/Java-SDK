@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import com.ale.o2g.internal.types.ccm.O2GPilot;
 import com.ale.o2g.test.AbstractJsonTest;
 import com.ale.o2g.types.common.ServiceState;
+import com.ale.o2g.types.telephony.call.acd.PilotStatus;
 
 public class PilotTest extends AbstractJsonTest {
 
@@ -40,6 +41,7 @@ public class PilotTest extends AbstractJsonTest {
                 "number": "31000",
                 "name": "Reception",
                 "state": "Opened",
+                "detailedState" : "BLOCKED_ON_BLOCKED_RULE",
                 "waitingTime": 5,
                 "saturation": false,
                 "rules": {
@@ -59,6 +61,7 @@ public class PilotTest extends AbstractJsonTest {
         assertEquals("31000", pilot.getNumber());
         assertEquals("Reception", pilot.getName());
         assertEquals(ServiceState.OPENED, pilot.getState());
+        assertEquals(PilotStatus.BLOCKED_ON_BLOCKED_RULE, pilot.getDetailedState());
         assertEquals(5, pilot.getWaitingTime());
         assertFalse(pilot.isSaturation());
         assertTrue(pilot.isPossibleTransfer());

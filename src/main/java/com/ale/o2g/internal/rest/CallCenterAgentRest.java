@@ -327,7 +327,7 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
     public boolean setWithdraw(WithdrawReason reason) {
         return this.setWithdraw(reason, null);
     }
-
+    
     @Override
     public boolean requestPermanentListening(String agentNumber, String loginName) {
     	if (logger.isDebugEnabled()) {
@@ -356,6 +356,28 @@ public class CallCenterAgentRest extends AbstractRESTService implements CallCent
         return this.requestPermanentListening(agentNumber, null);
     }
 
+	@Override
+	public boolean cancelPermanentListening(String loginName) {
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("cancelPermanentListening() called with: loginName={}", loginName);
+    	}
+
+        URI uriDelete = URIBuilder.appendPath(uri, "permanentListening");
+        if (loginName != null) {
+        	uriDelete = URIBuilder.appendQuery(uriDelete, "loginName", loginName);
+        }
+
+        HttpRequest request = HttpUtil.DELETE(uriDelete);
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+	}
+
+	@Override
+	public boolean cancelPermanentListening() {
+		return this.cancelPermanentListening(null);
+	}
+    
+    
     @Override
     public boolean requestIntrusion(String agentNumber, IntrusionMode intrusionMode, String loginName) {
     	if (logger.isDebugEnabled()) {

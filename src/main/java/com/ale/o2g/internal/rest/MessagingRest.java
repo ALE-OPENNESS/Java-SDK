@@ -264,4 +264,36 @@ public class MessagingRest extends AbstractRESTService implements MessagingServi
         return this.downloadVoiceMessage(mailboxId, voicemailId, wavPath, null);
     }
 
+    @Override
+    public boolean acknowledgeVoiceMessage(String mailBoxId, String voicemailId, String loginName) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("acknowledgeVoiceMessage() called with: mailBoxId={}, voicemailId={}, loginName={}",
+					mailBoxId, voicemailId, loginName);
+		}
+
+        URI uriGet = URIBuilder.appendPath(
+                uri,
+                AssertUtil.requireNotEmpty(mailBoxId, "mailboxId"),
+                "voicemails",
+                AssertUtil.requireNotEmpty(voicemailId, "voicemailId"));
+
+        if (loginName != null) {
+            uriGet = URIBuilder.appendQuery(uriGet, "loginName", loginName);
+        }
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uriGet)
+                .header("Range", "bytes=0-1")
+                .GET()
+                .build();
+
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, BodyHandlers.ofString());
+        return isSucceeded(response);
+    }
+
+    @Override
+    public boolean acknowledgeVoiceMessage(String mailboxId, String voicemailId) {
+        return this.acknowledgeVoiceMessage(mailboxId, voicemailId, null);
+    }
+
 }

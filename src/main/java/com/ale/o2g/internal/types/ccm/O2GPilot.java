@@ -26,6 +26,7 @@ import com.ale.o2g.types.ccm.Pilot;
 import com.ale.o2g.types.ccm.PilotRule;
 import com.ale.o2g.types.ccm.PilotRuleSet;
 import com.ale.o2g.types.common.ServiceState;
+import com.ale.o2g.types.telephony.call.acd.PilotStatus;
 
 /**
  *
@@ -39,6 +40,7 @@ public class O2GPilot {
     private String number;
     private String name;
     private ServiceState state;
+    private PilotStatus detailedState;
     private int waitingTime;
     private boolean saturation;
     private PilotRules rules;
@@ -56,6 +58,7 @@ public class O2GPilot {
                 number,
                 name,
                 state,
+                detailedState,
                 waitingTime,
                 saturation,
                 new PilotRuleSet(mapRules) {},

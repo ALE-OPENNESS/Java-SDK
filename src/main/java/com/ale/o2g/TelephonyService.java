@@ -36,152 +36,161 @@ import com.ale.o2g.types.telephony.call.acd.PilotTransferQueryParameters;
 import com.ale.o2g.types.telephony.device.DeviceState;
 
 /**
- * The {@code TelephonyService} allows a user to initiate a call and to activate
+ * The {@code TelephonyService} allows a user to initiate calls and activate
  * any kind of OmniPCX Enterprise telephony services.
  * <p>
- * Using this service requires having a <b>TELEPHONY_ADVANCED</b> license,
- * except for the 3 basic services
- * {@link #basicMakeCall(String, String, boolean) basicMakeCall},
- * {@link #basicAnswerCall(String) basicAnswerCall} and
- * {@link #basicDropMe(String) basicDropme} that are available without any
- * license.
- * 
+ * Using this service requires a <b>TELEPHONY_ADVANCED</b> license, except for
+ * the three basic services {@link #basicMakeCall(String, String, boolean)},
+ * {@link #basicAnswerCall(String)} and {@link #basicDropMe(String)}, which are
+ * available without any license.
  */
 public interface TelephonyService extends IService {
 
     /**
-     * Initiates a call from the specified device to the specified called number.
+     * Initiates a basic call from the specified device to the specified called number.
+     * <p>
+     * This method does not require a license.
      * <p>
      * If the session is opened by a user, the device phone number must be one of
-     * the user.
+     * the user's devices.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately
-     * 
-     * @param deviceId   the device phone number for which the call is made
-     * @param callee     the called number
-     * @param autoAnswer automatic answer on make call.
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
+     *
+     * @param deviceId   the device phone number used to place the call
+     * @param callee     the called phone number
+     * @param autoAnswer if {@code true}, the callee is called immediately; if {@code false},
+     *                   the user's device is called first before placing the call to the callee
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean basicMakeCall(String deviceId, String callee, boolean autoAnswer);
 
     /**
-     * Initiates a call from the specified device to the specified called number,
-     * with auto answer.
+     * Initiates a basic call from the specified device to the specified called number,
+     * with automatic answer enabled.
+     * <p>
+     * This method does not require a license.
      * <p>
      * If the session is opened by a user, the device phone number must be one of
-     * the user.
-     * 
-     * @param deviceId the device phone number for which the call is made
-     * @param callee   the called number
+     * the user's devices.
+     *
+     * @param deviceId the device phone number used to place the call
+     * @param callee   the called phone number
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #basicMakeCall(String deviceId, String callee, boolean autoAnswer)
+     * @see #basicMakeCall(String, String, boolean)
      */
     boolean basicMakeCall(String deviceId, String callee);
 
     /**
-     * Answers to an incoming ringing call on the specified device.
+     * Answers an incoming ringing call on the specified device.
+     * <p>
+     * This method does not require a license.
      * <p>
      * If the session is opened by a user, the device phone number must be one of
-     * the user.
-     * 
-     * @param deviceId the device phone number
+     * the user's devices.
+     *
+     * @param deviceId the device phone number on which to answer
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean basicAnswerCall(String deviceId);
 
     /**
-     * Exits from the call for the specified user.
+     * Exits from the current call for the specified user.
+     * <p>
+     * This method does not require a license.
+     * <p>
+     * If the call is a single call, it is released; if it is a conference, the
+     * call carries on without the user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * <p>
-     * if the call is a single call, it is released; if it is a conference, the call
-     * carries on without the user.
-     * 
+     *
      * @param loginName the login name for whom the drop is done
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean basicDropMe(String loginName);
 
     /**
-     * Exits from the call for the user who opened the session.
+     * Exits from the current call for the user who opened the session.
      * <p>
-     * If the call is a single call, it is released; if it is a conference, the call
-     * carries on without the user.
+     * This method does not require a license.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * If the call is a single call, it is released; if it is a conference, the
+     * call carries on without the user.
+     * <p>
+     * This method will fail and return {@code false} if it is invoked from a
+     * session opened by an administrator.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #basicDropMe(String loginName)
+     * @see #basicDropMe(String)
      */
     boolean basicDropMe();
 
     /**
-     * Retrieves the calls in progress for the specified user.
+     * Retrieves the calls currently in progress for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
-     * @return the collection of calls in progress in case of success; {@code null}
+     * @return The collection of active {@link Call} objects in case of success; {@code null}
      *         otherwise.
      */
     Collection<Call> getCalls(String loginName);
 
     /**
-     * Retrieves the calls in progress for the user who opened the session.
+     * Retrieves the calls currently in progress for the user who opened the session.
      * <p>
-     * This method will return {@code null} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @return The collection of calls in progress in case of success; {@code null}
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @return The collection of active {@link Call} objects in case of success; {@code null}
      *         otherwise.
-     * @see #getCalls(String loginName)
+     * @see #getCalls(String)
      */
     Collection<Call> getCalls();
 
     /**
-     * Returns the call specified by the call reference for the specified user.
+     * Returns the call identified by the specified reference for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
-     * @param callRef   the call reference
+     *
+     * @param callRef   the unique call reference
      * @param loginName the login name
-     * @return the call in case of success; {@code null} otherwise.
+     * @return The {@link Call} in case of success; {@code null} if not found.
      */
     Call getCall(String callRef, String loginName);
 
     /**
-     * Returns the call specified by the call reference for the user who opened the
-     * session.
+     * Returns the call identified by the specified reference for the user who opened
+     * the session.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
-     * 
-     * @param callRef the call reference
-     * @return the call in case of success; {@code null} otherwise.
+     *
+     * @param callRef the unique call reference
+     * @return The {@link Call} in case of success; {@code null} if not found.
+     * @see #getCall(String, String)
      */
     Call getCall(String callRef);
 
     /**
-     * Attachs the specified correlator data to the specified call.
+     * Attaches the specified correlator data to the specified call.
      * <p>
      * This is used by the application to provide application-related information
-     * (limited to 32 bytes). In general, it is used to give information concerning
-     * a previously established call to the party of a second call.
-     * 
+     * (limited to 32 bytes). In general, it is used to convey context from a
+     * previously established call to the party of a second call.
+     *
      * @param callRef        the call reference
-     * @param deviceId       the device phone number for which the operation is
-     *                       invoked. If the session is opened by a User, the device
-     *                       phone number must be one of the user.
-     * @param correlatorData the correlator data to add
+     * @param deviceId       the device phone number for which the operation is invoked;
+     *                       if the session is opened by a user, this must be one of the
+     *                       user's devices
+     * @param correlatorData the correlator data to attach
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean attachData(String callRef, String deviceId, CorrelatorData correlatorData);
@@ -194,13 +203,15 @@ public interface TelephonyService extends IService {
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately
-     * 
-     * @param deviceId   the device phone number for which the call is made
-     * @param callee     the called number
-     * @param autoAnswer automatic answer on make call.
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
+     *
+     * @param deviceId   the device phone number from which the call is placed; if the
+     *                   session is opened by a user, this must be one of the user's devices
+     * @param callee     the called phone number
+     * @param autoAnswer if {@code true}, the callee is called immediately; if {@code false},
+     *                   the user's device is called first before placing the call to the callee
      * @param loginName  the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
@@ -210,71 +221,77 @@ public interface TelephonyService extends IService {
      * Initiates a call from the specified device to the specified called number for
      * the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately
-     * 
-     * @param deviceId   the device phone number for which the call is made
-     * @param callee     the called number
-     * @param autoAnswer automatic answer on make call.
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
+     *
+     * @param deviceId   the device phone number from which the call is placed; if the
+     *                   session is opened by a user, this must be one of the user's devices
+     * @param callee     the called phone number
+     * @param autoAnswer if {@code true}, the callee is called immediately; if {@code false},
+     *                   the user's device is called first before placing the call to the callee
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #makeCall(String deviceId, String callee, boolean autoAnswer, String
-     *      loginName)
+     * @see #makeCall(String, String, boolean, String)
      */
     boolean makeCall(String deviceId, String callee, boolean autoAnswer);
 
     /**
-     * Initiates a new call to another user (the callee), using the specified
-     * deviceId and options.
+     * Initiates a call from the specified device to the specified called number,
+     * with extended options.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately
-     * 
-     * @param deviceId            the device phone number for which the call is made
-     * @param callee              the called number
-     * @param autoAnswer          automatic answer on make call
-     * @param inhibitProgressTone allows to inhibit the progress tone on the current
-     *                            external call
-     * @param correlatorData      correlator data to add to the call
-     * @param callingNumber       calling number to present to the public network
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
+     * <p>
+     * The {@code callingNumber} can be used to present a different calling number on
+     * the public network in order to mask the real calling extension number.
+     *
+     * @param deviceId            the device phone number from which the call is placed; if the
+     *                            session is opened by a user, this must be one of the user's devices
+     * @param callee              the called phone number
+     * @param autoAnswer          if {@code true}, the callee is called immediately; if {@code false},
+     *                            the user's device is called first before placing the call to the callee
+     * @param inhibitProgressTone {@code true} to inhibit the progress tone on the outbound call
+     * @param correlatorData      correlator data to attach to the call
+     * @param callingNumber       optional calling number to present to the public network, used to mask
+     *                            the real calling extension number
      * @param loginName           the login name
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #makeCall(String deviceId, String callee, boolean autoAnswer)
+     * @see #makeCall(String, String, boolean, String)
      */
     boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
     		CorrelatorData correlatorData, String callingNumber, String loginName);
 
     /**
-     * Initiates a new call to another user (the callee), using the specified
-     * deviceId and options.
+     * Initiates a call from the specified device to the specified called number,
+     * with extended options.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately
-     * 
-     * @param deviceId            the device phone number for which the call is made
-     * @param callee              the called number
-     * @param autoAnswer          automatic answer on make call
-     * @param inhibitProgressTone allows to inhibit the progress tone on the current
-     *                            external call
-     * @param associatedData      correlator data to add to the call
-     * @param callingNumber       calling number to present to the public network
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
+     *
+     * @param deviceId            the device phone number from which the call is placed; if the
+     *                            session is opened by a user, this must be one of the user's devices
+     * @param callee              the called phone number
+     * @param autoAnswer          if {@code true}, the callee is called immediately; if {@code false},
+     *                            the user's device is called first before placing the call to the callee
+     * @param inhibitProgressTone {@code true} to inhibit the progress tone on the outbound call
+     * @param associatedData      correlator data to attach to the call (as a string)
+     * @param callingNumber       optional calling number to present to the public network, used to mask
+     *                            the real calling extension number
      * @param loginName           the login name
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #makeCall(String deviceId, String callee, boolean autoAnswer, String
-     *      loginName)
      * @deprecated Use {@link #makeCall(String, String, boolean, boolean, CorrelatorData, String, String)} instead.
      */
 	@Deprecated
@@ -282,49 +299,55 @@ public interface TelephonyService extends IService {
             String associatedData, String callingNumber, String loginName);
 
     /**
-     * Initiates a new call to another user (the callee), using the specified
-     * deviceId and options.
+     * Initiates a call from the specified device to the specified called number,
+     * with extended options, for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately
-     * 
-     * @param deviceId            the device phone number for which the call is made
-     * @param callee              the called number
-     * @param autoAnswer          automatic answer on make call
-     * @param inhibitProgressTone allows to inhibit the progress tone on the current
-     *                            external call
-     * @param correlatorData      correlator data to add to the call
-     * @param callingNumber       calling number to present to the public network
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
+     * <p>
+     * The {@code callingNumber} can be used to present a different calling number on
+     * the public network in order to mask the real calling extension number.
+     *
+     * @param deviceId            the device phone number from which the call is placed; if the
+     *                            session is opened by a user, this must be one of the user's devices
+     * @param callee              the called phone number
+     * @param autoAnswer          if {@code true}, the callee is called immediately; if {@code false},
+     *                            the user's device is called first before placing the call to the callee
+     * @param inhibitProgressTone {@code true} to inhibit the progress tone on the outbound call
+     * @param correlatorData      correlator data to attach to the call
+     * @param callingNumber       optional calling number to present to the public network, used to mask
+     *                            the real calling extension number
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #makeCall(String, String, boolean, boolean, String, String, String)
+     * @see #makeCall(String, String, boolean, boolean, CorrelatorData, String, String)
      */
     boolean makeCall(String deviceId, String callee, boolean autoAnswer, boolean inhibitProgressTone,
     		CorrelatorData correlatorData, String callingNumber);
 
     /**
-     * Initiates a new call to another user (the callee), using the specified
-     * deviceId and options.
+     * Initiates a call from the specified device to the specified called number,
+     * with extended options, for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately
-     * 
-     * @param deviceId            the device phone number for which the call is made
-     * @param callee              the called number
-     * @param autoAnswer          automatic answer on make call
-     * @param inhibitProgressTone allows to inhibit the progress tone on the current
-     *                            external call
-     * @param associatedData      correlator data to add to the call
-     * @param callingNumber       calling number to present to the public network
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
+     *
+     * @param deviceId            the device phone number from which the call is placed; if the
+     *                            session is opened by a user, this must be one of the user's devices
+     * @param callee              the called phone number
+     * @param autoAnswer          if {@code true}, the callee is called immediately; if {@code false},
+     *                            the user's device is called first before placing the call to the callee
+     * @param inhibitProgressTone {@code true} to inhibit the progress tone on the outbound call
+     * @param associatedData      correlator data to attach to the call (as a string)
+     * @param callingNumber       optional calling number to present to the public network, used to mask
+     *                            the real calling extension number
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #makeCall(String, String, boolean, boolean, String, String, String)
      * @deprecated Use {@link #makeCall(String, String, boolean, boolean, CorrelatorData, String)} instead.
      */
 	@Deprecated
@@ -332,27 +355,25 @@ public interface TelephonyService extends IService {
             String associatedData, String callingNumber);
 
     /**
-     * Initiates a new private call to another user (the callee), using a pin code
-     * and an optional secret code.
+     * Initiates a private call to the specified callee, identified by a PIN code.
+     * <p>
+     * A private call allows the user to flag a call as personal rather than
+     * professional, enabling specific charging processing.
+     * <p>
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately.
-     * 
-     * <p>
-     * The private call is a service which allows a user to specify that the
-     * external call made is personal and not professional. The charging for this
-     * type of call can then be given specific processing. It requires the user
-     * enters a PIN code (Personal Identification Number)
-     * 
-     * @param deviceId   the device phone number for which the call is made
-     * @param callee     the called number
-     * @param autoAnswer automatic answer on make call
-     * @param pin        the PIN code to identify the caller
+     *
+     * @param deviceId   the device phone number from which the call is placed; if the
+     *                   session is opened by a user, this must be one of the user's devices
+     * @param callee     the called phone number
+     * @param autoAnswer if {@code true}, the callee is called immediately; if {@code false},
+     *                   the user's device is called first before placing the call to the callee
+     * @param pin        the PIN code identifying the caller
      * @param secretCode the optional secret code used to confirm the PIN code
      * @param loginName  the login name
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -362,26 +383,25 @@ public interface TelephonyService extends IService {
             String loginName);
 
     /**
-     * Initiates a new private call to another user (the callee), using a pin code
-     * and an optional secret code.
+     * Initiates a private call to the specified callee, identified by a PIN code,
+     * for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
+     * A private call allows the user to flag a call as personal rather than
+     * professional, enabling specific charging processing.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately.
-     * 
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
      * <p>
-     * The private call is a service which allows a user to specify that the
-     * external call made is personal and not professional. The charging for this
-     * type of call can then be given specific processing. It requires the user
-     * enters a PIN code (Personal Identification Number)
-     * 
-     * @param deviceId   the device phone number for which the call is made
-     * @param callee     the called number
-     * @param autoAnswer automatic answer on make call
-     * @param pin        the PIN code to identify the caller
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param deviceId   the device phone number from which the call is placed; if the
+     *                   session is opened by a user, this must be one of the user's devices
+     * @param callee     the called phone number
+     * @param autoAnswer if {@code true}, the callee is called immediately; if {@code false},
+     *                   the user's device is called first before placing the call to the callee
+     * @param pin        the PIN code identifying the caller
      * @param secretCode the optional secret code used to confirm the PIN code
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #makePrivateCall(String, String, boolean, String, String, String)
@@ -389,134 +409,131 @@ public interface TelephonyService extends IService {
     boolean makePrivateCall(String deviceId, String callee, boolean autoAnswer, String pin, String secretCode);
 
     /**
-     * Initiates a new business call to another user (the callee), using the
-     * specified business code.
+     * Initiates a business call to the specified callee, charged to the specified
+     * cost center.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately.
-     * 
-     * @param deviceId     the device phone number for which the call is made
-     * @param callee       the called number
-     * @param autoAnswer   automatic answer on make call
-     * @param businessCode the cost center on which the call will be charged.
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
+     *
+     * @param deviceId     the device phone number from which the call is placed; if the
+     *                     session is opened by a user, this must be one of the user's devices
+     * @param callee       the called phone number
+     * @param autoAnswer   if {@code true}, the callee is called immediately; if {@code false},
+     *                     the user's device is called first before placing the call to the callee
+     * @param businessCode the cost center code to charge the call to
      * @param loginName    the login name
-     * @return {@code true} in case of success; {@code false} otherwise. #see
-     *         {@link #makeBusinessCall(String, String, boolean, String)}
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makeBusinessCall(String, String, boolean, String)
      */
     boolean makeBusinessCall(String deviceId, String callee, boolean autoAnswer, String businessCode, String loginName);
 
     /**
-     * Initiates a new business call to another user (the callee), using the
-     * specified business code.
+     * Initiates a business call to the specified callee, charged to the specified
+     * cost center, for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
      * <p>
-     * If the automatic answer on make call {@code autoAnswer} parameter is set to
-     * {@code false} the deviceId is called before launching the make call to
-     * callee, else callee is called immediately.
-     * 
-     * @param deviceId     the device phone number for which the call is made
-     * @param callee       the called number
-     * @param autoAnswer   automatic answer on make call
-     * @param businessCode the cost center on which the call will be charged.
-     * @return {@code true} in case of success; {@code false} otherwise. #see
-     *         {@link #makeBusinessCall(String, String, boolean, String)}
+     * If {@code autoAnswer} is set to {@code false}, the user's device is called
+     * first before placing the call to the callee; otherwise the callee is called
+     * immediately.
+     *
+     * @param deviceId     the device phone number from which the call is placed; if the
+     *                     session is opened by a user, this must be one of the user's devices
+     * @param callee       the called phone number
+     * @param autoAnswer   if {@code true}, the callee is called immediately; if {@code false},
+     *                     the user's device is called first before placing the call to the callee
+     * @param businessCode the cost center code to charge the call to
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #makeBusinessCall(String, String, boolean, String, String)
      */
     boolean makeBusinessCall(String deviceId, String callee, boolean autoAnswer, String businessCode);
 
     /**
-     * Puts an active call on hold and retrieve a call that has been previously put
-     * in hold.
+     * Puts an active call on hold and retrieves a call that has been previously put
+     * on hold.
      * <p>
      * If the session is opened by a user, the device phone number must be one of
-     * the user.
-     * 
-     * @param callRef  the call reference of the call on hold
-     * @param deviceId the device phone number for which the operation is done
+     * the user's devices.
+     *
+     * @param callRef  the call reference of the active call
+     * @param deviceId the device phone number for which the operation is performed
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean alternate(String callRef, String deviceId);
 
     /**
-     * Answers to an incoming ringing call specified by it reference.
+     * Answers an incoming ringing call specified by its reference.
      * <p>
      * If the session is opened by a user, the device phone number must be one of
-     * the user.
+     * the user's devices.
      * <p>
      * Answering a call will fail if the call state is not correct. The state can be
      * checked by listening to the telephony events, and more specifically by
-     * checking the capabilities of the involved leg. (answer capability on the
-     * leg).
-     * 
-     * @param callRef  the call reference of the call on hold
-     * @param deviceId the device phone number for which the operation is done
+     * checking the capabilities of the involved leg (answer capability on the leg).
+     *
+     * @param callRef  the call reference of the ringing call
+     * @param deviceId the device phone number for which the operation is performed
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean answer(String callRef, String deviceId);
 
     /**
-     * Transfers the active call to another user, without keeping control on this
-     * call.
+     * Transfers the active call to another party without keeping control of the call.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef    the reference of the active call
-     * @param transferTo the phone number to which the call is transfered
-     * @param anonymous  anonymous transfer if this parameter is {@code true}, the
-     *                   call will be transfered as anonymous
+     * @param transferTo the phone number to which the call is transferred
+     * @param anonymous  if {@code true}, the call is transferred anonymously
      * @param loginName  the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean blindTransfer(String callRef, String transferTo, boolean anonymous, String loginName);
 
     /**
-     * Transfers the active call to another user, without keeping control on this
-     * call.
+     * Transfers the active call to another party without keeping control of the call,
+     * for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef    the reference of the active call
-     * @param transferTo the phone number to which the call is transfered
-     * @param anonymous  anonymous transfer if this parameter is {@code true}, the
-     *                   call will be transfered as anonymous
+     * @param transferTo the phone number to which the call is transferred
+     * @param anonymous  if {@code true}, the call is transferred anonymously
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #blindTransfer(String callRef, String transferTo, boolean anonymous,
-     *      String loginName)
+     * @see #blindTransfer(String, String, boolean, String)
      */
     boolean blindTransfer(String callRef, String transferTo, boolean anonymous);
 
     /**
-     * Transfers the active call to another user, without keeping control on this
-     * call, and without being anonymous.
+     * Transfers the active call to another party without keeping control of the call,
+     * and without being anonymous, for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef    the reference of the active call
-     * @param transferTo the phone number to which the call is transfered
+     * @param transferTo the phone number to which the call is transferred
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #blindTransfer(String callRef, String transferTo, boolean anonymous,
-     *      String loginName)
+     * @see #blindTransfer(String, String, boolean, String)
      */
     boolean blindTransfer(String callRef, String transferTo);
 
     /**
-     * Requests a callback on the call specified by the call reference for the
-     * specified user.
+     * Requests a callback on the specified call for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef   the call reference
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -524,84 +541,84 @@ public interface TelephonyService extends IService {
     boolean callback(String callRef, String loginName);
 
     /**
-     * Requests a callback on the call specified by the call reference for the user
-     * who opened the session.
+     * Requests a callback on the specified call for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef the call reference
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #callback(String callRef, String loginName)
+     * @see #callback(String, String)
      */
     boolean callback(String callRef);
 
     /**
-     * Returns the legs involved by the call specified by the call reference for the
-     * specified user.
+     * Returns the legs involved in the specified call for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef   the call reference
      * @param loginName the login name
-     * @return the collection of legs.
+     * @return The collection of {@link Leg} objects in case of success; {@code null}
+     *         otherwise.
      */
     Collection<Leg> getLegs(String callRef, String loginName);
 
     /**
-     * Returns the legs involved by the call specified by the call reference for the
-     * user who opened the session.
+     * Returns the legs involved in the specified call for the user who opened the
+     * session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef the call reference
-     * @return the collection of legs.
-     * @see #getLegs(String callRef, String loginName)
+     * @return The collection of {@link Leg} objects in case of success; {@code null}
+     *         otherwise.
+     * @see #getLegs(String, String)
      */
     Collection<Leg> getLegs(String callRef);
 
     /**
-     * Returns the leg specified by its id, involved by the call specified by the
-     * call reference for the specified user.
+     * Returns the leg specified by its identifier, involved in the specified call,
+     * for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef   the call reference
      * @param legId     the leg identifier
      * @param loginName the login name
-     * @return the leg
+     * @return The {@link Leg} in case of success; {@code null} otherwise.
      */
     Leg getLeg(String callRef, String legId, String loginName);
 
     /**
-     * Returns the leg specified by its id, involved by the call specified by the
-     * call reference for the user who opened the session.
+     * Returns the leg specified by its identifier, involved in the specified call,
+     * for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef the call reference
      * @param legId   the leg identifier
-     * @return the leg
-     * @see #getLeg(String callRef, String legId, String loginName)
+     * @return The {@link Leg} in case of success; {@code null} otherwise.
+     * @see #getLeg(String, String, String)
      */
     Leg getLeg(String callRef, String legId);
 
     /**
-     * Exits from the call specified by its reference for the specified user.
+     * Exits from the specified call for the specified user.
+     * <p>
+     * If the call is a single call, it is released; if it is a conference, the
+     * call carries on without the user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * <p>
-     * if the call is a single call, it is released; if it is a conference, the call
-     * carries on without the user.
-     * 
+     *
      * @param callRef   the call reference
      * @param loginName the login name for whom the drop is done
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -609,58 +626,56 @@ public interface TelephonyService extends IService {
     boolean dropme(String callRef, String loginName);
 
     /**
-     * Exits from the call specified by its reference for the user who opened the
-     * session.
+     * Exits from the specified call for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
+     * If the call is a single call, it is released; if it is a conference, the
+     * call carries on without the user.
      * <p>
-     * if the call is a single call, it is released; if it is a conference, the call
-     * carries on without the user.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef the call reference
-     * @return {@code true} in case of success; {@code false} otherwise. #see
-     *         dropme(String callRef, String loginName)
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #dropme(String, String)
      */
     boolean dropme(String callRef);
 
     /**
-     * Puts on hold the call specified by its reference, on the specified device,
-     * for the specified user.
+     * Puts the specified call on hold on the specified device for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef   the call reference
-     * @param deviceId  the device phone number from which the call put on hold
+     * @param deviceId  the device phone number from which the call is put on hold
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean hold(String callRef, String deviceId, String loginName);
 
     /**
-     * Puts on hold the call specified by its reference, on the specified device,
-     * for the user who opened the session.
+     * Puts the specified call on hold on the specified device for the user who
+     * opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef  the call reference
-     * @param deviceId the device phone number for which the call is made
+     * @param deviceId the device phone number from which the call is put on hold
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #hold(String callRef, String deviceId, String loginName)
+     * @see #hold(String, String, String)
      */
     boolean hold(String callRef, String deviceId);
 
     /**
-     * Makes a 3-party conference with a specified active call and a specified held
-     * call for the specified user.
+     * Creates a 3-party conference from the specified active call and the specified
+     * held call for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef     the active call reference
      * @param heldCallRef the held call reference
      * @param loginName   the login name
@@ -669,28 +684,26 @@ public interface TelephonyService extends IService {
     boolean merge(String callRef, String heldCallRef, String loginName);
 
     /**
-     * Makes a 3-party conference with a specified active call and a specified held
-     * call , for the user who opened the session.
+     * Creates a 3-party conference from the specified active call and the specified
+     * held call for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef     the active call reference
      * @param heldCallRef the held call reference
-     * 
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #merge(String callRef, String heldCallRef, String loginName)
+     * @see #merge(String, String, String)
      */
     boolean merge(String callRef, String heldCallRef);
 
     /**
-     * Redirects an outgoing ringing call specified by its reference to the voice
-     * mail of the called user.
+     * Redirects an outgoing ringing call to the voice mail of the called user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef   the ringing call reference
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -698,152 +711,159 @@ public interface TelephonyService extends IService {
     boolean overflowToVoiceMail(String callRef, String loginName);
 
     /**
-     * Redirects an outgoing ringing call specified by its reference to the voice
-     * mail of the called user.
+     * Redirects an outgoing ringing call to the voice mail of the called user,
+     * for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef the ringing call reference
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #overflowToVoiceMail(String callRef, String loginName)
+     * @see #overflowToVoiceMail(String, String)
      */
     boolean overflowToVoiceMail(String callRef);
 
     /**
-     * Gets the telephonic state and capabilities for the specified user.
+     * Returns a snapshot of the current telephonic state for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
-     * @return The telephonic state in case of success; {@code null} otherwise.
+     * @return The {@link TelephonicState} in case of success; {@code null} otherwise.
      */
     TelephonicState getState(String loginName);
 
     /**
-     * Gets the telephonic state and capabilities for the user who opened the
+     * Returns a snapshot of the current telephonic state for the user who opened the
      * session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @return The telephonic state in case of success; {@code null} otherwise.
-     * @see #getState(String loginName)
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @return The {@link TelephonicState} in case of success; {@code null} otherwise.
+     * @see #getState(String)
      */
     TelephonicState getState();
 
     /**
-     * Parks the specified active call to a target device. If the device is not
-     * provided, the call will be parked on the current device.
+     * Parks the specified active call on a target device.
+     * <p>
+     * If {@code parkTo} is not provided, the call is parked on the current device.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef   the active call reference
-     * @param parkTo    the target device
+     * @param parkTo    the target device extension number, or {@code null} to park
+     *                  on the current device
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean park(String callRef, String parkTo, String loginName);
 
     /**
-     * Parks the specified active call to a target device. If the device is not
-     * provided, the call will be parked on the current device.
+     * Parks the specified active call on a target device, for the user who opened
+     * the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * If {@code parkTo} is not provided, the call is parked on the current device.
+     * <p>
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef the active call reference
-     * @param parkTo  the target device
+     * @param parkTo  the target device extension number, or {@code null} to park
+     *                on the current device
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #park(String callRef, String parkTo, String loginName)
+     * @see #park(String, String, String)
      */
     boolean park(String callRef, String parkTo);
 
     /**
-     * Parks the specified active call on the current device.
+     * Parks the specified active call on the current device, for the user who opened
+     * the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef the active call reference
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #park(String callRef, String parkTo, String loginName)
+     * @see #park(String, String, String)
      */
     boolean park(String callRef);
 
     /**
-     * Returns the list of participants in the specified call.
+     * Returns the participants of the specified call for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef   the call reference
      * @param loginName the login name
-     * @return the collection of participants in case of success; {@code null}
-     *         otherwise.
+     * @return The collection of {@link Participant} objects in case of success;
+     *         {@code null} otherwise.
      */
     Collection<Participant> getParticipants(String callRef, String loginName);
 
     /**
-     * Returns the list of participants in a the specified call.
+     * Returns the participants of the specified call for the user who opened the
+     * session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef the call reference
-     * @return the collection of participants in case of success; {@code null}
-     *         otherwise.
-     * @see #getParticipants(String callRef, String loginName)
+     * @return The collection of {@link Participant} objects in case of success;
+     *         {@code null} otherwise.
+     * @see #getParticipants(String, String)
      */
     Collection<Participant> getParticipants(String callRef);
 
     /**
-     * Returns the specified participant in the specified call.
+     * Returns the specified participant in the specified call for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef       the call reference
      * @param participantId the participant identifier
      * @param loginName     the login name
-     * @return the participant in case of success; {@code null} otherwise.
+     * @return The {@link Participant} in case of success; {@code null} otherwise.
      */
     Participant getParticipant(String callRef, String participantId, String loginName);
 
     /**
-     * Returns the specified participant in the specified call.
+     * Returns the specified participant in the specified call for the user who
+     * opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef       the call reference
      * @param participantId the participant identifier
-     * @return the participant in case of success; {@code null} otherwise.
-     * @see #getParticipant(String callRef, String participantId, String loginName)
+     * @return The {@link Participant} in case of success; {@code null} otherwise.
+     * @see #getParticipant(String, String, String)
      */
     Participant getParticipant(String callRef, String participantId);
 
     /**
-     * Drops the specified participant from the specified call for the specified
-     * user.
+     * Drops the specified participant from the specified call for the specified user.
      * <p>
-     * If the call is a single call, it is released; if it is a conference, the call
-     * carries on without the participant.
+     * If the call is a single call, it is released; if it is a conference, the
+     * call carries on without the participant.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef       the call reference
      * @param participantId the participant identifier
      * @param loginName     the login name
-     * @return the participant in case of success; {@code null} otherwise.
+     * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean dropParticipant(String callRef, String participantId, String loginName);
 
@@ -851,55 +871,53 @@ public interface TelephonyService extends IService {
      * Drops the specified participant from the specified call for the user who
      * opened the session.
      * <p>
-     * If the call is a single call, it is released; if it is a conference, the call
-     * carries on without the participant.
+     * If the call is a single call, it is released; if it is a conference, the
+     * call carries on without the participant.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef       the call reference
      * @param participantId the participant identifier
-     * @return the participant in case of success; {@code null} otherwise.
-     * @see #dropParticipant(String callRef, String participantId, String loginName)
+     * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #dropParticipant(String, String, String)
      */
     boolean dropParticipant(String callRef, String participantId);
 
     /**
-     * Hangs on an active call, all the parties are released.
+     * Releases the specified call; all parties are disconnected.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
-     * @param callRef   the call reference to hang on
+     *
+     * @param callRef   the call reference
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean release(String callRef, String loginName);
 
     /**
-     * Hangs on an active call, all the parties are released.
+     * Releases the specified call for the user who opened the session; all parties
+     * are disconnected.
      * <p>
-     * If the call is a single call, it is released; if it is a conference, the call
-     * carries on without the participant.
-     * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @param callRef the call reference to hang on
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param callRef the call reference
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #release(String callRef, String loginName)
+     * @see #release(String, String)
      */
     boolean release(String callRef);
 
     /**
-     * Releases the current call (active or ringing) to retrieve a previously put in
-     * hold call (cancel a consultation call).
+     * Releases the current call (active or ringing) to retrieve a previously held
+     * call, cancelling a consultation call.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef        the held call reference
      * @param deviceId       the device phone number for which the operation is done
      * @param enquiryCallRef the reference of the enquiry call to cancel
@@ -909,32 +927,28 @@ public interface TelephonyService extends IService {
     boolean reconnect(String callRef, String deviceId, String enquiryCallRef, String loginName);
 
     /**
-     * Releases the current call (active or ringing) to retrieve a previously put in
-     * hold call (cancel a consultation call).
+     * Releases the current call (active or ringing) to retrieve a previously held
+     * call, cancelling a consultation call, for the user who opened the session.
      * <p>
-     * If the call is a single call, it is released; if it is a conference, the call
-     * carries on without the participant.
-     * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef        the held call reference
      * @param deviceId       the device phone number for which the operation is done
      * @param enquiryCallRef the reference of the enquiry call to cancel
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #reconnect(String callRef, String deviceId, String enquiryCallRef,
-     *      String loginName)
+     * @see #reconnect(String, String, String, String)
      */
     boolean reconnect(String callRef, String deviceId, String enquiryCallRef);
 
     /**
-     * Starts, stops, pauses or resumes the recording of a the specified call.
+     * Starts, stops, pauses, or resumes the recording of the specified call.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
-     * @param callRef   the reference of the recorded call
+     *
+     * @param callRef   the reference of the call to record
      * @param action    the recording action
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -942,91 +956,94 @@ public interface TelephonyService extends IService {
     boolean doRecordAction(String callRef, RecordingAction action, String loginName);
 
     /**
-     * Starts, stops, pauses or resumes the recording of a the specified call.
+     * Starts, stops, pauses, or resumes the recording of the specified call,
+     * for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @param callRef the reference of the recorded call
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param callRef the reference of the call to record
      * @param action  the recording action
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #doRecordAction(String callRef, RecordingAction action, String
-     *      loginName)
+     * @see #doRecordAction(String, RecordingAction, String)
      */
     boolean doRecordAction(String callRef, RecordingAction action);
 
     /**
-     * Redirects an incoming ringing call to another user or number, instead of
-     * responding to it. If {@code redirectTo} is equal to {@code VOICEMAIL},
-     * redirect the incoming ringing call to the user voice mail.
+     * Redirects an incoming ringing call to another number or to voice mail, instead
+     * of answering it.
+     * <p>
+     * If {@code redirectTo} is equal to {@code "VOICEMAIL"}, the incoming ringing
+     * call is redirected to the user's voice mail.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef    the incoming ringing call reference
-     * @param redirectTo Phone number of the redirection, or "VOICEMAIL"
-     * @param anonymous  anonymous redirection if this parameter is {@code true},
-     *                   the call will be redirected as anonymous
+     * @param redirectTo the phone number of the redirection, or {@code "VOICEMAIL"}
+     * @param anonymous  if {@code true}, the call is redirected anonymously
      * @param loginName  the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean redirect(String callRef, String redirectTo, boolean anonymous, String loginName);
 
     /**
-     * Redirects an incoming ringing call to another user or number, instead of
-     * responding to it. If {@code redirectTo} is equal to {@code VOICEMAIL},
-     * redirect the incoming ringing call to the user voice mail.
+     * Redirects an incoming ringing call to another number or to voice mail, instead
+     * of answering it, for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * If {@code redirectTo} is equal to {@code "VOICEMAIL"}, the incoming ringing
+     * call is redirected to the user's voice mail.
+     * <p>
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef    the incoming ringing call reference
-     * @param redirectTo Phone number of the redirection, or "VOICEMAIL"
-     * @param anonymous  anonymous redirection if this parameter is {@code true},
-     *                   the call will be redirected as anonymous
+     * @param redirectTo the phone number of the redirection, or {@code "VOICEMAIL"}
+     * @param anonymous  if {@code true}, the call is redirected anonymously
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #redirect(String callRef, String redirectTo, boolean anonymous, String
-     *      loginName)
+     * @see #redirect(String, String, boolean, String)
      */
     boolean redirect(String callRef, String redirectTo, boolean anonymous);
 
     /**
-     * Redirects an incoming ringing call to another user or number, instead of
-     * responding to it. If {@code redirectTo} is equal to {@code VOICEMAIL},
-     * redirect the incoming ringing call to the user voice mail. without being
-     * anonymous.
+     * Redirects an incoming ringing call to another number or to voice mail, without
+     * being anonymous, for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * If {@code redirectTo} is equal to {@code "VOICEMAIL"}, the incoming ringing
+     * call is redirected to the user's voice mail.
+     * <p>
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef    the incoming ringing call reference
-     * @param redirectTo Phone number of the redirection, or "VOICEMAIL"
+     * @param redirectTo the phone number of the redirection, or {@code "VOICEMAIL"}
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #redirect(String callRef, String redirectTo, boolean anonymous, String
-     *      loginName)
+     * @see #redirect(String, String, boolean, String)
      */
     boolean redirect(String callRef, String redirectTo);
 
     /**
-     * Retrieves a call that has been previously put in hold.
+     * Retrieves a call that has been previously put on hold, for the user who
+     * opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef  the held call reference
      * @param deviceId the device phone number for which the operation is done
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #retrieve(String, String, String)
      */
     boolean retrieve(String callRef, String deviceId);
 
     /**
-     * Retrieves a call that has been previously put in hold.
+     * Retrieves a call that has been previously put on hold.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef   the held call reference
      * @param deviceId  the device phone number for which the operation is done
      * @param loginName the login name
@@ -1036,7 +1053,7 @@ public interface TelephonyService extends IService {
 
     /**
      * Sends DTMF codes on the specified active call.
-     * 
+     *
      * @param callRef  the active call reference
      * @param deviceId the device phone number for which the operation is done
      * @param number   the DTMF codes to send
@@ -1045,27 +1062,26 @@ public interface TelephonyService extends IService {
     boolean sendDtmf(String callRef, String deviceId, String number);
 
     /**
-     * Sends the account info for the specified call, on the specified device.
+     * Sends the transaction code for the specified call on the specified device.
      * <p>
-     * This operation is used by a CCD agent to send the transaction code at the end
-     * of the call. The string value MUST complain with the transaction code
-     * accepted by OXE (that is numerical value only)
-     * 
+     * Used by a CCD agent to send the transaction code at the end of a call.
+     * The value must comply with the OmniPCX Enterprise transaction code format
+     * (numeric values only).
+     *
      * @param callRef     the call reference
      * @param deviceId    the device phone number for which the operation is done
-     * @param accountInfo the transaction code
+     * @param accountInfo the transaction code (numeric values only)
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean sendAccountInfo(String callRef, String deviceId, String accountInfo);
 
     /**
-     * Transfers a specified active call to a specified held call for the specified
-     * user.
+     * Transfers the specified active call to the specified held call.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param callRef     the active call reference
      * @param heldCallRef the held call reference
      * @param loginName   the login name
@@ -1074,28 +1090,28 @@ public interface TelephonyService extends IService {
     boolean transfer(String callRef, String heldCallRef, String loginName);
 
     /**
-     * Transfers a specified active call to a specified held call for the specified
-     * user.
+     * Transfers the specified active call to the specified held call, for the user
+     * who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param callRef     the active call reference
      * @param heldCallRef the held call reference
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #transfer(String callRef, String heldCallRef, String loginName)
+     * @see #transfer(String, String, String)
      */
     boolean transfer(String callRef, String heldCallRef);
 
     /**
-     * Logs the specified user on a specified desk sharing set.
+     * Logs the specified user onto a desk sharing set.
      * <p>
-     * The user must be configured as a Desk sharing user.
+     * The user must be configured as a desk sharing user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param dssDeviceNumber the desk sharing set phone number
      * @param loginName       the login name
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -1104,29 +1120,28 @@ public interface TelephonyService extends IService {
     boolean deskSharingLogOn(String dssDeviceNumber, String loginName);
 
     /**
-     * Logs on the user who has open the session on a specified device desk sharing
-     * set.
+     * Logs the user who opened the session onto a desk sharing set.
      * <p>
-     * The user must be configured as a Desk sharing user.
+     * The user must be configured as a desk sharing user.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param dssDeviceNumber the desk sharing set phone number
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #deskSharingLogOn(String dssDeviceNumber, String loginName)
+     * @see #deskSharingLogOn(String, String)
      */
     boolean deskSharingLogOn(String dssDeviceNumber);
 
     /**
-     * Logs off the specified user from the desk sharing set.
+     * Logs the specified user off from their desk sharing set.
      * <p>
-     * The user must be configured as a Desk sharing user.
+     * The user must be configured as a desk sharing user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #deskSharingLogOn(String, String)
@@ -1134,81 +1149,84 @@ public interface TelephonyService extends IService {
     boolean deskSharingLogOff(String loginName);
 
     /**
-     * Logs off the user who has open the session from the desk sharing set.
+     * Logs the user who opened the session off from their desk sharing set.
      * <p>
-     * The user must be configured as a Desk sharing user.
+     * The user must be configured as a desk sharing user.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #deskSharingLogOff(String loginName)
+     * @see #deskSharingLogOff(String)
      */
     boolean deskSharingLogOff();
 
     /**
-     * Gets states of all devices of the specified user.
+     * Returns the operational state of all devices belonging to the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
-     * @return The collection of device state in case of success; {@code null}
-     *         otherwise.
+     * @return The collection of {@link DeviceState} objects in case of success;
+     *         {@code null} otherwise.
      */
     Collection<DeviceState> getDevicesState(String loginName);
 
     /**
-     * Gets states of all devices of the user who has open the session.
+     * Returns the operational state of all devices belonging to the user who opened
+     * the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @return The collection of device state in case of success; {@code null}
-     *         otherwise.
-     * @see #getDevicesState(String loginName)
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @return The collection of {@link DeviceState} objects in case of success;
+     *         {@code null} otherwise.
+     * @see #getDevicesState(String)
      */
     Collection<DeviceState> getDevicesState();
 
     /**
-     * Gets state of the specified device of the specified user.
+     * Returns the operational state of the specified device of the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
-     * @param deviceId  the device phone number for which the operation is done
+     *
+     * @param deviceId  the device phone number
      * @param loginName the login name
-     * @return The device state in case of success; {@code null} otherwise.
+     * @return The {@link DeviceState} in case of success; {@code null} otherwise.
+     * @see #getDevicesState(String)
      */
     DeviceState getDeviceState(String deviceId, String loginName);
 
     /**
-     * Gets state of the specified device of the user who has open the session.
+     * Returns the operational state of the specified device of the user who opened
+     * the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @param deviceId the device phone number for which the operation is done
-     * @return The device state in case of success; {@code null} otherwise.
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param deviceId the device phone number
+     * @return The {@link DeviceState} in case of success; {@code null} otherwise.
+     * @see #getDeviceState(String, String)
      */
     DeviceState getDeviceState(String deviceId);
 
     /**
-     * Activate or deactivate the interphony by simulating pressing the key on the
-     * specified device.
+     * Toggles interphony or hands-free mode on the specified device.
      * <ul>
-     * <li>it activates or deactivates the microphone if the device has an outgoing
-     * or established call
-     * <li>it activates or deactivates the interphony if the device is idle
-     * <li>it has no effect if the device is ringing on incoming call
+     * <li>activates or deactivates the microphone if the device has an outgoing or
+     * established call
+     * <li>activates or deactivates the interphony if the device is idle
+     * <li>has no effect if the device is ringing on an incoming call
      * </ul>
      * <p>
-     * This operation is done in blind mode: no state event is provided on the push
+     * This operation is done in blind mode: no state event is raised on the push,
      * but when the device returns to idle after a call, the microphone comes back
-     * in the active state.
-     * 
+     * to the active state.
+     *
      * @param deviceId the device phone number for which the operation is done
      * @return {@code true} in case of success; {@code false} otherwise.
      * @since 2.6
@@ -1216,136 +1234,145 @@ public interface TelephonyService extends IService {
     boolean toggleInterphony(String deviceId);
 
     /**
-     * Picks up the specified incoming call for another user.
-     * 
-     * @param deviceId         the device phone number for which the operation is
-     *                         done
-     * @param otherCallRef     reference of the call to pickup (on the remote user)
+     * Picks up an incoming call ringing on another user's device.
+     *
+     * @param deviceId         the device phone number from which the pickup is
+     *                         performed; if the session is opened by a user, this
+     *                         must be one of the user's devices
+     * @param otherCallRef     the reference of the call to pick up on the remote user
      * @param otherPhoneNumber the phone number on which the call is ringing
-     * @param autoAnswer       {@code true} to automatically answer the call after
-     *                         the pickup.
+     * @param autoAnswer       if {@code true}, the call is automatically answered
+     *                         after pickup
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean pickUp(String deviceId, String otherCallRef, String otherPhoneNumber, boolean autoAnswer);
 
     /**
-     * Picks up the specified incoming call for another user, without auto answer.
-     * 
-     * @param deviceId         the device phone number for which the operation is
-     *                         done
-     * @param otherCallRef     Reference of the call to pickup (on the remote user)
-     * @param otherPhoneNumber the phone number on which the call is to pickup
+     * Picks up an incoming call ringing on another user's device, without automatic
+     * answer.
+     *
+     * @param deviceId         the device phone number from which the pickup is
+     *                         performed; if the session is opened by a user, this
+     *                         must be one of the user's devices
+     * @param otherCallRef     the reference of the call to pick up on the remote user
+     * @param otherPhoneNumber the phone number on which the call is ringing
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #pickUp(String deviceId, String otherCallRef, String otherPhoneNumber,
-     *      boolean autoAnswer)
+     * @see #pickUp(String, String, String, boolean)
      */
     boolean pickUp(String deviceId, String otherCallRef, String otherPhoneNumber);
 
     /**
-     * UnParks a call from a target device.
-     * 
-     * @param heldCallRef Reference of the held call.
-     * @param deviceId    the device from where the unpark request is requested.
+     * Unparks a previously parked call onto the specified device.
+     *
+     * @param heldCallRef the reference of the parked call
+     * @param deviceId    the device from which the unpark request is made
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean unPark(String heldCallRef, String deviceId);
 
     /**
-     * Performs an intrusion in the active call of a called user.
+     * Intrudes into the active call of a busy user.
      * <p>
-     * No parameter is required to invoke the intrusion: it only depends on the
-     * current capability intrusion of the current device. It is based on the fact
-     * that the current device must be in releasing state while calling a user which
-     * is in busy call with another user, the current device has the intrusion
-     * capability and the 2 users engaged in the call have the capability to allow
-     * intrusion.
-     * </p>
-     * 
-     * @param deviceId the device from where the unpark request is requested.
+     * Intrusion requires that the current device is in releasing state while calling
+     * a user who is engaged in a call, and that both the current device and the
+     * engaged users have the intrusion capability configured.
+     * <p>
+     * Available from O2G 2.4.
+     *
+     * @param deviceId the device from which the intrusion is initiated
      * @return {@code true} in case of success; {@code false} otherwise.
      * @since O2G 2.4
      */
     boolean intrusion(String deviceId);
 
     /**
-     * Retrieves the specified user hunting group status.
+     * Returns the hunting group login status of the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
-     * @return the hunting group status in case of success; {@code null} otherwise.
+     * @return The {@link HuntingGroupStatus} in case of success; {@code null}
+     *         otherwise.
      */
     HuntingGroupStatus getHuntingGroupStatus(String loginName);
 
     /**
-     * Retrieves the hunting group status of the user who has opened the session.
+     * Returns the hunting group login status of the user who opened the session.
      * <p>
-     * This method will return {@code null} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @return the hunting group status in case of success; {@code null} otherwise.
-     * @see #getHuntingGroupStatus(String loginName)
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @return The {@link HuntingGroupStatus} in case of success; {@code null}
+     *         otherwise.
+     * @see #getHuntingGroupStatus(String)
      */
     HuntingGroupStatus getHuntingGroupStatus();
 
     /**
-     * Logs on the specified user in his current hunting group.
+     * Logs the specified user into their current hunting group.
      * <p>
-     * The user must be configured as member of a hunting group.
+     * The user must be configured as a member of a hunting group.
+     * Has no effect and returns {@code true} if the user is already logged in.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #huntingGroupLogOn(String)
+     * @see #huntingGroupLogOff(String)
      */
     boolean huntingGroupLogOn(String loginName);
 
     /**
-     * Logs on the user who has opened the session in his current hunting group.
+     * Logs the user who opened the session into their current hunting group.
      * <p>
-     * The user must be configured as member of a hunting group.
+     * The user must be configured as a member of a hunting group.
+     * Has no effect and returns {@code true} if the user is already logged in.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #huntingGroupLogOn(String)
      */
     boolean huntingGroupLogOn();
 
     /**
-     * Logs off the specified user from his current hunting group.
+     * Logs the specified user off from their current hunting group.
      * <p>
-     * The user must be configured as member of a hunting group.
+     * The user must be configured as a member of a hunting group.
+     * Has no effect and returns {@code true} if the user is already logged off.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #huntingGroupLogOn(String)
      */
     boolean huntingGroupLogOff(String loginName);
 
     /**
-     * Logs off the user who has opened the session from his current hunting group.
+     * Logs the user who opened the session off from their current hunting group.
      * <p>
-     * The user must be configured as member of a hunting group.
+     * The user must be configured as a member of a hunting group.
+     * Has no effect and returns {@code true} if the user is already logged off.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #huntingGroupLogOff(String loginName)
+     * @see #huntingGroupLogOff(String)
      */
     boolean huntingGroupLogOff();
 
     /**
-     * Sets the specified user as member of an existing hunting group.
+     * Adds the specified user as a member of an existing hunting group.
      * <p>
      * The request will fail if the hunting group does not exist. If the user
      * already belongs to the group, nothing is done and {@code true} is returned.
@@ -1353,7 +1380,7 @@ public interface TelephonyService extends IService {
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param hgNumber  the hunting group number
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -1363,15 +1390,14 @@ public interface TelephonyService extends IService {
     boolean addHuntingGroupMember(String hgNumber, String loginName);
 
     /**
-     * Sets the user who has opened the session as member of an existing hunting
-     * group.
+     * Adds the user who opened the session as a member of an existing hunting group.
      * <p>
      * The request will fail if the hunting group does not exist. If the user
      * already belongs to the group, nothing is done and {@code true} is returned.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param hgNumber the hunting group number
      * @return {@code true} in case of success; {@code false} otherwise.
      * @deprecated Use {@link #addMeToHuntingGroup(String)} instead.
@@ -1388,7 +1414,7 @@ public interface TelephonyService extends IService {
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param hgNumber  the hunting group number
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
@@ -1398,14 +1424,14 @@ public interface TelephonyService extends IService {
     boolean deleteHuntingGroupMember(String hgNumber, String loginName);
 
     /**
-     * Removes the specified user from an existing hunting group.
+     * Removes the user who opened the session from an existing hunting group.
      * <p>
      * The request will fail if the hunting group does not exist. If the user does
      * not belong to the group, nothing is done and {@code true} is returned.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param hgNumber the hunting group number
      * @return {@code true} in case of success; {@code false} otherwise.
      * @deprecated Use {@link #removeMeFromHuntingGroup(String)} instead.
@@ -1415,7 +1441,7 @@ public interface TelephonyService extends IService {
 
     
     /**
-     * Sets the specified user as member of an hunting group.
+     * Adds the specified user as a member of an existing hunting group.
      * <p>
      * The request will fail if the hunting group does not exist. If the user
      * already belongs to the group, nothing is done and {@code true} is returned.
@@ -1423,24 +1449,26 @@ public interface TelephonyService extends IService {
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param hgNumber  the hunting group number
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #removeMeFromHuntingGroup(String, String)
      */
     boolean addMeToHuntingGroup(String hgNumber, String loginName);
 
     /**
-     * Sets the user who has opened the session as member of a hunting group.
+     * Adds the user who opened the session as a member of an existing hunting group.
      * <p>
      * The request will fail if the hunting group does not exist. If the user
      * already belongs to the group, nothing is done and {@code true} is returned.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param hgNumber the hunting group number
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #addMeToHuntingGroup(String, String)
      */
     boolean addMeToHuntingGroup(String hgNumber);
 
@@ -1453,338 +1481,324 @@ public interface TelephonyService extends IService {
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param hgNumber  the hunting group number
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #addMeToHuntingGroup(String, String)
      */
     boolean removeMeFromHuntingGroup(String hgNumber, String loginName);
 
     /**
-     * Removes the specified user from an existing hunting group.
+     * Removes the user who opened the session from an existing hunting group.
      * <p>
      * The request will fail if the hunting group does not exist. If the user does
      * not belong to the group, nothing is done and {@code true} is returned.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @param hgNumber the hunting group number
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #removeMeFromHuntingGroup(String, String)
      */
     boolean removeMeFromHuntingGroup(String hgNumber);
 
     /**
-     * Gets the list of hunting groups existing on the OXE node the specified user
-     * belongs to.
+     * Returns the hunting groups available on the OmniPCX Enterprise node the
+     * specified user belongs to.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
-     * @return the hunting groups result in case of success; {@code null} otherwise.
+     * @return The {@link HuntingGroups} in case of success; {@code null} otherwise.
      */
     HuntingGroups queryHuntingGroups(String loginName);
 
     /**
-     * Gets the list of hunting groups existing on the OXE node the user who has
-     * opened the session belongs to.
+     * Returns the hunting groups available on the OmniPCX Enterprise node the user
+     * who opened the session belongs to.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @return the hunting groups result in case of success; {@code null} otherwise.
-     * @see #getHuntingGroupStatus(String) getHuntingGroupStatus
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @return The {@link HuntingGroups} in case of success; {@code null} otherwise.
+     * @see #queryHuntingGroups(String)
      */
     HuntingGroups queryHuntingGroups();
 
     /**
-     * Returns the list of callback requests for the specified user.
+     * Returns the pending callback requests for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
-     * @return the collection of callback in case of success; {@code null}
-     *         otherwise.
+     * @return The collection of {@link Callback} objects in case of success;
+     *         {@code null} otherwise.
      */
     Collection<Callback> getCallbacks(String loginName);
 
     /**
-     * Returns the list of callback requests for the specified user.
+     * Returns the pending callback requests for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @return the collection of callback in case of success; {@code null}
-     *         otherwise.
-     * @see #getCallbacks(String loginName)
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @return The collection of {@link Callback} objects in case of success;
+     *         {@code null} otherwise.
+     * @see #getCallbacks(String)
      */
     Collection<Callback> getCallbacks();
 
     /**
-     * Deletes all callback requests for the specified user.
+     * Deletes all pending callback requests for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean deleteCallbacks(String loginName);
 
     /**
-     * Deletes all callback requests for the specified user.
+     * Deletes all pending callback requests for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #deleteCallbacks(String loginName)
+     * @see #deleteCallbacks(String)
      */
     boolean deleteCallbacks();
 
     /**
-     * Deletes the specified callback requests for the specified user.
+     * Deletes the specified callback request for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
-     * @param callbackId the callback identifier
+     *
+     * @param callbackId the callback identifier as returned by {@link #getCallbacks(String)}
      * @param loginName  the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean deleteCallback(String callbackId, String loginName);
 
     /**
-     * Deletes the specified callback requests for the specified user.
+     * Deletes the specified callback request for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @param callbackId the callback identifier
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param callbackId the callback identifier as returned by {@link #getCallbacks(String)}
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #deleteCallback(String, String)
      */
     boolean deleteCallback(String callbackId);
 
     /**
-     * Returns the current new message for the specified user.
+     * Returns the next unread mini message for the specified user.
      * <p>
-     * As soon as a message is read, it is erased from OXE and cannot be read again.
-     * The messages are retrieved in Last In First Out mode.
-     * <p>
-     * This method will return {@code false} if all the messages have been
-     * retrieved.
+     * Messages are consumed on read — once retrieved, a message is deleted from the
+     * OXE and cannot be read again. Messages are returned in Last In First Out order.
+     * Returns {@code null} when there are no more unread messages.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param loginName the login name
-     * @return The mini message on success; {@code null} otherwise.
+     * @return The {@link MiniMessage} on success; {@code null} if there are no
+     *         unread messages or on error.
      */
     MiniMessage getMiniMessage(String loginName);
 
     /**
-     * Returns the current new message for the user who has opened the session
+     * Returns the next unread mini message for the user who opened the session.
      * <p>
-     * As soon as a message is read, it is erased from OXE and cannot be read again.
-     * The message are retrieved in Last In First Out mode.
+     * Messages are consumed on read — once retrieved, a message is deleted from the
+     * OXE and cannot be read again. Messages are returned in Last In First Out order.
+     * Returns {@code null} when there are no more unread messages.
      * <p>
-     * This method will return {@code false} if all the messages have been
-     * retrieved.
-     * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @return The mini message on success; {@code null} otherwise.
-     * @see #getMiniMessage(String loginName)
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @return The {@link MiniMessage} on success; {@code null} if there are no
+     *         unread messages or on error.
+     * @see #getMiniMessage(String)
      */
     MiniMessage getMiniMessage();
 
     /**
-     * Sends the specified mini message to the specified recipient.
-     * 
-     * @param recipient the recipient of the mini message phone number
-     * @param message   the mini message text
-     *                  <p>
-     *                  If the session has been opened for a user, the
-     *                  {@code loginName} parameter is ignored, but it is mandatory
-     *                  if the session has been opened by an administrator.
-     * 
+     * Sends a mini message to the specified recipient.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     *
+     * @param recipient the phone number of the message recipient
+     * @param message   the message text
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean sendMiniMessage(String recipient, String message, String loginName);
 
     /**
-     * Sends the specified mini message to the specified recipient.
-     * 
-     * @param recipient the recipient of the mini message phone number
-     * @param message   the mini message text
-     *                  <p>
-     *                  This method will return {@code false} if it is invoked from
-     *                  a session opened by an administrator.
-     * 
+     * Sends a mini message to the specified recipient, for the user who opened the
+     * session.
+     * <p>
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param recipient the phone number of the message recipient
+     * @param message   the message text
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see #sendMiniMessage(String recipient, String message, String loginName)
+     * @see #sendMiniMessage(String, String, String)
      */
     boolean sendMiniMessage(String recipient, String message);
 
     /**
-     * Requests for call back from an idle device of the specified user.
+     * Requests a callback from an idle device of the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
-     * @param callee    phone number of the called party for which a call back is
-     *                  requested.
+     *
+     * @param callee    the phone number of the called party for which a callback is
+     *                  requested
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean requestCallback(String callee, String loginName);
 
     /**
-     * Requests for call back from an idle device of the user who has opened the
-     * session.
+     * Requests a callback from an idle device, for the user who opened the session.
      * <p>
-     * This method will return {@code false} if it is invoked from a session opened
-     * by an administrator.
-     * 
-     * @param callee phone number of the called party for which a call back is
-     *               requested.
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param callee the phone number of the called party for which a callback is
+     *               requested
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #requestCallback(String, String)
      */
     boolean requestCallback(String callee);
 
     /**
-     * Queries the specified CCD pilot information using the given transfer
-     * criteria.
+     * Returns transfer possibilities for the specified CCD pilot.
      * <p>
-     * The {@code pilotTransferQueryParam} defines the optional filtering criteria
-     * such as agent number, priority transfer, supervised transfer, or call
-     * profile.
-     * </p>
+     * The {@code pilotTransferQueryParam} defines optional filtering criteria such
+     * as agent number, priority transfer, supervised transfer, or call profile.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
-     * ignored. It is required only when the session has been opened by an
+     * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * </p>
      *
-     * @param nodeId                  the PCX Enterprise node ID
-     * @param pilotNumber             the pilot number to query
-     * @param pilotTransferQueryParam the transfer criteria; must not be
-     *                                {@code null}
-     * @param loginName               the login name; required if session opened by
-     *                                administrator
-     * @return the {@link PilotInfo} for the CCD pilot on success, or {@code null}
-     *         otherwise
-     * @throws IllegalArgumentException if {@code pilotTransferQueryParam} is
-     *                                  {@code null}
+     * @param nodeId                  the OmniPCX Enterprise node ID
+     * @param pilotNumber             the CCD pilot directory number
+     * @param pilotTransferQueryParam optional query criteria to filter results by agent number,
+     *                                priority transfer, supervised transfer, or call profile
+     * @param loginName               the login name
+     * @return The {@link PilotInfo} describing the pilot's queue state and transfer possibilities;
+     *         {@code null} otherwise.
      * @since 2.7.4
      */
     PilotInfo getPilotInfo(int nodeId, String pilotNumber, PilotTransferQueryParameters pilotTransferQueryParam,
             String loginName);
 
     /**
-     * Queries the specified CCD pilot information without any transfer criteria.
-     * <p>
-     * This is a convenience overload for cases where no filtering is required. It
-     * internally calls
-     * {@link #getPilotInfo(int, String, PilotTransferQueryParameters, String)} with
-     * an empty {@link PilotTransferQueryParameters} object.
-     * </p>
+     * Returns transfer possibilities for the specified CCD pilot without any
+     * transfer criteria.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
-     * ignored. It is required only when the session has been opened by an
+     * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * </p>
      *
-     * @param nodeId      the PCX Enterprise node ID
-     * @param pilotNumber the pilot number to query
-     * @param loginName   the login name; required if session opened by
-     *                    administrator
-     * @return the {@link PilotInfo} for the CCD pilot on success, or {@code null}
-     *         otherwise
+     * @param nodeId      the OmniPCX Enterprise node ID
+     * @param pilotNumber the CCD pilot directory number
+     * @param loginName   the login name
+     * @return The {@link PilotInfo} describing the pilot's queue state and transfer possibilities;
+     *         {@code null} otherwise.
      * @since 2.7
      */
     PilotInfo getPilotInfo(int nodeId, String pilotNumber, String loginName);
 
     /**
-     * Queries the specified CCD pilot information using the given transfer
-     * criteria.
+     * Returns transfer possibilities for the specified CCD pilot, for the user who
+     * opened the session.
      * <p>
-     * The {@code pilotTransferQueryParam} defines the optional filtering criteria
-     * such as agent number, priority transfer, supervised transfer, or call
-     * profile.
-     * </p>
+     * The {@code pilotTransferQueryParam} defines optional filtering criteria such
+     * as agent number, priority transfer, supervised transfer, or call profile.
      * <p>
-     * This method will return {@code null} if it is invoked from a session opened
-     * by an administrator.
-     * </p>
-     * 
-     * @param nodeId                  the PCX Enterprise node id
-     * @param pilotNumber             the pilot number
-     * @param pilotTransferQueryParam the transfer criteria; must not be
-     *                                {@code null}
-     * @return The CCD pilot information on success; {@code null} otherwise.
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param nodeId                  the OmniPCX Enterprise node ID
+     * @param pilotNumber             the CCD pilot directory number
+     * @param pilotTransferQueryParam optional query criteria to filter results by agent number,
+     *                                priority transfer, supervised transfer, or call profile
+     * @return The {@link PilotInfo} describing the pilot's queue state and transfer possibilities;
+     *         {@code null} otherwise.
      * @since 2.7.4
      */
     PilotInfo getPilotInfo(int nodeId, String pilotNumber, PilotTransferQueryParameters pilotTransferQueryParam);
 
-
     /**
-     * Queries the specified CCD pilot information without any transfer criteria.
+     * Returns transfer possibilities for the specified CCD pilot without any
+     * transfer criteria, for the user who opened the session.
      * <p>
-     * This is a convenience overload for cases where no filtering is required. It
-     * internally calls
-     * {@link #getPilotInfo(int, String, PilotTransferQueryParameters)} with
-     * an empty {@link PilotTransferQueryParameters} object.
-     * </p>
-     * <p>
-     * This method will return {@code null} if it is invoked from a session opened
-     * by an administrator.
-     * </p>
-     * 
-     * @param nodeId                  the PCX Enterprise node id
-     * @param pilotNumber             the pilot number
-     * @return The CCD pilot information on success; {@code null} otherwise.
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param nodeId      the OmniPCX Enterprise node ID
+     * @param pilotNumber the CCD pilot directory number
+     * @return The {@link PilotInfo} describing the pilot's queue state and transfer possibilities;
+     *         {@code null} otherwise.
      * @since 2.7
      */
     PilotInfo getPilotInfo(int nodeId, String pilotNumber);
 
     /**
-     * Asks a snapshot event on the specified user.
+     * Requests a snapshot event to receive the current telephonic state via an
+     * {@code OnTelephonyState} event.
      * <p>
-     * The event OnTelephonyState will contain the TelephonicState (calls[] and
-     * deviceCapabilities[]). If a second request is asked since the previous one is
-     * still in progress, it has no effect.
+     * The resulting event will contain the full {@link TelephonicState} including
+     * active calls and device capabilities. If a second request is issued while the
+     * first is still in progress, it has no effect.
+     * <p>
+     * If an administrator calls this with a {@code null} {@code loginName}, the
+     * snapshot is requested for all users, which may take time depending on the
+     * number of users.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
-     * ignored.
-     * 
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     *
      * @param loginName the login name
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean requestSnapshot(String loginName);
 
     /**
-     * Asks a snapshot event.
+     * Requests a snapshot event to receive the current telephonic state via an
+     * {@code OnTelephonyState} event, for all users (when invoked by an
+     * administrator) or for the user who opened the session.
      * <p>
-     * The event OnTelephonyState will contain the TelephonicState (calls[] and
-     * deviceCapabilities[]). If a second request is asked since the previous one is
-     * still in progress, it has no effect.
+     * The resulting event will contain the full {@link TelephonicState} including
+     * active calls and device capabilities. If a second request is issued while the
+     * first is still in progress, it has no effect.
      * <p>
-     * If the session has been opened for an administrator, the snapshot event
-     * request is done for all the users. This request is immediately acknowledged
-     * but the processing may take a long time if the number of users is huge.
-     * 
+     * If an administrator calls this method, the snapshot is requested for all
+     * users, which may take a long time depending on the number of users.
+     *
      * @return {@code true} in case of success; {@code false} otherwise.
+     * @see #requestSnapshot(String)
      */
     boolean requestSnapshot();
 }

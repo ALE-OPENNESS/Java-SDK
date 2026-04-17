@@ -39,50 +39,58 @@ import com.ale.o2g.types.ccstats.scheduled.ScheduledReport;
 import com.ale.o2g.types.common.DateRange;
 
 /**
- * Service for retrieving statistics about CCD agents and pilots.
+ * Provides access to historical ACD statistics and reporting for CCD agents and pilots.
  * <p>
- * This service is intended for administrators and provides two modes of data retrieval:
+ * This service supports two modes of data retrieval:
  * <ul>
- *   <li><b>Immediate reports</b> - statistics retrieved on-demand. They can be returned as data or exported as CSV or Excel files.</li>
- *   <li><b>Scheduled reports</b> - recurring statistics sent as email attachments to predefined recipients.</li>
+ *   <li><b>Immediate reports</b> — statistics retrieved on demand, returned as in-memory data
+ *       or exported as CSV or Excel files.</li>
+ *   <li><b>Scheduled reports</b> — recurring statistics delivered as ZIP file attachments via
+ *       email to predefined recipients.</li>
  * </ul>
  *
- * <h2>Requesters</h2>
+ * <h2>Requesters and Contexts</h2>
  * <p>
- * Data is retrieved by a {@code Requester}. A requester:
+ * Statistics are accessed through a two-level hierarchy:
  * <ul>
- *   <li>Has a unique identifier.</li>
- *   <li>Is associated with a scope of agents (e.g., a team leader's requester covers all agents in the team).</li>
- *   <li>Defines a <i>context</i> describing which CCD objects and counters to include in reports.</li>
+ *   <li>A {@link Requester} defines the scope of agents whose data can be accessed
+ *       (e.g., a team leader's requester covers all agents in the team).</li>
+ *   <li>A {@link Context} defines the filter criteria (pilots, agents, queues) for which
+ *       statistics are collected.</li>
  * </ul>
  *
  * <h2>Retrieving Statistics</h2>
  * <p>
- * Retrieving statistics requires creating a requester, defining a statistical context,
- * and then querying data for that context. The following example illustrates the process:
- * </p>
+ * The typical usage sequence is:
+ * <ol>
+ *   <li>Create a requester with {@link #createRequester}, specifying the agents in scope.</li>
+ *   <li>Create a context with {@link #createContext}, specifying the filter criteria.</li>
+ *   <li>Retrieve data with {@link #getData(Context, LocalDate, TimeInterval)} for a single day,
+ *       or {@link #getData(Context, DateRange)} for a date range.</li>
+ *   <li>Delete the context and requester when done.</li>
+ * </ol>
  *
- * <pre>{@code  
+ * <pre>{@code
  * // Get the CallCenterStatisticsService from the opened session
  * CallCenterStatisticsService statService = session.getCallCenterStatisticsService();
  *
- * // Create a requester
+ * // Create a requester scoped to a set of agents
  * Requester requester = statService.createRequester(
  *         "John Doe",
  *         Language.EN,
- *         new String[] { "60118", "60119", "60117", "60116", "60115", "60114" });
+ *         new String[] { "60114", "60115", "60116", "60117", "60118", "60119" });
  *
  * // Create a filter with all agent attributes
  * AgentFilter filter = Filter.createAgentFilter();
  * filter.setAgentAttributes(AgentAttributes.ALL);
  *
- * // Create a statistic context
+ * // Create a statistics context
  * Context context = statService.createContext(requester, "AgentStatContext", "Agent Statistics", filter);
  *
- * // Retrieve statistics as JSON
- * LocalDateTime startDate = LocalDateTime.of(2025, 10, 1, 0, 0);
+ * // Retrieve in-memory statistics for a date range
+ * LocalDate startDate = LocalDate.of(2025, 10, 1);
  * DateRange range = new DateRange(startDate, startDate.plusDays(4));
- * StatisticsData statistics = statService.getJsonData(context, range);
+ * StatisticsData statistics = statService.getData(context, range);
  *
  * // Or schedule a recurring report
  * ScheduledReport report = statService.createScheduledReport(
@@ -109,7 +117,7 @@ import com.ale.o2g.types.common.DateRange;
  *     <ul>
  *       <li>Provide aggregated statistics (one row per agent or pilot per day).</li>
  *       <li>Can cover up to 31 consecutive days within the last 12 months.</li>
- *       <li>May cross months (e.g., from 15/04/2024 to 14/05/2024).</li>
+ *       <li>May span month boundaries (e.g., from 15/04/2024 to 14/05/2024).</li>
  *       <li>Data spans from 00:00 of the first day to 24:00 of the last day.</li>
  *     </ul>
  *   </li>
@@ -117,74 +125,49 @@ import com.ale.o2g.types.common.DateRange;
  *
  * <h2>Scheduling</h2>
  * <p>
- * Scheduling applies only to multi-day reports:
+ * Scheduled reports apply only to multi-day data:
  * <ul>
- *   <li>Each schedule is linked to a specific report.</li>
- *   <li>There is no limitation on the number of schedules per report.</li>
+ *   <li>Each schedule is linked to a specific context.</li>
+ *   <li>There is no limitation on the number of scheduled reports per context.</li>
  *   <li>Reports are delivered as ZIP file attachments via email.</li>
  * </ul>
  *
  * <h3>Scheduling Rules</h3>
  * <p>
- * Scheduled reports must comply with specific rules depending on the {@link ReportObservationPeriod.PeriodType}:
- * </p>
+ * Scheduled reports must comply with specific rules depending on the
+ * {@link ReportObservationPeriod.PeriodType}:
  * <ul>
- *   <li><b>Current Day:</b> Recurrence can only be <b>daily</b>. 
+ *   <li><b>Current Day:</b> Recurrence can only be <b>daily</b>.
  *       Each run collects data from the previous day.</li>
  *   <li><b>Current Week:</b> Recurrence can only be <b>weekly</b>.
- *       Example: recurrence on Monday and Thursday:
- *       <ul>
- *         <li>Every Tuesday, collect Monday's data.</li>
- *         <li>Every Thursday, collect data from Monday to Wednesday.</li>
- *       </ul>
- *   </li>
+ *       Example: recurrence on Monday and Thursday collects Monday's data on Tuesday,
+ *       and data from Monday to Wednesday on Thursday.</li>
  *   <li><b>Current Month:</b> Recurrence can only be <b>monthly</b>.
- *       Example: on the 12th of each month, collect data from the 1st 00:00 to the 11th 24:00.</li>
- *   <li><b>Last N Days:</b> Recurrence can be <b>daily</b>, <b>weekly</b>, or <b>monthly</b>:
- *       <ul>
- *         <li>Daily: every day, collect the N previous days.</li>
- *         <li>Weekly: every selected day, collect the N previous days.</li>
- *         <li>Monthly: on the selected day of each month, collect the N previous days.</li>
- *       </ul>
- *   </li>
- *   <li><b>Last N Weeks:</b> Recurrence can only be <b>weekly</b>.
- *       Example: for recurrence on Monday and Thursday, every Tuesday and Thursday collect data from the N past weeks (Monday 00:00 to Sunday 24:00).</li>
- *   <li><b>Last Month:</b> Recurrence can only be <b>monthly</b>.
- *       Example: on the 12th of each month, collect data for the previous month (from the 1st 00:00 to the last day 24:00).</li>
- *   <li><b>From Date to Date:</b> Recurrence is not allowed; such reports can only be scheduled once.</li>
+ *       Example: on the 12th of each month, collects data from the 1st 00:00 to the 11th 24:00.</li>
+ *   <li><b>Last N Days:</b> Recurrence can be <b>daily</b>, <b>weekly</b>, or <b>monthly</b>.</li>
+ *   <li><b>Last N Weeks:</b> Recurrence can only be <b>weekly</b>.</li>
+ *   <li><b>Last Month:</b> Recurrence can only be <b>monthly</b>.</li>
+ *   <li><b>From Date to Date:</b> Recurrence is not allowed; the report can only be scheduled once.</li>
  *   <li><b>One-time reports:</b> Any observation period can be used for a single scheduled execution.</li>
  * </ul>
- * 
- * <h2>Using Asynchronous Statistics Query Methods</h2>
+ *
+ * <h2>Using Asynchronous File Download Methods</h2>
  * <p>
- * To use asynchronous methods, it is necessary to subscribe to <b>CallCenterStatistics events</b> 
- * before invoking them. Without this subscription, progress notifications and completion callbacks 
- * will not be received.
- * </p>
- * <p>
- * The asynchronous methods include:
- * <ul>
- *   <li>{@link #getFileData(Context, Format, Path, ProgressCallback)}</li>
- *   <li>{@link #getFileData(Context, DateRange, Format, Path, ProgressCallback)}</li>
- *   <li>{@link #getFileData(Context, LocalDate, Format, Path, ProgressCallback)}</li>
- *   <li>{@link #getFileData(Context, LocalDate, TimeInterval, Format, Path, ProgressCallback)}</li>
- * </ul>
- * <p><b>Example of subscription:</b>
+ * Before invoking any {@code getFileData} overload, subscribe to
+ * <b>CallCenterStatistics events</b> so that progress notifications and completion
+ * callbacks are received:
  * <pre><code>
  * Subscription subscription = Subscription.newBuilder()
  *       .addCallCenterStatisticsEventListener()
  *       .build();
  * session.listenEvents(subscription);
  * </code></pre>
- * 
  * <p>
- * This subscription only needs to be established once per session, and remains
- * valid for all subsequent asynchronous operations.
- * </p>
+ * This subscription only needs to be established once per session and remains valid for all
+ * subsequent asynchronous operations.
  * <p>
- * Using this service requires a <b>CONTACTCENTER_SERVICE</b> license in CAPEX mode,
- * or a 40 api-tel-f subscription in OPEX mode (Purple On Demand).
- * </p>
+ * Using this service requires a <b>CONTACTCENTER_SERVICE</b> license in CAPEX mode, or a
+ * <b>40 api-tel-f</b> subscription in OPEX mode (Purple On Demand).
  *
  * @since 2.7.4
  */
@@ -192,20 +175,19 @@ public interface CallCenterStatisticsService extends IService {
 
     /**
      * Creates a new {@code Requester} with the specified identifier, language, and time zone,
-     * and establishes the statistics scope defining which agents' data the requester is authorized to access.
+     * and establishes the statistics scope defining which agents' data the requester is
+     * authorized to access.
      * <p>
-     * This method determines the set of agents whose statistics can be retrieved by the specified requester.
-     * Once the scope is created, the requester can query individual or aggregated statistics for those agents
+     * The agent scope determines which agents' statistics can be retrieved by the requester.
+     * Once created, the requester can query individual or aggregated statistics for those agents
      * through the reporting services.
      *
-     * @param id        the unique identifier of the requester (e.g., supervisor ID);
-     *                  must not be {@code null} or empty
-     * @param language  the requester's preferred {@link Language}; must not be {@code null}
-     * @param timezone  the requester's time zone as a {@link ZoneOffset}; must not be {@code null}
-     * @param agents    an array of agent identifiers that define the scope of accessible statistics;
-     *                  must not be {@code null} or empty
+     * @param id       the unique identifier of the requester (e.g., a supervisor ID)
+     * @param language the requester's preferred {@link Language}
+     * @param timezone the requester's time zone as a {@link ZoneOffset}
+     * @param agents   an array of agent directory numbers that define the scope of accessible statistics
      * @return the newly created {@code Requester} instance
-     *
+     * @see #deleteRequester(Requester)
      */
     Requester createRequester(String id, Language language, ZoneOffset timezone, String[] agents);
 
@@ -214,224 +196,190 @@ public interface CallCenterStatisticsService extends IService {
      * using the system's default time zone offset, and establishes the statistics scope
      * defining which agents' data the requester is authorized to access.
      * <p>
-     * This method determines the set of agents whose statistics can be retrieved by the specified requester.
-     * Once the scope is created, the requester can query individual or aggregated statistics
-     * for those agents through the reporting services.
+     * The agent scope determines which agents' statistics can be retrieved by the requester.
+     * Once created, the requester can query individual or aggregated statistics for those agents
+     * through the reporting services.
      *
-     * @param id        the unique identifier of the requester (e.g., supervisor ID);
-     *                  must not be {@code null} or empty
-     * @param language  the requester's preferred {@link Language}; must not be {@code null}
-     * @param agents    an array of agent identifiers that define the scope of accessible statistics;
-     *                  must not be {@code null} or empty
+     * @param id       the unique identifier of the requester (e.g., a supervisor ID)
+     * @param language the requester's preferred {@link Language}
+     * @param agents   an array of agent directory numbers that define the scope of accessible statistics
      * @return the newly created {@code Requester} instance
-     *
+     * @see #deleteRequester(Requester)
      */
     Requester createRequester(String id, Language language, String[] agents);
 
     
     /**
-     * Removes the statistics scope associated with a given requester.
+     * Removes the specified requester and all its associated contexts.
      * <p>
-     * After calling this method, the specified requester will no longer have access
-     * to any agent statistics defined under their scope.
+     * After this call, the requester no longer has access to any agent statistics defined
+     * under its scope.
      *
-     * @param requester the requester whose statistics scope should be removed
-     * @return {@code true} if the scope was successfully removed; {@code false} otherwise
+     * @param requester the requester to remove
+     * @return {@code true} if the requester was successfully removed; {@code false} otherwise
      */
     boolean deleteRequester(Requester requester);
 
     /**
      * Retrieves the requester associated with the specified identifier.
      * <p>
-     * The returned requester represents the scope of agents for which statistics
-     * can be accessed. If no requester exists with the given ID, this method
-     * returns {@code null}.
+     * The returned requester represents the scope of agents for which statistics can be
+     * accessed.
      *
      * @param id the unique identifier of the requester
-     * @return the {@link Requester} object corresponding to the ID, or {@code null}
-     *         if no matching requester is found
+     * @return the {@link Requester} object corresponding to the ID, or {@code null} if no
+     *         matching requester is found
      */
     Requester getRequester(String id);
 
 
     /**
-     * Creates a new statistical context with the specified label, description, and filter
+     * Creates a new statistics context with the specified label, description, and filter
      * for the given requester.
      * <p>
-     * A context defines a scope for which call center statistics can be collected and analyzed
-     * according to the specified filter criteria.
+     * A context defines the filter criteria (pilots, agents, queues) for which call-center
+     * statistics are collected and analyzed.
      *
-     * @param requester  the requester for whom the context is being created
-     * @param label      a short label identifying this context
+     * @param requester   the requester for whom the context is created
+     * @param label       a short label identifying this context
      * @param description a detailed description of the context
-     * @param filter     the filter defining the selection criteria for the context
+     * @param filter      the filter defining the selection criteria for the context
      * @return the created {@link Context} if successful; {@code null} otherwise
      */
     Context createContext(Requester requester, String label, String description, Filter filter);
 
 
     /**
-     * Retrieves the statistical contexts created for the specified requester.
-     * <p>
-     * Each context defines a scope for collecting and analyzing call center statistics
-     * according to its associated filter criteria.
+     * Retrieves all statistics contexts created for the specified requester.
      *
-     * @param requester the requester whose contexts are being retrieved
-     * @return a {@link Collection} of {@link Context} objects if successful; {@code null} 
-     *         if there is an error or if no contexts exist for this requester
+     * @param requester the requester whose contexts are retrieved
+     * @return a {@link Collection} of {@link Context} objects if successful; {@code null} if
+     *         there is an error or if no contexts exist for this requester
      * @see #createContext(Requester, String, String, Filter)
      */
     Collection<Context> getContexts(Requester requester);
 
 
     /**
-     * Retrieves a statistical context by its identifier for the specified requester.
-     * <p>
-     * A context defines a scope for collecting and analyzing call center statistics
-     * according to its associated filter criteria.
+     * Retrieves a statistics context by its identifier for the specified requester.
      *
      * @param requester the requester who owns the context
      * @param contextId the unique identifier of the context
-     * @return the {@link Context} if found and retrieval is successful; {@code null} 
-     *         if there is an error or if no context exists with the specified identifier
+     * @return the {@link Context} if found; {@code null} if no context exists with the specified
+     *         identifier or if an error occurred
      */
     Context getContext(Requester requester, String contextId);
 
     /**
-     * Deletes all statistical contexts associated with the specified requester.
-     * <p>
-     * A context defines a scope for collecting and analyzing call center statistics 
-     * according to its associated filter criteria.
+     * Deletes all statistics contexts associated with the specified requester.
      *
      * @param requester the requester whose contexts should be deleted
-     * @return {@code true} if all contexts were successfully deleted; {@code false} 
-     *         if an error occurred or no contexts were deleted
+     * @return {@code true} if all contexts were successfully deleted; {@code false} if an error
+     *         occurred or no contexts were deleted
      * @see #createContext(Requester, String, String, Filter)
      */
     boolean deleteContexts(Requester requester);
 
     /**
-     * Deletes the specified statistical context.
-     * <p>
-     * A context defines a scope for collecting and analyzing call center statistics
-     * according to its associated filter criteria.
+     * Deletes the specified statistics context.
      *
-     * @param context the context to be deleted
-     * @return {@code true} if the context was successfully deleted; {@code false} 
-     *         if an error occurred or the context could not be deleted
+     * @param context the context to delete
+     * @return {@code true} if the context was successfully deleted; {@code false} if an error
+     *         occurred or the context could not be deleted
      * @see #createContext(Requester, String, String, Filter)
      */
     boolean deleteContext(Context context);
 
 
     /**
-     * Updates the specified statistical context.
+     * Persists any changes made to the specified statistics context.
      * <p>
-     * A context defines a scope for collecting and analyzing call center statistics.
-     * Any changes to the context's label, description, or filter will be applied
-     * when this method is called.
+     * Fields that can be updated include the label, description, and filter.
      *
-     * @param context the context with updated parameters to be applied
-     * @return {@code true} if the context was successfully updated; {@code false} 
-     *         if an error occurred or the update could not be applied
+     * @param context the context with updated parameters to apply
+     * @return {@code true} if the context was successfully updated; {@code false} if an error
+     *         occurred or the update could not be applied
      * @see #createContext(Requester, String, String, Filter)
      */
     boolean updateContext(Context context);
     
     /**
-     * Retrieves statistical data for the specified context.
+     * Returns aggregated statistics for a range of days.
      * <p>
-     * This method generates a multi-day report corresponding to the time range
-     * defined by the provided {@link DateRange}. It allows reporting and analysis
-     * of call center metrics across multiple days within the selected period.
-     * <p>
-     * The returned {@link StatisticsData} object contains the aggregated data, suitable for further processing or integration.
+     * Multi-day reports provide one row of aggregated data per agent or pilot per day.
+     * The range can cover up to 31 consecutive days within the last 12 months and may span
+     * month boundaries.
      *
      * @param context the context defining the scope and filters for the statistics
-     * @param range the date range over which to collect statistics
-     * @return a {@link StatisticsData} object containing the data, or
-     *         {@code null} if the data could not be retrieved
+     * @param range   the date range over which to collect statistics
+     * @return a {@link StatisticsData} object containing the aggregated data, or {@code null}
+     *         if the data could not be retrieved
      */
     StatisticsData getData(Context context, DateRange range);
     
     /**
-     * Retrieves statistical data for the specified context for a single day.
+     * Returns statistics for a single day with the specified time slot granularity.
      * <p>
-     * The statistics are provided in time slots according to the {@link TimeInterval} parameter.
+     * Statistics are provided in time slots according to {@link TimeInterval}, spanning from
+     * 00:00 until the last completed interval of the specified day.
      *
-     * @param context the context defining the scope and filters for the statistics
-     * @param date the specific day for which to collect statistics
+     * @param context      the context defining the scope and filters for the statistics
+     * @param date         the day for which to collect statistics
      * @param timeInterval the time slot interval for reporting (e.g., 15 or 30 minutes)
-     * @return a {@link StatisticsData} object containing the data, or
-     *         {@code null} if the data could not be retrieved
+     * @return a {@link StatisticsData} object containing the data, or {@code null} if the data
+     *         could not be retrieved
      */
     StatisticsData getData(Context context, LocalDate date, TimeInterval timeInterval);
     
     /**
-     * Retrieves statistical data for the specified context for a single day.
+     * Returns statistics for a single day using the default 15-minute time slot granularity.
      * <p>
-     * The statistics are reported using default 15-minute intervals (quarter-hour slots) 
-     * spanning from 00:00 until the last completed interval of the day.
+     * Statistics span from 00:00 until the last completed 15-minute interval of the specified
+     * day.
      *
      * @param context the context defining the scope and filters for the statistics
-     * @param date the specific day for which to collect statistics
-     * @return a {@link StatisticsData} object containing the data, or
-     *         {@code null} if the data could not be retrieved
+     * @param date    the day for which to collect statistics
+     * @return a {@link StatisticsData} object containing the data, or {@code null} if the data
+     *         could not be retrieved
      */
     StatisticsData getData(Context context, LocalDate date);
 
     /**
-     * Retrieves statistical data for the specified context for the current day.
+     * Returns statistics for the current day using the default 15-minute time slot granularity.
      * <p>
-     * The statistics are reported using default 15-minute intervals (quarter-hour slots) 
-     * spanning from 00:00 until the last completed interval of the current day.
+     * Statistics span from 00:00 until the last completed 15-minute interval of the current day.
      *
      * @param context the context defining the scope and filters for the statistics
-     * @return a {@link StatisticsData} object containing the data, or
-     *         {@code null} if the data could not be retrieved
+     * @return a {@link StatisticsData} object containing the data, or {@code null} if the data
+     *         could not be retrieved
      */
     StatisticsData getData(Context context);
 
     /**
-     * Asynchronously retrieves statistical data for the specified context for a single day 
-     * and stores it as a report file in the given directory.
+     * Asynchronously downloads statistics for a single day as a report file.
      * <p>
-     * The statistics are reported in time slots defined by the {@link TimeInterval} 
-     * parameter (e.g., 15-minute or 30-minute intervals), spanning from 00:00 until the 
-     * last completed interval of the specified day.
+     * Statistics are reported in time slots defined by {@link TimeInterval} (e.g., 15-minute or
+     * 30-minute intervals), spanning from 00:00 until the last completed interval of the
+     * specified day. The generated report file is saved in the specified directory in the
+     * format indicated by {@link Format}.
      * <p>
-     * The output file format is determined by the {@link Format} parameter (e.g., CSV, XLS),
-     * and the generated report file is saved in the specified directory.
-     *
-     * <p>
-     * Progress updates during the report generation are reported to the provided 
-     * {@link ProgressCallback} instance.
-     * </p>
-     *
-     * <p>
-     * <b>Concurrency limitation:</b> Only one report generation request can be active 
-     * at a time. Any attempt to start another request while one is already in progress 
-     * will result in the returned {@link CompletableFuture} being completed exceptionally 
-     * with an {@link IllegalStateException}.
-     * </p>
-     *
-     * <p>
-     * The method returns immediately with a {@link CompletableFuture} representing the 
-     * ongoing operation. The future will:
-     * </p>
+     * The method returns immediately with a {@link CompletableFuture} representing the ongoing
+     * operation. The future will:
      * <ul>
-     *   <li>Complete normally with the {@link Path} to the created report file when the 
-     *       operation succeeds.</li>
-     *   <li>Complete exceptionally if an error occurs before or during processing, including 
-     *       I/O errors, service errors, or {@link IllegalStateException} if another request 
-     *       is already in progress.</li>
-     *   <li>Complete exceptionally with a {@link java.util.concurrent.CancellationException CancellationException} 
-     *       if the operation is cancelled.</li>
+     *   <li>Complete normally with the {@link Path} to the created report file on success.</li>
+     *   <li>Complete exceptionally with an {@link IllegalStateException} if another request is
+     *       already in progress.</li>
+     *   <li>Complete exceptionally with a
+     *       {@link java.util.concurrent.CancellationException CancellationException} if the
+     *       operation is cancelled.</li>
+     *   <li>Complete exceptionally with other exceptions on I/O or service errors.</li>
      * </ul>
+     * <p>
+     * <b>Concurrency limitation:</b> Only one report generation request can be active at a time.
      *
      * <p><b>Example:</b></p>
      * <pre>{@code
-     * CompletableFuture<Path> future = fileService.getFileData(
+     * CompletableFuture<Path> future = statService.getFileData(
      *     context,
      *     LocalDate.of(2025, 10, 5),
      *     TimeInterval.HOUR,
@@ -443,30 +391,27 @@ public interface CallCenterStatisticsService extends IService {
      * future.whenComplete((path, ex) -> {
      *     if (future.isCancelled()) {
      *         System.out.println("Download cancelled!");
-     *     }
-     *     else if (ex != null) {
+     *     } else if (ex != null) {
      *         System.err.println("Download failed: " + ex.getMessage());
-     *     } 
-     *     else {
+     *     } else {
      *         System.out.println("Download complete! File saved at: " + path);
      *     }
      * });
      * }</pre>
-     * 
-     * <p><b>Note:</b> This method requires that CallCenterStatistics event 
-     * subscriptions be active. See {@link CallCenterStatisticsService class documentation}
-     * for details and example setup.     
      *
-     * @param context the context defining the scope and filters for the statistics
-     * @param date the date for which to generate the report
-     * @param timeInterval the length of each reporting interval (slot) within the day
-     * @param format the output format for the report file
-     * @param directory the directory in which to save the generated report file
-     * @param progressCallback a callback invoked to report progress of the operation; may be 
-     *        {@code null} if progress updates are not needed
-     * @return a {@link CompletableFuture} representing the asynchronous operation. The 
-     *         future completes with the {@link Path} to the generated report file, or 
-     *         exceptionally if an error occurs or the operation is cancelled
+     * <p><b>Note:</b> This method requires that CallCenterStatistics event subscriptions be
+     * active. See the {@link CallCenterStatisticsService class documentation} for details and
+     * setup example.
+     *
+     * @param context          the context defining the scope and filters for the statistics
+     * @param date             the date for which to generate the report
+     * @param timeInterval     the length of each reporting time slot within the day
+     * @param format           the output format for the report file
+     * @param directory        the directory in which to save the generated report file
+     * @param progressCallback a callback invoked to report progress; may be {@code null} if
+     *                         progress updates are not needed
+     * @return a {@link CompletableFuture} that completes with the {@link Path} to the generated
+     *         report file, or exceptionally if an error occurs or the operation is cancelled
      * @see #cancelRequest(Context)
      */
     CompletableFuture<Path> getFileData(
@@ -478,38 +423,30 @@ public interface CallCenterStatisticsService extends IService {
             ProgressCallback progressCallback);
     
     /**
-     * Asynchronously retrieves statistical data for the specified context for a single day 
-     * and stores it as a report file in the given directory.
+     * Asynchronously downloads statistics for a single day as a report file, using the default
+     * 15-minute time slot granularity.
      * <p>
-     * By default, the statistics are reported in 15-minute intervals (quarter-hour slots),
-     * spanning from 00:00 until the last completed interval of the specified day.
+     * Statistics span from 00:00 until the last completed 15-minute interval of the specified
+     * day. The generated report file is saved in the specified directory in the format indicated
+     * by {@link Format}.
      * <p>
-     * The output file format is determined by the {@link Format} parameter (e.g., CSV, XLS),
-     * and the generated report file is saved in the specified directory.
-     * <p>
-     * Progress updates during the report generation are reported to the provided 
-     * {@link ProgressCallback} instance.
-     * <p>
-     * <b>Concurrency limitation:</b> Only one report generation request can be active 
-     * at a time. Any attempt to start another request while one is already in progress 
-     * will result in the returned {@link CompletableFuture} being completed exceptionally 
-     * with an {@link IllegalStateException}.
-     * <p>
-     * The method returns immediately with a {@link CompletableFuture} representing the 
-     * ongoing operation. The future will:
+     * The method returns immediately with a {@link CompletableFuture} representing the ongoing
+     * operation. The future will:
      * <ul>
-     *   <li>Complete normally with the {@link Path} to the created report file when the 
-     *       operation succeeds.</li>
-     *   <li>Complete exceptionally if an error occurs before or during processing, including 
-     *       I/O errors, service errors, or {@link IllegalStateException} if another request 
-     *       is already in progress.</li>
-     *   <li>Complete exceptionally with a {@link java.util.concurrent.CancellationException CancellationException} 
-     *       if the operation is cancelled.</li>
+     *   <li>Complete normally with the {@link Path} to the created report file on success.</li>
+     *   <li>Complete exceptionally with an {@link IllegalStateException} if another request is
+     *       already in progress.</li>
+     *   <li>Complete exceptionally with a
+     *       {@link java.util.concurrent.CancellationException CancellationException} if the
+     *       operation is cancelled.</li>
+     *   <li>Complete exceptionally with other exceptions on I/O or service errors.</li>
      * </ul>
+     * <p>
+     * <b>Concurrency limitation:</b> Only one report generation request can be active at a time.
      *
      * <p><b>Example:</b></p>
      * <pre><code>
-     * CompletableFuture&lt;Path&gt; future = fileService.getFileData(
+     * CompletableFuture&lt;Path&gt; future = statService.getFileData(
      *     context,
      *     LocalDate.of(2025, 10, 5),
      *     Format.CSV,
@@ -520,31 +457,26 @@ public interface CallCenterStatisticsService extends IService {
      * future.whenComplete((path, ex) -&gt; {
      *     if (future.isCancelled()) {
      *         System.out.println("Report generation cancelled!");
-     *     }
-     *     else if (ex != null) {
+     *     } else if (ex != null) {
      *         System.err.println("Report generation failed: " + ex.getMessage());
-     *     } 
-     *     else {
+     *     } else {
      *         System.out.println("Report complete! File saved at: " + path);
      *     }
      * });
      * </code></pre>
-     * 
-     * <p><b>Note:</b> This method requires that CallCenterStatistics event 
-     * subscriptions be active. See {@link CallCenterStatisticsService class documentation}
-     * for details and example setup.     
      *
+     * <p><b>Note:</b> This method requires that CallCenterStatistics event subscriptions be
+     * active. See the {@link CallCenterStatisticsService class documentation} for details and
+     * setup example.
      *
-     * @param context the context defining the scope and filters for the statistics
-     * @param date the date for which to generate the report
-     * @param format the output format for the report file
-     * @param directory the directory in which to save the generated report file
-     * @param progressCallback a callback invoked to report progress of the operation; may be 
-     *        {@code null} if progress updates are not needed
-     * @return a {@link CompletableFuture} representing the asynchronous operation. The 
-     *         future completes with the {@link Path} to the generated report file, or 
-     *         exceptionally if an error occurs, the operation is cancelled, or another 
-     *         request is already in progress
+     * @param context          the context defining the scope and filters for the statistics
+     * @param date             the date for which to generate the report
+     * @param format           the output format for the report file
+     * @param directory        the directory in which to save the generated report file
+     * @param progressCallback a callback invoked to report progress; may be {@code null} if
+     *                         progress updates are not needed
+     * @return a {@link CompletableFuture} that completes with the {@link Path} to the generated
+     *         report file, or exceptionally if an error occurs or the operation is cancelled
      * @see #cancelRequest(Context)
      */
     CompletableFuture<Path> getFileData(
@@ -556,38 +488,30 @@ public interface CallCenterStatisticsService extends IService {
     
     
     /**
-     * Asynchronously retrieves statistical data for the specified context for the current day 
-     * and stores it as a report file in the given directory.
+     * Asynchronously downloads statistics for the current day as a report file, using the
+     * default 15-minute time slot granularity.
      * <p>
-     * By default, the statistics are reported in 15-minute intervals (quarter-hour slots),
-     * spanning from 00:00 until the last completed interval of the current day.
+     * Statistics span from 00:00 until the last completed 15-minute interval of the current day.
+     * The generated report file is saved in the specified directory in the format indicated by
+     * {@link Format}.
      * <p>
-     * The output file format is determined by the {@link Format} parameter (e.g., CSV, XLS),
-     * and the generated report file is saved in the specified directory.
-     * <p>
-     * Progress updates during the report generation are reported to the provided 
-     * {@link ProgressCallback} instance.
-     * <p>
-     * <b>Concurrency limitation:</b> Only one report generation request can be active 
-     * at a time. Any attempt to start another request while one is already in progress 
-     * will result in the returned {@link CompletableFuture} being completed exceptionally 
-     * with an {@link IllegalStateException}.
-     * <p>
-     * The method returns immediately with a {@link CompletableFuture} representing the 
-     * ongoing operation. The future will:
+     * The method returns immediately with a {@link CompletableFuture} representing the ongoing
+     * operation. The future will:
      * <ul>
-     *   <li>Complete normally with the {@link Path} to the created report file when the 
-     *       operation succeeds.</li>
-     *   <li>Complete exceptionally if an error occurs before or during processing, including 
-     *       I/O errors, service errors, or {@link IllegalStateException} if another request 
-     *       is already in progress.</li>
-     *   <li>Complete exceptionally with a {@link java.util.concurrent.CancellationException CancellationException} 
-     *       if the operation is cancelled.</li>
+     *   <li>Complete normally with the {@link Path} to the created report file on success.</li>
+     *   <li>Complete exceptionally with an {@link IllegalStateException} if another request is
+     *       already in progress.</li>
+     *   <li>Complete exceptionally with a
+     *       {@link java.util.concurrent.CancellationException CancellationException} if the
+     *       operation is cancelled.</li>
+     *   <li>Complete exceptionally with other exceptions on I/O or service errors.</li>
      * </ul>
+     * <p>
+     * <b>Concurrency limitation:</b> Only one report generation request can be active at a time.
      *
      * <p><b>Example:</b></p>
      * <pre><code>
-     * CompletableFuture&lt;Path&gt; future = fileService.getFileData(
+     * CompletableFuture&lt;Path&gt; future = statService.getFileData(
      *     context,
      *     Format.EXCEL,
      *     Paths.get("downloads"),
@@ -597,28 +521,25 @@ public interface CallCenterStatisticsService extends IService {
      * future.whenComplete((path, ex) -&gt; {
      *     if (future.isCancelled()) {
      *         System.out.println("Download cancelled!");
-     *     } 
-     *     else if (ex != null) {
+     *     } else if (ex != null) {
      *         System.err.println("Download failed: " + ex.getMessage());
-     *     } 
-     *     else {
+     *     } else {
      *         System.out.println("Download complete! File saved at: " + path);
      *     }
      * });
      * </code></pre>
-     * 
-     * <p><b>Note:</b> This method requires that CallCenterStatistics event 
-     * subscriptions be active. See {@link CallCenterStatisticsService class documentation}
-     * for details and example setup.     
      *
-     * @param context the context defining the scope and filters for the statistics
-     * @param format the output format for the report file
-     * @param directory the directory in which to save the generated report file
-     * @param progressCallback a callback invoked to report progress of the operation; may be 
-     *        {@code null} if progress updates are not needed
-     * @return a {@link CompletableFuture} representing the asynchronous operation. The 
-     *         future completes with the {@link Path} to the generated report file, or 
-     *         exceptionally if an error occurs or the operation is cancelled
+     * <p><b>Note:</b> This method requires that CallCenterStatistics event subscriptions be
+     * active. See the {@link CallCenterStatisticsService class documentation} for details and
+     * setup example.
+     *
+     * @param context          the context defining the scope and filters for the statistics
+     * @param format           the output format for the report file
+     * @param directory        the directory in which to save the generated report file
+     * @param progressCallback a callback invoked to report progress; may be {@code null} if
+     *                         progress updates are not needed
+     * @return a {@link CompletableFuture} that completes with the {@link Path} to the generated
+     *         report file, or exceptionally if an error occurs or the operation is cancelled
      * @see #cancelRequest(Context)
      */
     CompletableFuture<Path> getFileData(
@@ -628,36 +549,30 @@ public interface CallCenterStatisticsService extends IService {
             ProgressCallback progressCallback);
     
     /**
-     * Asynchronously retrieves statistical data for the specified context and stores it as a 
-     * report file in the given directory.
+     * Asynchronously downloads statistics for a range of days as a report file.
      * <p>
-     * This method generates a multi-day report corresponding to the period defined by the 
-     * provided {@link DateRange}, and filtered according to the specified {@link Context}. 
-     * The output file format is determined by the {@link Format} parameter (e.g., CSV, XLS).
+     * Multi-day reports provide one row of aggregated data per agent or pilot per day. The range
+     * can cover up to 31 consecutive days within the last 12 months and may span month
+     * boundaries. The generated report file is saved in the specified directory in the format
+     * indicated by {@link Format}.
      * <p>
-     * The generated report file is saved in the specified directory. Progress updates during 
-     * report generation are reported to the provided {@link ProgressCallback} instance.
-     * <p>
-     * <b>Concurrency limitation:</b> Only one report generation request can be active 
-     * at a time. Any attempt to start another request while one is already in progress 
-     * will result in the returned {@link CompletableFuture} being completed exceptionally 
-     * with an {@link IllegalStateException}.
-     * <p>
-     * The method returns immediately with a {@link CompletableFuture} representing the 
-     * ongoing operation. The future will:
+     * The method returns immediately with a {@link CompletableFuture} representing the ongoing
+     * operation. The future will:
      * <ul>
-     *   <li>Complete normally with the {@link Path} to the created report file when the 
-     *       operation succeeds.</li>
-     *   <li>Complete exceptionally if an error occurs before or during processing, including 
-     *       I/O errors, service errors, or {@link IllegalStateException} if another request 
-     *       is already in progress.</li>
-     *   <li>Complete exceptionally with a {@link java.util.concurrent.CancellationException CancellationException} 
-     *       if the operation is cancelled.</li>
+     *   <li>Complete normally with the {@link Path} to the created report file on success.</li>
+     *   <li>Complete exceptionally with an {@link IllegalStateException} if another request is
+     *       already in progress.</li>
+     *   <li>Complete exceptionally with a
+     *       {@link java.util.concurrent.CancellationException CancellationException} if the
+     *       operation is cancelled.</li>
+     *   <li>Complete exceptionally with other exceptions on I/O or service errors.</li>
      * </ul>
+     * <p>
+     * <b>Concurrency limitation:</b> Only one report generation request can be active at a time.
      *
      * <p><b>Example:</b></p>
      * <pre><code>
-     * CompletableFuture&lt;Path&gt; future = fileService.getFileData(
+     * CompletableFuture&lt;Path&gt; future = statService.getFileData(
      *     context,
      *     new DateRange(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 30)),
      *     Format.CSV,
@@ -682,16 +597,14 @@ public interface CallCenterStatisticsService extends IService {
      * subscriptions be active. See {@link CallCenterStatisticsService class documentation}
      * for details and example setup.     
      *
-     * @param context the context defining the scope and filters for the statistics
-     * @param range the date range over which to collect statistics
-     * @param format the output format for the report file
-     * @param directory the directory in which to save the generated report file
-     * @param progressCallback a callback invoked to report progress of the operation; may be 
-     *        {@code null} if progress updates are not needed
-     * @return a {@link CompletableFuture} representing the asynchronous operation. The 
-     *         future completes with the {@link Path} to the generated report file, or 
-     *         exceptionally if an error occurs, the operation is cancelled, or another 
-     *         request is already in progress
+     * @param context          the context defining the scope and filters for the statistics
+     * @param range            the date range over which to collect statistics
+     * @param format           the output format for the report file
+     * @param directory        the directory in which to save the generated report file
+     * @param progressCallback a callback invoked to report progress; may be {@code null} if
+     *                         progress updates are not needed
+     * @return a {@link CompletableFuture} that completes with the {@link Path} to the generated
+     *         report file, or exceptionally if an error occurs or the operation is cancelled
      * @see #cancelRequest(Context)
      */
     CompletableFuture<Path> getFileData(
@@ -702,73 +615,76 @@ public interface CallCenterStatisticsService extends IService {
             ProgressCallback progressCallback);
     
     /**
-     * Attempts to cancel an ongoing statistics report generation for the specified context.
+     * Attempts to cancel an ongoing asynchronous statistics report generation for the specified
+     * context.
      * <p>
-     * If a report generation process for the given {@link Context} is currently running,
-     * this method will attempt to stop it. Cancellation may succeed only if the process
-     * has not already completed.
-     * <p>
-     * The method returns immediately and does not block until the process is fully terminated.
+     * Cancellation may succeed only if the server-side process has not already completed. The
+     * method returns immediately and does not block until the process is fully terminated.
      *
      * @param context the {@link Context} identifying the report generation process to cancel
-     * @return {@code true} if a running report generation was found and successfully
-     *         requested to be cancelled, {@code false} if there was no running process
-     *         for the specified context or if it could not be cancelled
+     * @return {@code true} if a running request was found and cancellation was successfully
+     *         requested; {@code false} if there was no running process for the specified context
+     *         or if it could not be cancelled
      */
     boolean cancelRequest(Context context);
 
     /**
-     * Creates a new scheduled report with the specified configuration.
+     * Creates a new recurring scheduled report with the specified configuration.
      * <p>
-     * The scheduled report will be generated according to the given recurrence and observation period,
-     * formatted in the specified output format, and sent to the provided recipients.
+     * The report is generated repeatedly according to the given {@code recurrence} pattern and
+     * {@code observationPeriod}, formatted in the specified output format, and sent as a ZIP file
+     * attachment to the provided recipients.
      *
-     * @param context the context defining which data and counters to include in the report
-     * @param id a unique identifier for the scheduled report
-     * @param description a human-readable description of the report
-     * @param observationPeriod the period over which statistics are collected
-     * @param recurrence the recurrence pattern for generating the report; may be null for one-time reports
-     * @param format the output format of the report
-     * @param recipients an array of email addresses to receive the report
-     * @return a {@link ScheduledReport} representing the newly created scheduled report
+     * @param context           the context defining which data and counters to include
+     * @param id                a unique identifier for the scheduled report
+     * @param description       a human-readable description of the report
+     * @param observationPeriod the observation period over which statistics are collected
+     * @param recurrence        the recurrence pattern for generating the report
+     * @param format            the output format of the report
+     * @param recipients        an array of email addresses to receive the report
+     * @return the newly created {@link ScheduledReport}, or {@code null} on failure
+     * @see #createScheduledReport(Context, String, String, ReportObservationPeriod, Format, String[])
+     * @see #deleteScheduledReport(ScheduledReport)
+     * @see #setScheduledReportEnabled(ScheduledReport, boolean)
      */
     ScheduledReport createScheduledReport(
-            Context context, 
-            String id, 
-            String description, 
-            ReportObservationPeriod observationPeriod, 
-            Recurrence recurrence, 
+            Context context,
+            String id,
+            String description,
+            ReportObservationPeriod observationPeriod,
+            Recurrence recurrence,
             Format format,
             String[] recipients);
 
     /**
-     * Creates a one-time scheduled report with the specified configuration.
+     * Creates a new one-time scheduled report with the specified configuration.
      * <p>
-     * The report will be generated once for the given observation period,
-     * formatted in the specified output format, and sent to the provided recipients.
+     * Unlike the recurring overload, this report is generated only once for the specified
+     * {@code observationPeriod} and is no longer active afterwards.
      *
-     * @param context the context defining which data and counters to include in the report
-     * @param id a unique identifier for the scheduled report
-     * @param description a human-readable description of the report
-     * @param observationPeriod the period over which statistics are collected
-     * @param format the output format of the report
-     * @param recipients an array of email addresses to receive the report
-     * @return a {@link ScheduledReport} representing the newly created scheduled report
+     * @param context           the context defining which data and counters to include
+     * @param id                a unique identifier for the scheduled report
+     * @param description       a human-readable description of the report
+     * @param observationPeriod the observation period over which statistics are collected
+     * @param format            the output format of the report
+     * @param recipients        an array of email addresses to receive the report
+     * @return the newly created {@link ScheduledReport}, or {@code null} on failure
+     * @see #createScheduledReport(Context, String, String, ReportObservationPeriod, Recurrence, Format, String[])
+     * @see #deleteScheduledReport(ScheduledReport)
      */
     ScheduledReport createScheduledReport(
-            Context context, 
-            String id, 
-            String description, 
-            ReportObservationPeriod observationPeriod, 
+            Context context,
+            String id,
+            String description,
+            ReportObservationPeriod observationPeriod,
             Format format,
             String[] recipients);    
     
     /**
-     * Returns all scheduled reports associated with the given context.
+     * Returns all scheduled reports associated with the specified context.
      *
-     * @param context the context defining which reports to retrieve
-     * @return a collection of {@link ScheduledReport} objects for the specified context;
-     *         may be empty if no reports exist
+     * @param context the context whose reports are retrieved
+     * @return a collection of {@link ScheduledReport} objects, or {@code null} on failure
      */
     Collection<ScheduledReport> getScheduledReports(Context context);
     
@@ -776,45 +692,40 @@ public interface CallCenterStatisticsService extends IService {
      * Deletes the specified scheduled report.
      *
      * @param report the scheduled report to delete
-     * @return {@code true} if the report was successfully deleted, {@code false} otherwise
+     * @return {@code true} if the report was successfully deleted; {@code false} otherwise
      */
     boolean deleteScheduledReport(ScheduledReport report);
 
     /**
      * Enables or disables the specified scheduled report.
      *
-     * @param report the scheduled report to update
-     * @param enabled {@code true} to enable the report, {@code false} to disable it
-     * @return {@code true} if the report state was successfully updated, {@code false} otherwise
+     * @param report   the scheduled report to update
+     * @param enabled  {@code true} to enable the report; {@code false} to disable it
+     * @return {@code true} if the report state was successfully updated; {@code false} otherwise
      */
     boolean setScheduledReportEnabled(ScheduledReport report, boolean enabled);
     
     
     /**
-     * Retrieves a previously created scheduled report by its unique identifier.
-     * <p>
-     * This method requires a valid {@link Context} to perform the retrieval operation.
-     * The {@code scheduleReportId} must correspond to an existing scheduled report.
+     * Returns the scheduled report with the specified identifier.
      *
-     * @param context the session context used to access the service
+     * @param context          the statistics context that owns the report
      * @param scheduleReportId the unique identifier of the scheduled report to retrieve
-     * @return the {@link ScheduledReport} corresponding to the specified ID, 
-     *         or {@code null} if no report exists with that ID
+     * @return the {@link ScheduledReport} corresponding to the specified ID, or {@code null} if
+     *         no report exists with that ID
      */
     ScheduledReport getScheduledReport(Context context, String scheduleReportId);
     
     
     /**
-     * Updates the configuration of an existing scheduled report.
+     * Persists any changes made to the specified scheduled report.
      * <p>
-     * This method persists any changes made to the provided {@link ScheduledReport} instance,
-     * including its description, observation period, recurrence, format, and recipients.
-     * <p>
-     * Implementations should ensure that the report exists and that the updates are valid.
+     * Fields that can be updated include the description, observation period, recurrence
+     * pattern, output format, and recipient list.
      *
-     * @param report the {@link ScheduledReport} instance containing the updated information
-     * @return {@code true} if the update was successful; {@code false} if the report does not exist
-     *         or the update could not be applied
-     */    
+     * @param report the {@link ScheduledReport} instance containing the updated fields
+     * @return {@code true} if the update was successful; {@code false} if the report does not
+     *         exist or the update could not be applied
+     */
     boolean updateScheduledReport(ScheduledReport report);
 }

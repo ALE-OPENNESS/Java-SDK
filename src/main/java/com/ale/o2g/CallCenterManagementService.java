@@ -171,20 +171,22 @@ public interface CallCenterManagementService extends IService {
             Transition transition);
 
     /**
-     * Opens the specified CCD pilot.
-     * 
+     * Forces the specified CCD pilot into the open state, regardless of its calendar schedule.
+     *
      * @param nodeId      the OmniPCX Enterprise node identifier
      * @param pilotNumber the pilot directory number
      * @return {@code true} if successful; {@code false} otherwise
+     * @see #closePilot(int, String)
      */
     boolean openPilot(int nodeId, String pilotNumber);
 
     /**
-     * Closes the specified CCD pilot.
-     * 
-     * @param nodeId      the PCX Enterprise node identifier
+     * Forces the specified CCD pilot into the closed state, regardless of its calendar schedule.
+     *
+     * @param nodeId      the OmniPCX Enterprise node identifier
      * @param pilotNumber the pilot directory number
      * @return {@code true} if successful; {@code false} otherwise
+     * @see #openPilot(int, String)
      */
     boolean closePilot(int nodeId, String pilotNumber);
 }

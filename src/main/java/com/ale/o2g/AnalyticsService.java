@@ -34,7 +34,6 @@ import com.ale.o2g.types.common.DateRange;
  * Using this service requires an <b>ANALYTICS</b> license and an
  * administrative login. O2G uses SSH to collect the information from an
  * OmniPCX Enterprise node, so <b>SSH must be enabled</b> on the node.
- *
  */
 public interface AnalyticsService extends IService {
 
@@ -60,49 +59,48 @@ public interface AnalyticsService extends IService {
     Collection<Incident> getIncidents(int nodeId, int last);
 
     /**
-     * Retrieves the list of charging files from the specified node.
+     * Retrieves the list of charging files available on the specified node.
      *
      * @param nodeId the OmniPCX Enterprise node identifier
      * @return a collection of {@link ChargingFile charging files} available
-     *         on the node
+     *         on the node, or {@code null} if the request fails
      * @see #getChargings(int, Collection, Integer, boolean)
      */
     Collection<ChargingFile> getChargingFiles(int nodeId);
 
     /**
-     * Retrieves the list of charging files from the specified node,
+     * Retrieves the list of charging files available on the specified node,
      * filtered by a date range.
      *
      * @param nodeId the OmniPCX Enterprise node identifier
      * @param filter a date range filter
      * @return a collection of {@link ChargingFile charging files} that match
-     *         the filter
+     *         the filter, or {@code null} if the request fails
      * @see #getChargings(int, Collection, Integer, boolean)
      */
     Collection<ChargingFile> getChargingFiles(int nodeId, DateRange filter);
-    
+
     /**
      * Queries the charging information for the specified node, using a date
      * range filter and the given options.
      * <p>
      * If {@code all} is set to {@code true}, all the tickets are returned,
-     * including the zero cost ticket, and with the called party; If {@code all} is
-     * set to {@code false}, the total of charging info is returned for each user,
-     * the call number giving the number of calls with non null charging cost.
+     * including zero-cost tickets and the called party; if {@code all} is set
+     * to {@code false}, the total charging information is returned per user,
+     * with the call count reflecting only calls with a non-null charging cost.
      * <p>
-     * The request processes charging files on the OmniPCX Enterprise. The
-     * processing is limited to a maximum of 100 files for performance reason. If
-     * the range filter is too large and the number of file to process is greater
-     * than 100, the method fails and returns {@code null}. In this case, a smaller
-     * range must be specified.
-     * 
-     * @param nodeId     the OmniPCX Enterprise node id
+     * The request processes charging files on the OmniPCX Enterprise. Processing
+     * is limited to a maximum of 100 files for performance reasons. If the date
+     * range filter is too wide and the number of files to process exceeds 100,
+     * the method fails and returns {@code null}. In that case, a narrower range
+     * must be specified.
+     *
+     * @param nodeId     the OmniPCX Enterprise node identifier
      * @param filter     a date range filter
-     * @param topResults allow to return only the 'top N' tickets
+     * @param topResults limits the result to the top N tickets; pass {@code null} to return all
      * @param all        {@code true} to include tickets with a 0 cost
-     * @return A {@link ChargingResult} object that represents the result of the
-     *         query or {@code null} in case of error or if the specified filter
-     *         does not return any result.
+     * @return A {@link ChargingResult} object representing the result of the query,
+     *         or {@code null} in case of error or if the filter yields no results
      */
     ChargingResult getChargings(int nodeId, DateRange filter, Integer topResults, boolean all);
 
@@ -111,23 +109,22 @@ public interface AnalyticsService extends IService {
      * range filter and the given options.
      * <p>
      * If {@code all} is set to {@code true}, all the tickets are returned,
-     * including the zero cost ticket, and with the called party; If {@code all} is
-     * set to {@code false}, the total of charging info is returned for each user,
-     * the call number giving the number of calls with non null charging cost.
+     * including zero-cost tickets and the called party; if {@code all} is set
+     * to {@code false}, the total charging information is returned per user,
+     * with the call count reflecting only calls with a non-null charging cost.
      * <p>
-     * The request processes charging files on the OmniPCX Enterprise. The
-     * processing is limited to a maximum of 100 files for performance reason. If
-     * the range filter is too large and the number of file to process is greater
-     * than 100, the method fails and returns {@code null}. In this case, a smaller
-     * range must be specified.
-     * 
-     * @param nodeId     the OmniPCX Enterprise node id
-     * @param filter     a date range filter
-     * @param all        {@code true} to include tickets with a 0 cost
-     * @return A {@link ChargingResult} object that represents the result of the
-     *         query or {@code null} in case of error or if the specified filter
-     *         does not return any result.
-     * @deprecated Use {@link #getChargings(int, DateRange, boolean)} instead.
+     * The request processes charging files on the OmniPCX Enterprise. Processing
+     * is limited to a maximum of 100 files for performance reasons. If the date
+     * range filter is too wide and the number of files to process exceeds 100,
+     * the method fails and returns {@code null}. In that case, a narrower range
+     * must be specified.
+     *
+     * @param nodeId the OmniPCX Enterprise node identifier
+     * @param filter a date range filter
+     * @param all    {@code true} to include tickets with a 0 cost
+     * @return A {@link ChargingResult} object representing the result of the query,
+     *         or {@code null} in case of error or if the filter yields no results
+     * @deprecated Use {@link #getChargings(int, DateRange, Integer, boolean)} instead.
      */
     @Deprecated
     ChargingResult getChargings(int nodeId, DateRange filter, boolean all);
@@ -136,23 +133,25 @@ public interface AnalyticsService extends IService {
      * Queries the charging information for the specified node, processing
      * the given charging files with the specified options.
      * <p>
-     * If {@code all} is set to {@code true}, all the tickets are returned,
-     * including the zero cost ticket, and with the called party; If {@code all} is
-     * set to {@code false}, the total of charging info is returned for each user,
-     * the call number giving the number of calls with non null charging cost.
+     * This method gives finer control over the request by letting the caller
+     * specify the exact list of charging files to process. The list can be
+     * obtained via {@link #getChargingFiles(int, DateRange)}.
      * <p>
-     * The request processes charging files on the OmniPCX Enterprise. The
-     * processing is limited to a maximum of 100 files for performance reason. If
-     * the range filter is too large and the number of file to process is greater
-     * than 100, the method fails and returns {@code null}.
-     * 
-     * @param nodeId     the OmniPCX Enterprise node id
-     * @param files      the list of file to process
-     * @param topResults allow to return only the 'top N' tickets
+     * If {@code all} is set to {@code true}, all the tickets are returned,
+     * including zero-cost tickets and the called party; if {@code all} is set
+     * to {@code false}, the total charging information is returned per user,
+     * with the call count reflecting only calls with a non-null charging cost.
+     * <p>
+     * Processing is limited to a maximum of 100 files for performance reasons.
+     * If the number of files exceeds 100, the method fails and returns
+     * {@code null}.
+     *
+     * @param nodeId     the OmniPCX Enterprise node identifier
+     * @param files      the list of charging files to process
+     * @param topResults limits the result to the top N tickets; pass {@code null} to return all
      * @param all        {@code true} to include tickets with a 0 cost
-     * @return A {@link ChargingResult} object that represents the result of the
-     *         query or {@code null} in case of error or if the specified filter
-     *         does not return any result.
+     * @return A {@link ChargingResult} object representing the result of the query,
+     *         or {@code null} in case of error or if the specified files yield no results
      */
     ChargingResult getChargings(int nodeId, Collection<ChargingFile> files, Integer topResults, boolean all);
 
@@ -160,22 +159,24 @@ public interface AnalyticsService extends IService {
      * Queries the charging information for the specified node, processing
      * the given charging files with the specified options.
      * <p>
-     * If {@code all} is set to {@code true}, all the tickets are returned,
-     * including the zero cost ticket, and with the called party; If {@code all} is
-     * set to {@code false}, the total of charging info is returned for each user,
-     * the call number giving the number of calls with non null charging cost.
+     * This method gives finer control over the request by letting the caller
+     * specify the exact list of charging files to process. The list can be
+     * obtained via {@link #getChargingFiles(int, DateRange)}.
      * <p>
-     * The request processes charging files on the OmniPCX Enterprise. The
-     * processing is limited to a maximum of 100 files for performance reason. If
-     * the range filter is too large and the number of file to process is greater
-     * than 100, the method fails and returns {@code null}.
-     * 
-     * @param nodeId     the OmniPCX Enterprise node id
-     * @param files      the list of file to process
-     * @param all        {@code true} to include tickets with a 0 cost
-     * @return A {@link ChargingResult} object that represents the result of the
-     *         query or {@code null} in case of error or if the specified filter
-     *         does not return any result.
+     * If {@code all} is set to {@code true}, all the tickets are returned,
+     * including zero-cost tickets and the called party; if {@code all} is set
+     * to {@code false}, the total charging information is returned per user,
+     * with the call count reflecting only calls with a non-null charging cost.
+     * <p>
+     * Processing is limited to a maximum of 100 files for performance reasons.
+     * If the number of files exceeds 100, the method fails and returns
+     * {@code null}.
+     *
+     * @param nodeId the OmniPCX Enterprise node identifier
+     * @param files  the list of charging files to process
+     * @param all    {@code true} to include tickets with a 0 cost
+     * @return A {@link ChargingResult} object representing the result of the query,
+     *         or {@code null} in case of error or if the specified files yield no results
      */
     ChargingResult getChargings(int nodeId, Collection<ChargingFile> files, boolean all);
 }

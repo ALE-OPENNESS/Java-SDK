@@ -19,6 +19,7 @@
 package com.ale.o2g.types.ccm;
 
 import com.ale.o2g.types.common.ServiceState;
+import com.ale.o2g.types.telephony.call.acd.PilotStatus;
 
 /**
  * {@code Pilot} represents a CCD pilot, which is a single entry point into the
@@ -38,7 +39,8 @@ public class Pilot {
     private String number;
     private String name;
     private ServiceState state;
-    private int waitingTime;
+    private PilotStatus detailedState;
+	private int waitingTime;
     private boolean saturation;
     private PilotRuleSet rules;
     private boolean possibleTransfer;
@@ -61,6 +63,14 @@ public class Pilot {
     public final String getName() {
         return name;
     }
+
+    /**
+     * Returns the detailed service status of the pilot.
+     * @return the {@link PilotStatus} of the pilot 
+     */
+    public PilotStatus getDetailedState() {
+		return detailedState;
+	}
 
     /**
      * Returns the current service state of the pilot.
@@ -118,26 +128,12 @@ public class Pilot {
         return supervisedTransfer;
     }
 
-    /**
-     * Constructs a new {@code Pilot} with the specified attributes.
-     * <p>
-     * Typically used internally when creating pilot objects from the call center 
-     * management system.
-     * 
-     * @param number             the pilot's directory number
-     * @param name               the pilot's name
-     * @param state              the current service state
-     * @param waitingTime        the expected maximum waiting time (seconds)
-     * @param saturation         {@code true} if call queues are saturated
-     * @param rules              the set of rules associated with the pilot
-     * @param possibleTransfer   {@code true} if call transfer is possible
-     * @param supervisedTransfer {@code true} if supervised transfer is possible
-     */
-    protected Pilot(String number, String name, ServiceState state, int waitingTime, boolean saturation,
+    protected Pilot(String number, String name, ServiceState state, PilotStatus detailedState, int waitingTime, boolean saturation,
             PilotRuleSet rules, boolean possibleTransfer, boolean supervisedTransfer) {
         this.number = number;
         this.name = name;
         this.state = state;
+        this.detailedState = detailedState;
         this.waitingTime = waitingTime;
         this.saturation = saturation;
         this.rules = rules;

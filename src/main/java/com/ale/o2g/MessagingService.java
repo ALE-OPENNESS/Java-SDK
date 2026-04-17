@@ -31,9 +31,10 @@ import com.ale.o2g.types.messaging.VoiceMessage;
  * {@code MessagingService} service provides access to user's voice mail box.
  * It's possible using this service to connect to the voice mail box, retrieve
  * the information and the list of voice mails and manage the mail box. Using
- * this service requires having a <b>TELEPHONY_ADVANCED</b> license. <br>It's
- * possible to download the voice mail as a wav file and to delete an existing
- * messages.
+ * this service requires having a <b>TELEPHONY_ADVANCED</b> license.
+ * <p>
+ * It's possible to download a voice mail as a wav file, acknowledge (mark as
+ * read) a voice mail, and delete existing messages.
  */
 public interface MessagingService extends IService {
 
@@ -52,12 +53,12 @@ public interface MessagingService extends IService {
     Collection<MailBox> getMailBoxes(String loginName);
 
     /**
-     * Get the mailboxes of the user who has opened the session.. This is the
+     * Get the mailboxes of the user who has opened the session. This is the
      * logical first step to access further operation on voice mail feature.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
-     * 
+     *
      * @return A collection of {@link MailBox MailBox} objects in case of success;
      *         {@code null} otherwise.
      */
@@ -66,19 +67,18 @@ public interface MessagingService extends IService {
     /**
      * Get the information on the specified mail box.
      * <p>
-     * The {@code password} is optional. if not set, the user password is used to
-     * connect on the voicemail. This is only possible if the OmniPCX Enterprise
-     * administrator has managed the same pasword for the user and his mailbox.
+     * The {@code password} is optional. If not set, the user password is used to
+     * connect to the voicemail. This is only possible if the OmniPCX Enterprise
+     * administrator has configured the same password for the user and their mailbox.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param mailBoxId the mail box identifier given in a {@link MailBox MailBox}
      *                  object
      * @param password  the mail box password
      * @param loginName the user login name
-     * 
      * @return A {@link MailBoxInfo MailBoxInfo} object in case of success;
      *         {@code null} otherwise.
      */
@@ -87,17 +87,16 @@ public interface MessagingService extends IService {
     /**
      * Get the information on the specified mail box.
      * <p>
-     * The {@code password} is optional. if not set, the user password is used to
-     * connect on the voicemail. This is only possible if the OmniPCX Enterprise
-     * administrator has managed the same pasword for the user and his mailbox.
+     * The {@code password} is optional. If not set, the user password is used to
+     * connect to the voicemail. This is only possible if the OmniPCX Enterprise
+     * administrator has configured the same password for the user and their mailbox.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
-     * 
+     *
      * @param mailBoxId the mail box identifier given in a {@link MailBox MailBox}
      *                  object
      * @param password  the mail box password
-     * 
      * @return A {@link MailBoxInfo MailBoxInfo} object in case of success;
      *         {@code null} otherwise.
      */
@@ -141,12 +140,12 @@ public interface MessagingService extends IService {
 
     /**
      * Get the list of voice mails in the specified mail box for the user who has
-     * opened the session. Voice mails are retrieved from the begining
-     * ({@code offset = 0}) in a limit of 100.
+     * opened the session. Voice mails are retrieved from the beginning
+     * ({@code offset = 0}) up to a limit of 100.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
-     * 
+     *
      * @param mailboxId the mail box identifier given in a {@link MailBox MailBox}
      *                  object
      * @param newOnly   filter only unread voicemail if set to {@code true}
@@ -159,11 +158,11 @@ public interface MessagingService extends IService {
     /**
      * Get the list of voice mails in the specified mail box for the user who has
      * opened the session. All voice mails (new and old) are retrieved from the
-     * begining ({@code offset = 0}) in a limit of 100.
+     * beginning ({@code offset = 0}) up to a limit of 100.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
-     * 
+     *
      * @param mailboxId the mail box identifier given in a {@link MailBox MailBox}
      *                  object
      * @return A collection of {@link VoiceMessage VoiceMessage} objects in case of
@@ -196,9 +195,9 @@ public interface MessagingService extends IService {
      * If some of the specified voice message ids are not valid, they are ignored
      * and this method will succeed.
      * <p>
-     * This method will fail and return {@code null} if it is invoked from a session
+     * This method will fail and return {@code false} if it is invoked from a session
      * opened by an administrator.
-     * 
+     *
      * @param mailboxId the mail box identifier given in a {@link MailBox MailBox}
      *                  object
      * @param msgIds    the list of voice messages id to delete
@@ -224,9 +223,9 @@ public interface MessagingService extends IService {
     /**
      * Deletes the specified voice message.
      * <p>
-     * This method will fail and return {@code null} if it is invoked from a session
+     * This method will fail and return {@code false} if it is invoked from a session
      * opened by an administrator.
-     * 
+     *
      * @param mailboxId   the mail box identifier given in a {@link MailBox MailBox}
      *                    object
      * @param voicemailId the id of the voice message to delete
@@ -235,35 +234,71 @@ public interface MessagingService extends IService {
     boolean deleteVoiceMessage(String mailboxId, String voicemailId);
 
     /**
-     * Download the specified voice message.
+     * Downloads the specified voice message as a wav file.
+     * <p>
+     * If {@code wavPath} is not set, the wav file is saved in the default system
+     * downloads directory.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
-     * 
+     *
      * @param mailboxId   the mail box identifier given in a {@link MailBox MailBox}
      *                    object
      * @param voicemailId the id of the voice message to download
-     * @param wavPath     the path and name file
+     * @param wavPath     an optional destination file path for the downloaded wav file
      * @param loginName   the user login name
-     * @return the file downloaded.
-     * @throws IOException in case of error while writing on file system.
+     * @return the path to the downloaded wav file in case of success; {@code null}
+     *         otherwise.
+     * @throws IOException in case of error while writing on the file system.
      */
     Path downloadVoiceMessage(String mailboxId, String voicemailId, String wavPath, String loginName)
             throws IOException;
 
     /**
-     * Download the specified voice message.
+     * Downloads the specified voice message as a wav file.
+     * <p>
+     * If {@code wavPath} is not set, the wav file is saved in the default system
+     * downloads directory.
      * <p>
      * This method will fail and return {@code null} if it is invoked from a session
      * opened by an administrator.
-     * 
+     *
      * @param mailboxId   the mail box identifier given in a {@link MailBox MailBox}
      *                    object
      * @param voicemailId the id of the voice message to download
-     * @param wavPath     the path and name file
-     * @return the file downloaded.
-     * @throws IOException in case of error while writing on file system.
+     * @param wavPath     an optional destination file path for the downloaded wav file
+     * @return the path to the downloaded wav file in case of success; {@code null}
+     *         otherwise.
+     * @throws IOException in case of error while writing on the file system.
      */
     Path downloadVoiceMessage(String mailboxId, String voicemailId, String wavPath) throws IOException;
+
+    /**
+     * Acknowledges the specified voice message, marking it as read.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
+     *
+     * @param mailboxId   the mail box identifier given in a {@link MailBox MailBox}
+     *                    object
+     * @param voicemailId the id of the voice message to acknowledge
+     * @param loginName   the user login name
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean acknowledgeVoiceMessage(String mailboxId, String voicemailId, String loginName);
+
+    /**
+     * Acknowledges the specified voice message, marking it as read.
+     * <p>
+     * This method will fail and return {@code false} if it is invoked from a session
+     * opened by an administrator.
+     *
+     * @param mailboxId   the mail box identifier given in a {@link MailBox MailBox}
+     *                    object
+     * @param voicemailId the id of the voice message to acknowledge
+     * @return {@code true} in case of success; {@code false} otherwise.
+     */
+    boolean acknowledgeVoiceMessage(String mailboxId, String voicemailId);
 }

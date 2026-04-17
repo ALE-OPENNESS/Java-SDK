@@ -27,8 +27,8 @@ import com.ale.o2g.types.rsi.RsiPoint;
 import com.ale.o2g.types.rsi.Tones;
 
 /**
- * {@code RsiService} provides access to th RSI (Routing Service Intelligence)
- * points features:
+ * {@code RsiService} provides access to the RSI (Routing Service Intelligence)
+ * point features:
  * <ul>
  * <li>Makes route selection.</li>
  * <li>Makes digits collection.</li>
@@ -36,9 +36,8 @@ import com.ale.o2g.types.rsi.Tones;
  * <li>Plays announcements (prompts and/or digits).</li>
  * </ul>
  * <p>
- * To be able to receive the RouteRequest from the OmniPCX Enterprise, the first
- * action is subscribe to rsi events and the second action is to enable the RSI
- * point.
+ * To be able to receive the route requests from the OmniPCX Enterprise, the
+ * application must first subscribe to RSI events and then enable the RSI point.
  * <p>
  * Using this service requires having a <b>CONTACTCENTER_RSI</b> license.
  * @hidden
@@ -46,43 +45,39 @@ import com.ale.o2g.types.rsi.Tones;
 public interface RsiService extends IService {
 
     /**
-     * Gets the configured Rsi points.
-     * 
-     * @return a collection of {@linkplain com.ale.o2g.types.rsi.RsiPoint RsiPoint}.
+     * Gets the configured RSI points.
+     *
+     * @return A collection of {@linkplain com.ale.o2g.types.rsi.RsiPoint RsiPoint} representing all the declared RSI points.
      */
     Collection<RsiPoint> getRsiPoints();
 
     /**
-     * Enables the specified rsi point.
-     * 
-     * @param rsiNumber the rsi point extension number
-     * @param backup to enable the RSI point in backup mode.
+     * Enables the specified RSI point.
+     *
+     * @param rsiNumber the RSI point extension number
+     * @param backup    {@code true} to enable the RSI point in backup mode
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean enableRsiPoint(String rsiNumber, boolean backup);
 
     /**
-     * Disables the specified rsi point.
-     * 
-     * @param rsiNumber the rsi point extension number.
+     * Disables the specified RSI point.
+     *
+     * @param rsiNumber the RSI point extension number
      * @return {@code true} in case of success; {@code false} otherwise.
      */
     boolean disableRsiPoint(String rsiNumber);
 
     /**
-     * Starts a digits collection for the specified rsi, on the specified call.
-     * 
-     * @param rsiNumber          the rsi point extension number
+     * Starts a digits collection on the specified RSI point, for the specified call.
+     *
+     * @param rsiNumber          the RSI point extension number
      * @param callRef            the call reference
-     * @param nbChars            the optionnal number of digits to collect. The
-     *                           digit collection is stopped when this number is
-     *                           reached
-     * @param flushChar          the optional character used to stop the digit
-     *                           collection when pressed.
-     * @param timeout            optional timeout in second. Stop the digit
-     *                           collection after this time elapses.
+     * @param nbChars            the optional number of digits to collect; the digit collection stops when this number is reached
+     * @param flushChar          the optional character that stops the digit collection when pressed
+     * @param timeout            the optional timeout in seconds; the digit collection stops when this delay elapses
      * @param additionalCriteria extension criteria used to collect digits
-     * @return the digits collection Crid. A unique identifier for the collection.
+     * @return A unique identifier (Crid) for this digit collection session.
      * @see com.ale.o2g.events.rsi.OnDigitCollectedEvent OnDigitCollectedEvent
      * @see #stopCollectDigit(String, String) stopCollectDigit
      */
@@ -90,10 +85,10 @@ public interface RsiService extends IService {
             AdditionalDigitCollectionCriteria additionalCriteria);
 
     /**
-     * Stops the specified digits collection.
-     * 
-     * @param rsiNumber the rsi point extension number
-     * @param callCrid  the digit collection identifier
+     * Stops the specified digits collection on the specified RSI point.
+     *
+     * @param rsiNumber the RSI point extension number
+     * @param callCrid  the digit collection identifier returned by {@link #startCollectDigit(String, String, Integer, Character, Integer, AdditionalDigitCollectionCriteria) startCollectDigit}
      * @return {@code true} in case of success; {@code false} otherwise.
      * @see #startCollectDigit(String, String, Integer, Character, Integer,
      *      AdditionalDigitCollectionCriteria) startCollectDigit
@@ -102,87 +97,81 @@ public interface RsiService extends IService {
 
     /**
      * Plays the specified tone on the specified call.
-     * 
-     * @param rsiNumber the rsi point extension number
+     *
+     * @param rsiNumber the RSI point extension number
      * @param callRef   the call reference
      * @param tone      the tone to play
-     * @param duration  the duration the tone is played (in second)
+     * @param duration  the duration the tone is played, in seconds
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see com.ale.o2g.events.rsi.OnToneGeneratedStartEvent
-     *      OnToneGeneratedStartEvent.
-     * @see #cancelTone(String, String) cancelTone.
+     * @see com.ale.o2g.events.rsi.OnToneGeneratedStartEvent OnToneGeneratedStartEvent
+     * @see #cancelTone(String, String) cancelTone
      */
     boolean playTone(String rsiNumber, String callRef, Tones tone, int duration);
 
     /**
-     * Cancels playing a tone on the specified call.
-     * 
-     * @param rsiNumber the rsi point extension number
+     * Cancels the tone currently playing on the specified call.
+     *
+     * @param rsiNumber the RSI point extension number
      * @param callRef   the call reference
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see com.ale.o2g.events.rsi.OnToneGeneratedStopEvent
-     *      OnToneGeneratedStopEvent.
-     * @see #playTone(String, String, Tones, int) playTone.
+     * @see com.ale.o2g.events.rsi.OnToneGeneratedStopEvent OnToneGeneratedStopEvent
+     * @see #playTone(String, String, Tones, int) playTone
      */
     boolean cancelTone(String rsiNumber, String callRef);
 
     /**
      * Plays the specified voice guide on the specified call.
-     * 
-     * @param rsiNumber   the rsi point extension number
+     *
+     * @param rsiNumber   the RSI point extension number
      * @param callRef     the call reference
-     * @param guideNumber the voice guide number as defined in the OmniPcx
-     *                    Enterprise
-     * @param duration    an optional duration for the voice guide in second.
+     * @param guideNumber the voice guide number as defined in the OmniPCX Enterprise
+     * @param duration    an optional duration for the voice guide, in seconds
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see com.ale.o2g.events.rsi.OnToneGeneratedStartEvent
-     *      OnToneGeneratedStartEvent.
+     * @see com.ale.o2g.events.rsi.OnToneGeneratedStartEvent OnToneGeneratedStartEvent
      */
     boolean playVoiceGuide(String rsiNumber, String callRef, int guideNumber, Integer duration);
 
     /**
-     * Ends a route session.
-     * 
-     * @param rsiNumber the rsi point extension number
+     * Ends a route session, indicating that no route will be selected.
+     *
+     * @param rsiNumber the RSI point extension number
      * @param routeCrid the routing session unique identifier
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see com.ale.o2g.events.rsi.OnRouteRequestEvent OnRouteRequestEvent.
+     * @see com.ale.o2g.events.rsi.OnRouteRequestEvent OnRouteRequestEvent
      */
     boolean routeEnd(String rsiNumber, String routeCrid);
 
     /**
-     * Selects a route for the specified route session. 
-     * @param rsiNumber        the rsi point extension number
+     * Selects a route as a response to a route request.
+     * <p>
+     * {@code callingLine} can be used to change the identity of the calling number presented to the called party.
+     *
+     * @param rsiNumber        the RSI point extension number
      * @param routeCrid        the routing session unique identifier
      * @param selectedRoute    the selected route number
-     * @param callingLine      an optional calling line value that will be presented
-     *                         to the selected route
-     * @param associatedData   the optional associated data to attach to the call
-     * @param routeToVoiceMail {@code true} if the selected route is the voice
-     *                         mail; {@code false} otherwise.
+     * @param callingLine      an optional calling line number that will be presented to the selected route
+     * @param associatedData   optional correlator data to attach to the call
+     * @param routeToVoiceMail {@code true} if the selected route is the voice mail; {@code false} otherwise
      * @return {@code true} in case of success; {@code false} otherwise.
-     * @see com.ale.o2g.events.rsi.OnRouteRequestEvent OnRouteRequestEvent.
+     * @see com.ale.o2g.events.rsi.OnRouteRequestEvent OnRouteRequestEvent
      */
     boolean routeSelect(String rsiNumber, String routeCrid, String selectedRoute, String callingLine,
             String associatedData, Boolean routeToVoiceMail);
 
     /**
-     * Gets the list of existing route sessions for the specified rsi point.
-     * 
-     * @param rsiNumber the rsi point extension number
-     * @return a collection of {@linkplain com.ale.o2g.types.rsi.RouteSession
-     *         RouteSession}
+     * Gets the list of existing route sessions for the specified RSI point.
+     *
+     * @param rsiNumber the RSI point extension number
+     * @return A collection of {@linkplain com.ale.o2g.types.rsi.RouteSession RouteSession} representing the route sessions in progress for this RSI point.
      */
     Collection<RouteSession> getRouteSessions(String rsiNumber);
 
     /**
-     * Return the specified route session.
-     * 
-     * @param rsiNumber the rsi point extension number
+     * Returns the specified route session.
+     *
+     * @param rsiNumber the RSI point extension number
      * @param routeCrid the routing session unique identifier
-     * @return a {@linkplain com.ale.o2g.types.rsi.RouteSession RouteSession} object
-     *         or {@code null} in case of error or if there is no such route
-     *         session.
+     * @return A {@linkplain com.ale.o2g.types.rsi.RouteSession RouteSession} object, or {@code null} in case of error or if there is no such route session.
      */
     RouteSession getRouteSession(String rsiNumber, String routeCrid);
 }

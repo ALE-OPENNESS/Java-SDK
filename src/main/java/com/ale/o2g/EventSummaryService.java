@@ -32,24 +32,23 @@ public interface EventSummaryService extends IService {
     /**
      * Retrieves the main event counters for the specified user.
      * <p>
-     * If the session has been opened for a regular user, the {@code loginName} 
-     * parameter is ignored. However, it is mandatory if the session has been opened 
-     * by an administrator.
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an administrator.
      *
      * @param loginName the user login name
-     * @return the {@link EventSummary} containing event counters in case of success; 
-     *         {@code null} otherwise.
+     * @return the {@link EventSummary} containing the event counters on success;
+     *         {@code null} otherwise
      */
     EventSummary get(String loginName);
 
     /**
      * Retrieves the main event counters for the user who has opened the session.
      * <p>
-     * This method will fail and return {@code null} if invoked from a session opened 
-     * by an administrator.
+     * This method will fail and return {@code null} if it is invoked from a session
+     * opened by an administrator.
      *
-     * @return the {@link EventSummary} containing event counters in case of success; 
-     *         {@code null} otherwise.
+     * @return the {@link EventSummary} containing the event counters on success;
+     *         {@code null} otherwise
      * @see #get(String)
      */
     EventSummary get();

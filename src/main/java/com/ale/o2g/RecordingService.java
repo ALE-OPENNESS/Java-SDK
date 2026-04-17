@@ -81,123 +81,120 @@ import com.ale.o2g.types.recording.RecordingStatus;
 public interface RecordingService extends IService {
 
     /**
-     * Retrieves basic information about all recorded devices (administrator only).
+     * Retrieves the identifiers of all recorded devices (administrator only).
      *
-     * @return a list of recorded device identifiers, or {@code null} in case of
-     *         error.
+     * @return A collection of recorded device phone numbers, or {@code null} in case of error.
      */
     Collection<String> getRecordedDevices();
 
     /**
-     * Retrieves detailed information about a specific recorded device.
+     * Retrieves detailed recording information about a specific device.
+     * <p>
+     * If the session has been opened for a user, the {@code loginName} parameter is
+     * ignored, but it is mandatory if the session has been opened by an
+     * administrator.
      *
      * @param deviceId  the phone number of the device
-     * @param loginName the user login name; ignored if the session is opened for a
-     *                  user, but mandatory for an administrator session
-     * @return a {@link RecordedDevice} representing the device info in case of
-     *         success, or {@code null} in case of error
+     * @param loginName the user login name
+     * @return A {@link RecordedDevice} representing the device recording info in case of
+     *         success, or {@code null} in case of error.
      */
     RecordedDevice getRecordedDeviceInfo(String deviceId, String loginName);
 
     /**
-     * Starts recording on the specified device.
+     * Starts recording on the specified device for the user who has opened the session.
      * <p>
-     * This method with return {@code null} if it is invoked from a session opened
+     * This method will return {@code null} if it is invoked from a session opened
      * by an administrator.
      *
      * @param deviceId  the phone number of the device
-     * @param callRef   the reference of the call for which the recording is
-     *                  requested
-     * @param startType Indicate the record start mode
-     * @return a {@link RecordedDevice} representing the device info in case of
-     *         success, or {@code null} in case of error
+     * @param callRef   the reference of the call for which the recording is requested
+     * @param startType indicates the recording start mode
+     * @return A {@link RecordedDevice} representing the device recording info in case of
+     *         success, or {@code null} in case of error.
+     * @see #startRecording(String, String, RecordingStartType, String)
      */
     RecordedDevice startRecording(String deviceId, String callRef, RecordingStartType startType);
 
     /**
-     * Starts recording on the specified device.
+     * Starts recording on the specified device for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
      *
      * @param deviceId  the phone number of the device
-     * @param callRef   the reference of the call for which the recording is
-     *                  requested
-     * @param startType Indicate the record start mode
+     * @param callRef   the reference of the call for which the recording is requested
+     * @param startType indicates the recording start mode
      * @param loginName the user login name
-     * @return a {@link RecordedDevice} representing the device info in case of
-     *         success, or {@code null} in case of error
+     * @return A {@link RecordedDevice} representing the device recording info in case of
+     *         success, or {@code null} in case of error.
      */
     RecordedDevice startRecording(String deviceId, String callRef, RecordingStartType startType, String loginName);
 
     /**
-     * Pauses recording on the specified device.
+     * Pauses recording on the specified device for the user who has opened the session.
      * <p>
-     * This method with return {@code null} if it is invoked from a session opened
+     * This method will return {@code null} if it is invoked from a session opened
      * by an administrator.
      *
-     *
      * @param deviceId the phone number of the device
-     * @param callRef  the reference of the call for which the recording pause is
-     *                 requested
-     * @return a {@link RecordedDevice} representing the device info in case of
-     *         success, or {@code null} in case of error
+     * @param callRef  the reference of the call for which the recording pause is requested
+     * @return A {@link RecordedDevice} representing the device recording info in case of
+     *         success, or {@code null} in case of error.
+     * @see #pauseRecording(String, String, String)
      */
     RecordedDevice pauseRecording(String deviceId, String callRef);
 
     /**
-     * Pauses recording on the specified device.
+     * Pauses recording on the specified device for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
      *
      * @param deviceId  the phone number of the device
-     * @param callRef   the reference of the call for which the recording pause is
-     *                  requested
+     * @param callRef   the reference of the call for which the recording pause is requested
      * @param loginName the user login name
-     * @return a {@link RecordedDevice} representing the device info in case of
-     *         success, or {@code null} in case of error
+     * @return A {@link RecordedDevice} representing the device recording info in case of
+     *         success, or {@code null} in case of error.
      */
     RecordedDevice pauseRecording(String deviceId, String callRef, String loginName);
 
     /**
-     * Resumes recording on the specified device.
+     * Resumes recording on the specified device for the user who has opened the session.
      * <p>
-     * This method with return {@code null} if it is invoked from a session opened
+     * This method will return {@code null} if it is invoked from a session opened
      * by an administrator.
      *
-     * @param deviceId  the phone number of the device
-     * @param callRef   the reference of the call for which the recording resume is
-     *                  requested
-     * @return a {@link RecordedDevice} representing the device info in case of
-     *         success, or {@code null} in case of error
+     * @param deviceId the phone number of the device
+     * @param callRef  the reference of the call for which the recording resume is requested
+     * @return A {@link RecordedDevice} representing the device recording info in case of
+     *         success, or {@code null} in case of error.
+     * @see #resumeRecording(String, String, String)
      */
     RecordedDevice resumeRecording(String deviceId, String callRef);
 
     /**
-     * Resumes recording on the specified device.
+     * Resumes recording on the specified device for the specified user.
      * <p>
      * If the session has been opened for a user, the {@code loginName} parameter is
      * ignored, but it is mandatory if the session has been opened by an
      * administrator.
      *
      * @param deviceId  the phone number of the device
-     * @param callRef   the reference of the call for which the recording resume is
-     *                  requested
+     * @param callRef   the reference of the call for which the recording resume is requested
      * @param loginName the user login name
-     * @return a {@link RecordedDevice} representing the device info in case of
-     *         success, or {@code null} in case of error
+     * @return A {@link RecordedDevice} representing the device recording info in case of
+     *         success, or {@code null} in case of error.
      */
     RecordedDevice resumeRecording(String deviceId, String callRef, String loginName);
 
     /**
-     * Retrieves the status of the recording service.
+     * Retrieves the current status of the recording service.
      *
-     * @return a {@link RecordingStatus} representing the current status of the
-     *         recording service, or {@code null} in case of error or if no
-     *         recording is configured
+     * @return A {@link RecordingStatus} representing the current status of the
+     *         recording service, or {@code null} in case of error or if no recording is configured.
      */
     RecordingStatus getRecordingStatus();
 }

@@ -140,10 +140,49 @@ class MessagingRestTest extends AbstractRestServiceTest<MessagingRest> {
         // Inject a mock downloader that just returns a fake path
         Path fakePath = Path.of("mockedFile.wav");
         service.fileDownloader = (wavPath, response) -> fakePath;
-        
+
         Path result = service.downloadVoiceMessage("VM4645_M", "v1", "C://tmp/message.wav");
 
         assertCalledWith(GET, "/VM4645_M/voicemails/v1");
         assertEquals(fakePath, result);
+    }
+
+    @Test
+    void testAcknowledgeVoiceMessage() throws Exception {
+
+        defineResponse(200, "");
+
+        boolean result = service.acknowledgeVoiceMessage("VM4645_M", "v1");
+
+        assertRequest()
+                .method(GET)
+                .uri("/VM4645_M/voicemails/v1")
+                .header("Range", "bytes=0-1");
+        assertTrue(result);
+    }
+
+    @Test
+    void testAcknowledgeVoiceMessageWithLogin() throws Exception {
+
+        defineResponse(200, "");
+
+        boolean result = service.acknowledgeVoiceMessage("VM4645_M", "v1", "oxe1000");
+
+        assertRequest()
+                .method(GET)
+                .uri("/VM4645_M/voicemails/v1?loginName=oxe1000")
+                .header("Range", "bytes=0-1");
+        assertTrue(result);
+    }
+
+    @Test
+    void testAcknowledgeVoiceMessageFailure() throws Exception {
+
+        defineResponse(404, "");
+
+        boolean result = service.acknowledgeVoiceMessage("VM4645_M", "v1");
+
+        assertCalledWith(GET, "/VM4645_M/voicemails/v1");
+        assertEquals(false, result);
     }
 }

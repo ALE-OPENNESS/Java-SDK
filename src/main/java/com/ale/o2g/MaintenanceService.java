@@ -22,20 +22,22 @@ import com.ale.o2g.internal.services.IService;
 import com.ale.o2g.types.maintenance.SystemStatus;
 
 /**
- * The {@code MaintenanceService} allows to retrieve information about the
- * system state, in particular information on the pbx nodes and their connection
- * state. Informations about license are also provided per item: total allocated
- * licenses, numbers of current used and expiration date.
+ * The {@code MaintenanceService} allows retrieving information about the
+ * system state, in particular information on the OmniPCX Enterprise nodes and
+ * their connection state. Information about licenses is also provided per item:
+ * total allocated licenses, number currently in use, and expiration date.
+ * <p>
+ * This service does not require any specific license on the O2G server.
  */
 public interface MaintenanceService extends IService {
 
-	/**
-	 * This operation provides information about the system state , and the total
-	 * number of each license type available for the system. This operation is
-	 * restricted to an admin session only.
-	 * 
-	 * @return A {@link SystemStatus SystemStatus} object in case of success;
-	 *         {@code null} otherwise.
-	 */
-	SystemStatus getSystemStatus();
+    /**
+     * Retrieves information about the system state and the total number of each
+     * license type available for the system.
+     * <p>
+     * This operation is restricted to an administrator session only.
+     *
+     * @return A {@link SystemStatus} object on success; {@code null} otherwise
+     */
+    SystemStatus getSystemStatus();
 }

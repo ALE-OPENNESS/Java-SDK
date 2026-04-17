@@ -195,8 +195,7 @@ class CallCenterAgentRestTest extends AbstractRestServiceTest<CallCenterAgentRes
         		+ "}"
         		);
     }
-    
-    
+        
     @Test
     void testRequestPermanentListening() throws Exception {
         defineResponse(200, "");
@@ -207,6 +206,15 @@ class CallCenterAgentRestTest extends AbstractRestServiceTest<CallCenterAgentRes
         		+ "\"agentNumber\":\"12000\""
         		+ "}"
         		);
+    }
+
+    @Test
+    void testCancelPermanentListening() throws Exception {
+        defineResponse(200, "");
+
+        assertTrue(service.cancelPermanentListening("oxe1000"));
+        
+        assertCalledWith(DELETE, "/permanentListening?loginName=oxe1000");
     }
 
     @Test
