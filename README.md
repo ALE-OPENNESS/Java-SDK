@@ -22,7 +22,7 @@ Add the following dependency to your project `pom.xml`:
 <dependency>
   <groupId>io.github.ale-openness.o2g</groupId>
   <artifactId>o2g-sdk</artifactId>
-  <version>3.5.0</version>
+  <version>3.5.4</version>
 </dependency>
 ```
 

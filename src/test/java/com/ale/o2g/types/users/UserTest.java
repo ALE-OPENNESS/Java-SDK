@@ -51,7 +51,8 @@ class UserTest extends AbstractJsonTest {
                         { "type": "MOBILE", "id": "13001", "subType": "Smartphone" }
                     ],
                     "nodeId": "2",
-                    "externalLogin": "alice.smith@example.com"
+                    "externalLogin": "alice.smith@example.com",
+                    "eMailAddress": "alice.smith@example.com"
                 }
                 """;
 
@@ -78,6 +79,7 @@ class UserTest extends AbstractJsonTest {
 
         assertEquals(2, user.getNodeId());
         assertEquals("alice.smith@example.com", user.getExternalLogin());
+        assertEquals("alice.smith@example.com", user.getEmailAddress());
     }
 
     @Test
@@ -96,5 +98,6 @@ class UserTest extends AbstractJsonTest {
         assertTrue(user.getDevices().isEmpty());
         assertEquals(-1, user.getNodeId());
         assertNull(user.getExternalLogin());
+        assertNull(user.getEmailAddress());
     }
 }

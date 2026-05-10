@@ -39,6 +39,7 @@ public final class User {
     private Collection<Device> devices;
     private String nodeId;
     private String externalLogin;
+    private String eMailAddress;
 
     /**
      * Returns the user's company phone number.
@@ -120,6 +121,14 @@ public final class User {
     }
 
     /**
+     * Returns the user's email address, if any.
+	 * @return the email address, or {@code null} if the user does not have an email address.
+	 */
+	public String getEmailAddress() {
+		return eMailAddress;
+	}
+
+	/**
      * Protected default constructor for internal use and subclassing.
      */
     protected User() {
